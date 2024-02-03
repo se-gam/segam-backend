@@ -1,0 +1,63 @@
+name: Continuous Integration
+
+on:
+  push:
+    # branches-ignore:
+    #   - 'prod'
+
+permissions: write-all
+
+jobs:
+  CI:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.head_ref }}
+
+      - name: Cache yarn modules
+        id: yarn-cache
+        uses: actions/cache@v4
+        env:
+          cache-name: cache-yarn-modules
+        with:
+          path: ~/.yarn
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Yarn
+        run: npm install -g yarn
+
+      - name: Install dependencies
+        # if: steps.yarn-cache.outputs.cache-hit != 'true'
+        run: yarn install
+
+      # code formatting 후 commit
+      - name: Run Prettier
+        run: yarn format
+
+      - name: Commit changes
+        uses: EndBug/add-and-commit@v9
+        with:
+          default_author: github_actions
+          message: 'Format code'
+          add: '.'
+
+      # - name: Create .env file
+      #   run: |
+      #     # copy all secrets from github secrets, and create .dev.env file
+      #     jq -r 'to_entries|map("\(.key)=\(.value|tostring)")|.[]' <<< "$SECRETS_CONTEXT" > .dev.env
+      #   env:
+      #     SECRETS_CONTEXT: ${{ toJson(secrets) }}
+
+      # - name: Build Image
+      #   id: build-image
+      #   run: |
+      #     # Build a docker container and
+      #     docker build -f dev.dockerfile -t build_test .
