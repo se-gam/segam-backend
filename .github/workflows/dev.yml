@@ -54,7 +54,7 @@ jobs:
           aws_access_key: ${{ secrets.DEV_AWS_ACCESS_KEY }}
           aws_secret_key: ${{ secrets.DEV_AWS_SECRET_KEY }}
           application_name: segam-dev
-          environment_name: Segam-dev-env
+          environment_name: segam-dev-env
           region: ap-northeast-2
           version_label: ${{github.SHA}}
           deployment_package: Dev-Dockerrun.aws.json
