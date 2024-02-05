@@ -29,6 +29,12 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
+      - name: Create .env file
+        run: |
+          jq -r 'to_entries|map("\(.key)=\(.value|tostring)")|.[]' <<< "$SECRETS_CONTEXT" > .dev.env
+        env:
+          SECRETS_CONTEXT: ${{ toJson(secrets) }}
+
       - name: Build, tag, and push image to Amazon ECR
         id: build-image
         env:
@@ -48,7 +54,7 @@ jobs:
           aws_access_key: ${{ secrets.DEV_AWS_ACCESS_KEY }}
           aws_secret_key: ${{ secrets.DEV_AWS_SECRET_KEY }}
           application_name: segam-dev
-          environment_name: Segam-dev-env 
+          environment_name: Segam-dev-env
           region: ap-northeast-2
           version_label: ${{github.SHA}}
           deployment_package: Dev-Dockerrun.aws.json
