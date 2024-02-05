@@ -1,0 +1,60 @@
+name: Deploy to Amazon Elastic Beanstalk (Dev)
+
+on:
+  push:
+    branches:
+      - dev
+      - feat/cd
+
+permissions:
+  contents: read
+
+jobs:
+  CD:
+    runs-on: ubuntu-latest
+    environment: development
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.DEV_AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.DEV_AWS_SECRET_KEY }}
+          aws-region: ap-northeast-2
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Create .env file
+        run: |
+          jq -r 'to_entries|map("\(.key)=\(.value|tostring)")|.[]' <<< "$SECRETS_CONTEXT" > .dev.env
+        env:
+          SECRETS_CONTEXT: ${{ toJson(secrets) }}
+
+      - name: Build, tag, and push image to Amazon ECR
+        id: build-image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: segam-dev
+          IMAGE_TAG: latest
+        run: |
+          # Build a docker container and
+          # push it to ECR
+          docker build -f dev.dockerfile -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+
+      - name: Deploy to EB
+        uses: einaregilsson/beanstalk-deploy@v14
+        with:
+          aws_access_key: ${{ secrets.DEV_AWS_ACCESS_KEY }}
+          aws_secret_key: ${{ secrets.DEV_AWS_SECRET_KEY }}
+          application_name: segam-dev
+          environment_name: segam-dev-env
+          region: ap-northeast-2
+          version_label: ${{github.SHA}}
+          deployment_package: Dev-Dockerrun.aws.json
