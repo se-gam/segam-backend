@@ -153,6 +153,7 @@ model StudyroomSlot {
   date            DateTime          @db.Date
   startsAt        Int               @map("starts_at")
   isReserved      Boolean           @map("is_reserved")
+  isClosed        Boolean           @map("is_closed")
   createdAt       DateTime          @default(now()) @map("created_at")
   updatedAt       DateTime          @updatedAt @map("updated_at")
 
