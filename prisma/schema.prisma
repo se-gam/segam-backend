@@ -132,7 +132,6 @@ model UserAssignment {
 
 model Studyroom {
   id              Int               @id @default(autoincrement())
-  sejongPid       String            @map("sejong_pid")
   name            String
   location        String
   operatingHours  String            @map("operating_hours")
