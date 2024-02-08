@@ -11,9 +11,11 @@ const prisma = new PrismaClient({
 const rooms = require('./rooms.json');
 
 async function main() {
+  console.log(`Inserting ${rooms.length} studyrooms`);
   await prisma.studyroom.createMany({
     data: rooms,
   });
+  console.log('Seeding studyrooms complete');
 }
 
 main();
