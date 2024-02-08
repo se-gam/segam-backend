@@ -14,6 +14,7 @@ async function main() {
   console.log(`Inserting ${rooms.length} studyrooms`);
   await prisma.studyroom.createMany({
     data: rooms,
+    skipDuplicates: true,
   });
   console.log('Seeding studyrooms complete');
 }
