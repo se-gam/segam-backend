@@ -152,7 +152,7 @@ model StudyroomSlot {
   id              Int               @id @default(autoincrement())
   studyroomId     Int               @map("studyroom_id")
   date            DateTime          @db.Date
-  startsAt        DateTime          @db.Time() @map("start_at")
+  startsAt        Int               @map("starts_at")
   isReserved      Boolean           @map("is_reserved")
   createdAt       DateTime          @default(now()) @map("created_at")
   updatedAt       DateTime          @updatedAt @map("updated_at")
@@ -161,6 +161,7 @@ model StudyroomSlot {
   reservations    ReservationSlot[]
 
   @@map("studyroom_slot")
+  @@unique([studyroomId, date, startsAt])
 }
 
 model StudyroomReservation {
