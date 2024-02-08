@@ -16,7 +16,7 @@ model Department {
   createdAt       DateTime          @default(now()) @map("created_at")
   deletedAt       DateTime?         @map("deleted_at") 
 
-  user            User[]
+  users           User[]
 
   @@map("department")
 }
@@ -28,9 +28,9 @@ model Course {
   updatedAt       DateTime          @updatedAt @map("updated_at")
   deletedAt       DateTime?         @map("deleted_at")
 
-  userCourse      UserCourse[]
-  lecture         Lecture[]
-  assignment      Assignment[]
+  users           UserCourse[]
+  lectures        Lecture[]
+  assignments     Assignment[]
 
   @@map("course")
 }
@@ -45,10 +45,10 @@ model User {
   deletedAt       DateTime?         @map("deleted_at")
   
   department      Department?       @relation(fields: [departmentId], references: [id])
-  userCourse      UserCourse[]
-  userLecture     UserLecture[]
-  userAssignment  UserAssignment[]
-  userReservation UserReservation[]
+  courses         UserCourse[]
+  lectures        UserLecture[]
+  assignments     UserAssignment[]
+  reservations    UserReservation[]
   friend1         Friend[]          @relation("user1")
   friend2         Friend[]          @relation("user2")
 
@@ -81,7 +81,7 @@ model Lecture {
   deletedAt       DateTime?         @map("deleted_at")
 
   course          Course            @relation(fields: [courseId], references: [id])
-  userLecture     UserLecture[]
+  users           UserLecture[]
 
   @@map("lecture")
 }
@@ -112,7 +112,7 @@ model Assignment {
   deletedAt       DateTime?         @map("deleted_at")
 
   course          Course            @relation(fields: [courseId], references: [id])
-  userAssignment  UserAssignment[]
+  users           UserAssignment[]
 
   @@map("assignment")
 }
@@ -122,7 +122,7 @@ model UserAssignment {
   studentId       String            @map("student_id")
   assignmentId    Int               @map("assignment_id")
   isDone          Boolean           @map("is_done")
-  createAt        DateTime          @default(now()) @map("created_at")
+  createdAt       DateTime          @default(now()) @map("created_at")
 
   user            User              @relation(fields: [studentId], references: [studentId])
   assignment      Assignment        @relation(fields: [assignmentId], references: [id])
@@ -143,7 +143,7 @@ model Studyroom {
   updatedAt       DateTime          @updatedAt @map("updated_at")
   deletedAt       DateTime?         @map("deleted_at")
 
-  studyroomSlot   StudyroomSlot[]
+  slots   StudyroomSlot[]
 
   @@map("studyroom")
 }
@@ -151,14 +151,14 @@ model Studyroom {
 model StudyroomSlot {
   id              Int               @id @default(autoincrement())
   studyroomId     Int               @map("studyroom_id")
-  date            DateTime
-  startAt         DateTime          @map("start_at")
+  date            DateTime          @db.Date
+  startAt         DateTime          @db.Time() @map("start_at")
   isReserved      Boolean           @map("is_reserved")
   createdAt       DateTime          @default(now()) @map("created_at")
   updatedAt       DateTime          @updatedAt @map("updated_at")
 
   studyroom       Studyroom         @relation(fields: [studyroomId], references: [id])
-  reservationSlot ReservationSlot[]
+  reservations    ReservationSlot[]
 
   @@map("studyroom_slot")
 }
@@ -170,8 +170,8 @@ model StudyroomReservation {
   createdAt       DateTime          @default(now()) @map("created_at")
   updatedAt       DateTime          @updatedAt @map("updated_at")
 
-  reservationSlot ReservationSlot[]
-  userReservation UserReservation[]
+  slots           ReservationSlot[]
+  users           UserReservation[]
 
   @@map("studyroom_reservation")
 }
@@ -184,7 +184,7 @@ model ReservationSlot {
   studyroomSlot         StudyroomSlot         @relation(fields: [slotId], references: [id])
   studyroomReservation  StudyroomReservation  @relation(fields: [reservationId], references: [id])
 
-  @@unique([slotId,reservationId])
+  @@unique([slotId, reservationId])
   @@map("reservation_slot")
 }
 
