@@ -148,7 +148,7 @@ model Studyroom {
 }
 
 model StudyroomSlot {
-  id              Int               @id @default(autoincrement())
+  id              String            @id
   studyroomId     Int               @map("studyroom_id")
   date            DateTime          @db.Date
   startsAt        Int               @map("starts_at")
@@ -179,7 +179,7 @@ model StudyroomReservation {
 
 model ReservationSlot {
   id              Int               @id @default(autoincrement())
-  slotId          Int               @map("slot_id")
+  slotId          String            @map("slot_id")
   reservationId   Int               @map("reservation_id")
 
   studyroomSlot         StudyroomSlot         @relation(fields: [slotId], references: [id])
