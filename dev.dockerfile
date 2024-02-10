@@ -10,10 +10,11 @@ RUN yarn install
 
 COPY . .
 
-ENV NPM_CONFIG_PREFIX=/home/node/.npm-global
-ENV PATH=$PATH:/home/node/.npm-global/bin
+# ENV NPM_CONFIG_PREFIX=/home/node/.npm-global
+# ENV PATH=$PATH:/home/node/.npm-global/bin
 
-RUN npm install --global --unsafe-perm dotenv-cli
+# RUN npm install --global --unsafe-perm dotenv-cli
+RUN yarn add dotenv-cli
 RUN yarn prisma generate
 
 RUN yarn build && rm -rf node_modules && yarn install --production
