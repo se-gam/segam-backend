@@ -132,7 +132,6 @@ model UserAssignment {
 
 model Studyroom {
   id              Int               @id @default(autoincrement())
-  sejongPid       String            @map("sejong_pid")
   name            String
   location        String
   operatingHours  String            @map("operating_hours")
@@ -149,11 +148,12 @@ model Studyroom {
 }
 
 model StudyroomSlot {
-  id              Int               @id @default(autoincrement())
+  id              String            @id
   studyroomId     Int               @map("studyroom_id")
   date            DateTime          @db.Date
-  startsAt        DateTime          @db.Time() @map("start_at")
+  startsAt        Int               @map("starts_at")
   isReserved      Boolean           @map("is_reserved")
+  isClosed        Boolean           @map("is_closed")
   createdAt       DateTime          @default(now()) @map("created_at")
   updatedAt       DateTime          @updatedAt @map("updated_at")
 
@@ -161,6 +161,7 @@ model StudyroomSlot {
   reservations    ReservationSlot[]
 
   @@map("studyroom_slot")
+  @@unique([studyroomId, date, startsAt])
 }
 
 model StudyroomReservation {
@@ -178,7 +179,7 @@ model StudyroomReservation {
 
 model ReservationSlot {
   id              Int               @id @default(autoincrement())
-  slotId          Int               @map("slot_id")
+  slotId          String            @map("slot_id")
   reservationId   Int               @map("reservation_id")
 
   studyroomSlot         StudyroomSlot         @relation(fields: [slotId], references: [id])
