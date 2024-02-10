@@ -21,7 +21,7 @@
     "db:init:local": "docker-compose --env-file .local.env -f docker-compose.db.yml up -d",
     "db:save:local": "dotenv -e .local.env -- yarn prisma migrate dev",
     "db:save:dev": "dotenv -e .dev.env -- yarn prisma migrate dev",
-    "deploy:dev": "dotenv -e .dev.env -- NODE_ENV=dev node dist/src/main.js",
+    "deploy:dev": "npx dotenv -e .dev.env -- NODE_ENV=dev node dist/src/main.js",
     "seed:studyroom:local": "dotenv -e .local.env -- npx ts-node ./prisma/seeds/insert-studyrooms.ts",
     "seed:studyroom:dev": "dotenv -e .dev.env -- npx ts-node ./prisma/seeds/insert-studyrooms.ts"
   },
