@@ -23,7 +23,11 @@ export class StudyroomService {
       await this.prismaService.$transaction([
         this.prismaService.studyroomSlot.deleteMany({
           where: {
-            studyroomId: parseInt(rawStudyRoom.room_id),
+            id: {
+              in: rawStudyRoom.slots.map(
+                (slot) => `${rawStudyRoom.room_id}_${slot.date}_${slot.time}`,
+              ),
+            },
           },
         }),
         this.prismaService.studyroomSlot.createMany({
