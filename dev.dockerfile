@@ -10,7 +10,7 @@ RUN yarn install
 
 COPY . .
 
-ENV PATH /app/node_modules/.bin:$PATH
+ENV PATH=$PATH:/home/node/.npm-global/bin
 
 RUN yarn global add dotenv-cli
 RUN yarn prisma generate
