@@ -3,10 +3,16 @@ import { Cron } from '@nestjs/schedule';
 import axios from 'axios';
 import { PrismaService } from 'src/common/services/prisma.service';
 import { RawStudyroom } from './types/rawStudyroom';
+import { StudyroomQuery } from './query/studyroom.query';
+import { StudyroomDto, StudyroomListDto } from './dto/studyroom.dto';
+import { StudyroomRepository } from './studyroom.repository';
 
 @Injectable()
 export class StudyroomService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly studyroomRepository: StudyroomRepository,
+  ) {}
 
   private getSlotTime(time: string) {
     if (time.indexOf(':') === -1) {
@@ -52,5 +58,15 @@ export class StudyroomService {
     // console.log('------------------------');
     // const studyRooms = await this.prismaService.studyroom.findMany({});
     // console.log(studyRooms);
+  }
+
+  async getAllStudyrooms(query: StudyroomQuery): Promise<StudyroomListDto> {
+    const studyrooms = await this.studyroomRepository.getAllStudyrooms(query);
+    return StudyroomListDto.from(studyrooms);
+  }
+
+  async getStudyroomById(id: number): Promise<StudyroomDto> {
+    const studyroom = await this.studyroomRepository.getStudyroomById(id);
+    return StudyroomDto.from(studyroom);
   }
 }
