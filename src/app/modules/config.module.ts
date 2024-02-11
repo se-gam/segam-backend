@@ -8,5 +8,6 @@ export const configModule = ConfigModule.forRoot({
     NODE_ENV: Joi.string().valid('dev', 'prod', 'local'),
     AWS_ACCESS_KEY: Joi.string().required(),
     AWS_SECRET_KEY: Joi.string().required(),
+    CRAWLER_API_ROOT: Joi.string().required(),
   }),
 });

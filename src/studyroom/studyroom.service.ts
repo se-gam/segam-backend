@@ -17,7 +17,7 @@ export class StudyroomService {
 
   @Cron('*/10 * * * * *')
   async handleCron() {
-    const res = await axios.get('http://34.22.85.208:8000/calendar');
+    const res = await axios.get(process.env.CRAWLER_API_ROOT + '/calendar');
     const studyRooms = res.data as RawStudyroom[];
     studyRooms.forEach(async (rawStudyRoom) => {
       await this.prismaService.$transaction([
