@@ -165,8 +165,8 @@ model StudyroomSlot {
 }
 
 model StudyroomReservation {
-  id              Int               @id @default(autoincrement())
-  pid             Int
+  id              Int               @id
+  pid             Int               @unique
   reserveReason   String
   cancelReason    String?
   createdAt       DateTime          @default(now()) @map("created_at")
