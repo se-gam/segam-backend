@@ -6,12 +6,19 @@ import { RawStudyroom } from './types/rawStudyroom';
 import { StudyroomQuery } from './query/studyroom.query';
 import { StudyroomDto, StudyroomListDto } from './dto/studyroom.dto';
 import { StudyroomRepository } from './studyroom.repository';
+import {
+  StudyroomReservationDto,
+  StudyroomReservatoinListDto,
+} from './dto/studyroomReservation.dto';
+import { UserInfoPayload } from 'src/user/payload/UserInfoPayload.payload';
+import { ReservationService } from './reservation.service';
 
 @Injectable()
 export class StudyroomService {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly studyroomRepository: StudyroomRepository,
+    private readonly reservationService: ReservationService,
   ) {}
 
   private getSlotTime(time: string) {
@@ -68,5 +75,15 @@ export class StudyroomService {
   async getStudyroomById(id: number): Promise<StudyroomDto> {
     const studyroom = await this.studyroomRepository.getStudyroomById(id);
     return StudyroomDto.from(studyroom);
+  }
+
+  async getStudyroomReservations(
+    payload: UserInfoPayload,
+  ): Promise<StudyroomReservatoinListDto> {
+    await this.reservationService.updateUserReservations(payload);
+    const reservations = await this.studyroomRepository.getReservations(
+      payload.studentId,
+    );
+    return StudyroomReservatoinListDto.from(reservations);
   }
 }
