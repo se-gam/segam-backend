@@ -38,7 +38,7 @@ model Course {
 model User {
   studentId       String            @id @map("student_id")
   name            String
-  sejongPid       String?            @map("sejong_pid")
+  sejongPid       String?           @map("sejong_pid")
   departmentId    Int?              @map("department_id")
   createdAt       DateTime          @default(now()) @map("created_at")
   updatedAt       DateTime          @updatedAt @map("updated_at")
@@ -166,7 +166,7 @@ model StudyroomSlot {
 
 model StudyroomReservation {
   id              Int               @id
-  pid             Int               @unique
+  pid             Int               
   reserveReason   String
   cancelReason    String?
   createdAt       DateTime          @default(now()) @map("created_at")
