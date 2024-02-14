@@ -32,39 +32,30 @@ export class StudyroomService {
   async handleCron() {
     const res = await axios.get(process.env.CRAWLER_API_ROOT + '/calendar');
     const studyRooms = res.data as RawStudyroom[];
-    studyRooms.forEach(async (rawStudyRoom) => {
-      await this.prismaService.$transaction([
-        this.prismaService.studyroomSlot.deleteMany({
-          where: {
-            id: {
-              in: rawStudyRoom.slots.map(
-                (slot) => `${rawStudyRoom.room_id}_${slot.date}_${slot.time}`,
-              ),
-            },
+
+    const upsertSlots = studyRooms.flatMap((rawStudyroom) => {
+      return rawStudyroom.slots.map((slot) => {
+        const slotId = `${rawStudyroom.room_id}_${slot.date}_${slot.time}`;
+        return this.prismaService.studyroomSlot.upsert({
+          create: {
+            id: slotId,
+            studyroomId: parseInt(rawStudyroom.room_id),
+            date: new Date(slot.date),
+            startsAt: this.getSlotTime(slot.time),
+            isReserved: slot.is_reserved,
+            isClosed: slot.is_closed,
           },
-        }),
-        this.prismaService.studyroomSlot.createMany({
-          data: rawStudyRoom.slots.map((slot) => {
-            return {
-              id: `${rawStudyRoom.room_id}_${slot.date}_${slot.time}`,
-              studyroomId: parseInt(rawStudyRoom.room_id),
-              date: new Date(slot.date),
-              startsAt: this.getSlotTime(slot.time),
-              isReserved: slot.is_reserved,
-              isClosed: slot.is_closed,
-            };
-          }),
-          skipDuplicates: true,
-        }),
-      ]);
+          update: {
+            isReserved: slot.is_reserved,
+          },
+          where: {
+            id: slotId,
+          },
+        });
+      });
     });
 
-    // const studyRoomSlots = await this.prismaService.studyroomSlot.findMany({});
-    // console.log(studyRoomSlots);
-
-    // console.log('------------------------');
-    // const studyRooms = await this.prismaService.studyroom.findMany({});
-    // console.log(studyRooms);
+    await this.prismaService.$transaction(upsertSlots);
   }
 
   async getAllStudyrooms(query: StudyroomQuery): Promise<StudyroomListDto> {
@@ -82,7 +73,7 @@ export class StudyroomService {
   ): Promise<StudyroomReservatoinListDto> {
     await this.reservationService.updateUserReservations(payload);
     const reservations = await this.studyroomRepository.getReservations(
-      payload.studentId,
+      payload.student_id,
     );
     return StudyroomReservatoinListDto.from(reservations);
   }
