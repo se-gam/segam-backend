@@ -61,6 +61,7 @@ export class StudyroomRepository {
     const userReservations = await this.prismaService.userReservation.findMany({
       where: {
         studentId: userId,
+        deletedAt: null,
       },
     });
 
@@ -126,18 +127,24 @@ export class StudyroomRepository {
         throw new NotFoundException('해당 slot을 찾을 수 없습니다.');
       }
     }
-    return reservations;
+
+    const sortedReservations = reservations.sort((a, b) => {
+      return new Date(a.date).getTime() - new Date(b.date).getTime();
+    });
+
+    return sortedReservations;
   }
 
   async updateReservations(
     studentId: string,
     reservations: ReservationResponse,
   ) {
-    reservations.result.map(async (reservation) => {
+    for (const reservation of reservations.result) {
       const existingReservation =
         await this.prismaService.studyroomReservation.findUnique({
           where: { id: parseInt(reservation.booking_id) },
         });
+
       if (!existingReservation) {
         const slotIds: string[] = [];
         const duration = parseInt(reservation.duration.match(/\d+/)[0]);
@@ -164,7 +171,6 @@ export class StudyroomRepository {
 
         const userIds = reservation.users.map((user) => user.student_id);
         userIds.push(studentId);
-        console.log(reservation.booking_id);
         await this.prismaService.studyroomReservation.create({
           data: {
             id: parseInt(reservation.booking_id),
@@ -188,6 +194,6 @@ export class StudyroomRepository {
           },
         });
       }
-    });
+    }
   }
 }

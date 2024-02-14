@@ -36,7 +36,7 @@ export class ReservationService {
         _.flatMap(response.data.result, 'users'),
       );
 
-      this.studyroomRepository.updateReservations(
+      await this.studyroomRepository.updateReservations(
         payload.student_id,
         response.data,
       );
