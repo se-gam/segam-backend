@@ -4,12 +4,10 @@ import { StudyroomQuery } from './query/studyroom.query';
 import { Studyroom } from './types/studyroom.type';
 import { ReservationResponse } from './types/reservationResponse.type';
 import { StudyroomReservation } from './types/studyroomReservation.type';
-import { UserReservation } from '@prisma/client';
 
 @Injectable()
 export class StudyroomRepository {
   constructor(private readonly prismaService: PrismaService) {}
-
   async getAllStudyrooms(query: StudyroomQuery): Promise<Studyroom[]> {
     const studyrooms = await this.prismaService.studyroom.findMany({
       where: {
@@ -38,7 +36,7 @@ export class StudyroomRepository {
   async getStudyroomById(id: number): Promise<Studyroom> {
     const today = new Date();
     const nextWeek = new Date();
-    nextWeek.setDate(today.getDate() + 6);
+    nextWeek.setDate(today.getDate() + 7);
 
     const studyroom = await this.prismaService.studyroom.findUnique({
       where: {
@@ -69,7 +67,7 @@ export class StudyroomRepository {
     for (const reservation of userReservations) {
       const infos = await this.prismaService.studyroomReservation.findUnique({
         where: {
-          id: reservation.id,
+          id: reservation.reservationId,
         },
         select: {
           reserveReason: true,
@@ -94,24 +92,29 @@ export class StudyroomRepository {
         },
       });
 
-      const users = infos.users.map(async (user) => {
-        await this.prismaService.user.findFirst({
-          where: {
-            studentId: user.studentId,
-          },
-          select: {
-            studentId: true,
-            name: true,
-          },
-        });
-      });
+      const users = await Promise.all(
+        infos.users.map(async (user) => {
+          return this.prismaService.user.findUnique({
+            where: {
+              studentId: user.studentId,
+            },
+            select: {
+              studentId: true,
+              name: true,
+            },
+          });
+        }),
+      );
 
       if (slot) {
+        const studyroomName = await this.prismaService.studyroom.findUnique({
+          where: { id: slot.studyroomId },
+          select: { name: true },
+        });
+
         reservations.push({
           id: reservation.id,
-          name: await this.prismaService.studyroom.findFirst({
-            where: { id: slot.studyroomId },
-          }),
+          name: studyroomName.name,
           date: slot.date,
           startsAt: slot.startsAt,
           duration: infos.slots.length,
@@ -119,16 +122,21 @@ export class StudyroomRepository {
           reason: infos.reserveReason,
           users: users,
         });
+      } else {
+        throw new NotFoundException('해당 slot을 찾을 수 없습니다.');
       }
     }
     return reservations;
   }
 
-  async updateReservations(userId: string, resrevations: ReservationResponse) {
-    resrevations.result.map(async (reservation) => {
+  async updateReservations(
+    studentId: string,
+    reservations: ReservationResponse,
+  ) {
+    reservations.result.map(async (reservation) => {
       const existingReservation =
         await this.prismaService.studyroomReservation.findUnique({
-          where: { pid: parseInt(reservation.ipid) },
+          where: { id: parseInt(reservation.booking_id) },
         });
       if (!existingReservation) {
         const slotIds: string[] = [];
@@ -154,6 +162,9 @@ export class StudyroomRepository {
           }
         }
 
+        const userIds = reservation.users.map((user) => user.student_id);
+        userIds.push(studentId);
+        console.log(reservation.booking_id);
         await this.prismaService.studyroomReservation.create({
           data: {
             id: parseInt(reservation.booking_id),
@@ -168,9 +179,9 @@ export class StudyroomRepository {
             },
             users: {
               createMany: {
-                data: reservation.users.map((user) => ({
-                  studentId: user.student_id,
-                  isLeader: userId === user.student_id,
+                data: userIds.map((userId) => ({
+                  studentId: userId,
+                  isLeader: studentId === userId,
                 })),
               },
             },

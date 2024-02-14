@@ -1,5 +1,5 @@
 import { Studyroom } from '../types/studyroom.type';
-import { StudyroomSlotDto } from './studyroomslot.dto';
+import { StudyroomSlotDto } from './studyroomSlot.dto';
 
 export class StudyroomDto {
   id!: number;
