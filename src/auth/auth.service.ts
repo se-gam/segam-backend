@@ -20,11 +20,16 @@ export class AuthService {
       studentId: payload.studentId,
     };
 
+    console.log();
+
     const res = await this.axiosService.post(
       this.configService.get('PORTAL_AUTH_URL'),
       JSON.stringify({
         id: user.studentId,
-        password: this.passwordService.decryptPassword(payload.password),
+        password:
+          this.configService.get('NODE_ENV') === 'local'
+            ? payload.password
+            : this.passwordService.decryptPassword(payload.password),
       }),
       {
         headers: {
@@ -43,5 +48,17 @@ export class AuthService {
 
     // TODO: DB 유저로 토큰 생성
     return this.tokenService.generateTokens({ studentId: user.studentId });
+  }
+
+  async refresh(refreshToken: string): Promise<TokenDto> {
+    try {
+      const payload = this.tokenService.verifyRefreshToken(refreshToken);
+      return this.tokenService.generateTokens(payload);
+    } catch (e) {
+      console.log(e);
+      throw new UnauthorizedException(
+        '토큰이 만료되었거나, 잘못된 토큰입니다.',
+      );
+    }
   }
 }
