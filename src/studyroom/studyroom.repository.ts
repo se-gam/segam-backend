@@ -59,82 +59,63 @@ export class StudyroomRepository {
   }
 
   async getReservations(userId: string): Promise<StudyroomReservation[]> {
-    const reservations = [];
-    const userReservations = await this.prismaService.userReservation.findMany({
-      where: {
-        studentId: userId,
-        deletedAt: null,
-      },
-    });
-
-    for (const reservation of userReservations) {
-      const infos = await this.prismaService.studyroomReservation.findUnique({
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const reservations = await this.prismaService.studyroomReservation.findMany(
+      {
         where: {
-          id: reservation.reservationId,
-        },
-        select: {
-          reserveReason: true,
-          slots: true,
-          users: true,
-        },
-      });
-
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      const slot = await this.prismaService.studyroomSlot.findUnique({
-        where: {
-          id: infos.slots[0].slotId,
-          date: {
-            gte: today,
+          users: {
+            some: {
+              studentId: userId,
+            },
           },
         },
         select: {
-          studyroomId: true,
-          date: true,
-          startsAt: true,
-        },
-      });
-
-      const users = await Promise.all(
-        infos.users.map(async (user) => {
-          return this.prismaService.user.findUnique({
-            where: {
-              studentId: user.studentId,
-            },
+          id: true,
+          reserveReason: true,
+          studyroom: {
             select: {
-              studentId: true,
               name: true,
             },
-          });
-        }),
-      );
+          },
+          slots: {
+            where: {
+              studyroomSlot: {
+                date: {
+                  gte: today,
+                },
+              },
+            },
+            select: {
+              studyroomSlot: {
+                select: {
+                  date: true,
+                  startsAt: true,
+                },
+              },
+            },
+          },
+          users: {
+            where: {
+              deletedAt: null,
+            },
+            select: {
+              isLeader: true,
+              user: {
+                select: {
+                  studentId: true,
+                  name: true,
+                },
+              },
+            },
+          },
+        },
+      },
+    );
 
-      if (slot) {
-        const studyroomName = await this.prismaService.studyroom.findUnique({
-          where: { id: slot.studyroomId },
-          select: { name: true },
-        });
-
-        reservations.push({
-          id: reservation.id,
-          name: studyroomName.name,
-          date: slot.date,
-          startsAt: slot.startsAt,
-          duration: infos.slots.length,
-          isLeader: reservation.isLeader,
-          reason: infos.reserveReason,
-          users: users,
-        });
-      } else {
-        throw new NotFoundException('해당 slot을 찾을 수 없습니다.');
-      }
-    }
-
-    const sortedReservations = reservations.sort((a, b) => {
-      return new Date(a.date).getTime() - new Date(b.date).getTime();
+    return reservations.map((reservation) => {
+      return StudyroomReservation.from(userId, reservation);
     });
-
-    return sortedReservations;
   }
 
   async updateReservations(
@@ -177,6 +158,7 @@ export class StudyroomRepository {
           data: {
             id: parseInt(reservation.booking_id),
             pid: parseInt(reservation.ipid),
+            studyroomId: parseInt(reservation.room_id),
             reserveReason: reservation.purpose,
             slots: {
               createMany: {

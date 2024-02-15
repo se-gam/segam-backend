@@ -32,9 +32,13 @@ export class StudyroomReservatoinListDto {
     reservations: StudyroomReservation[],
   ): StudyroomReservatoinListDto {
     return {
-      reservations: reservations.map((reservation) => {
-        return StudyroomReservationDto.from(reservation);
-      }),
+      reservations: reservations
+        .map((reservation) => {
+          return StudyroomReservationDto.from(reservation);
+        })
+        .sort((a, b) => {
+          return new Date(a.date).getTime() - new Date(b.date).getTime();
+        }),
     };
   }
 }
