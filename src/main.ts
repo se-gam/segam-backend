@@ -24,7 +24,7 @@ async function bootstrap() {
     .setDescription('세감 백엔드 API 문서입니다.')
     .setVersion('1.0')
     .addTag('Segam')
-    // .addBearerAuth()
+    .addBearerAuth()
     .build();
 
   app.enableVersioning({

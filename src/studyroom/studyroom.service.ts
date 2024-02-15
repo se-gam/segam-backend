@@ -1,12 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
-import axios from 'axios';
+import { AxiosService } from 'src/common/services/axios.service';
 import { PrismaService } from 'src/common/services/prisma.service';
 import { RawStudyroom } from './types/rawStudyroom';
 
 @Injectable()
 export class StudyroomService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly axiosService: AxiosService,
+  ) {}
 
   private getSlotTime(time: string) {
     if (time.indexOf(':') === -1) {
@@ -17,9 +20,13 @@ export class StudyroomService {
 
   @Cron('*/10 * * * * *')
   async handleCron() {
-    const res = await axios.get(process.env.CRAWLER_API_ROOT + '/calendar');
-    const studyRooms = res.data as RawStudyroom[];
-    studyRooms.forEach(async (rawStudyRoom) => {
+    const res = await this.axiosService.get(
+      process.env.CRAWLER_API_ROOT + '/calendar',
+    );
+
+    const studyRooms = JSON.parse(res.data);
+
+    studyRooms.forEach(async (rawStudyRoom: RawStudyroom) => {
       await this.prismaService.$transaction([
         this.prismaService.studyroomSlot.deleteMany({
           where: {
