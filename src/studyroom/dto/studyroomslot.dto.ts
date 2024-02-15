@@ -1,4 +1,4 @@
-import { StudyroomSlot } from '@prisma/client';
+import { StudyroomSlot } from '../types/studyroomSlot.type';
 
 export class StudyroomSlotDto {
   id!: string;

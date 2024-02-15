@@ -17,6 +17,7 @@ export class StudyroomRepository {
         maxUsers: {
           gte: query.userCount,
         },
+        deletedAt: null,
       },
       include: {
         slots: {
@@ -24,7 +25,7 @@ export class StudyroomRepository {
             date: query.date,
             startsAt: {
               gte: query.timeGte,
-              lt: query.timeLte,
+              lt: query.timeLt,
             },
           },
         },
@@ -41,6 +42,7 @@ export class StudyroomRepository {
     const studyroom = await this.prismaService.studyroom.findUnique({
       where: {
         id: id,
+        deletedAt: null,
       },
       include: {
         slots: {

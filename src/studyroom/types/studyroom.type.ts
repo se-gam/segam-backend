@@ -1,4 +1,4 @@
-import { StudyroomSlot } from '@prisma/client';
+import { StudyroomSlot } from './studyroomSlot.type';
 
 export type Studyroom = {
   id: number;

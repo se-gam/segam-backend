@@ -6,17 +6,20 @@ export class StudyroomQuery {
   @Type(() => Date)
   @IsDate()
   @Optional()
-  date: Date = new Date();
+  date?: Date = new Date();
 
   @Type(() => Number)
   @IsInt()
-  timeGte: number = 10;
+  @Optional()
+  timeGte?: number = 10;
 
   @Type(() => Number)
   @IsInt()
-  timeLte: number = 10;
+  @Optional()
+  timeLt?: number = 22;
 
   @Type(() => Number)
   @IsInt()
-  userCount: number = 3;
+  @Optional()
+  userCount?: number = 3;
 }

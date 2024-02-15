@@ -2,7 +2,7 @@ import { IsString } from 'class-validator';
 
 export class UserInfoPayload {
   @IsString()
-  student_id!: string;
+  studentId!: string;
 
   @IsString()
   password!: string;

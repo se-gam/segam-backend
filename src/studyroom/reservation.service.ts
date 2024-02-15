@@ -20,7 +20,7 @@ export class ReservationService {
 
   async updateUserReservations(payload: UserInfoPayload) {
     const user = await this.userRepository.getUserByStudentId(
-      payload.student_id,
+      payload.studentId,
     );
 
     if (!user)
@@ -28,8 +28,11 @@ export class ReservationService {
 
     try {
       const response = await axios.post<ReservationResponse>(
-        process.env.RESERVATION_URL,
-        payload,
+        process.env.GET_USER_RESEVATIONS_URL,
+        {
+          student_id: payload.studentId,
+          password: payload.password,
+        },
       );
 
       await this.userRepository.createNewUsers(
@@ -37,7 +40,7 @@ export class ReservationService {
       );
 
       await this.studyroomRepository.updateReservations(
-        payload.student_id,
+        payload.studentId,
         response.data,
       );
     } catch (error) {
