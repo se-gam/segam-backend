@@ -43,6 +43,7 @@
     "crypto": "^1.0.1",
     "http-cookie-agent": "^6.0.1",
     "joi": "^17.12.1",
+    "node-html-parser": "^6.1.12",
     "node-xlsx": "^0.23.0",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
