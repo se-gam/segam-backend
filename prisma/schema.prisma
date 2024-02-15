@@ -22,7 +22,7 @@ model Department {
 }
 
 model Course {
-  id              Int               @id @default(autoincrement())
+  id              String            @id
   name            String      
   createdAt       DateTime          @default(now()) @map("created_at")
   updatedAt       DateTime          @updatedAt @map("updated_at")
@@ -58,7 +58,7 @@ model User {
 model UserCourse {
   id              Int               @id @default(autoincrement())
   studentId       String            @map("student_id")
-  courseId        Int               @map("course_id")
+  courseId        String            @map("course_id")
   createdAt       DateTime          @default(now()) @map("created_at")
   updatedAt       DateTime          @updatedAt @map("updated_at")
 
@@ -70,8 +70,8 @@ model UserCourse {
 }
 
 model Lecture {
-  id              Int               @id @default(autoincrement())
-  courseId        Int               @map("course_id")
+  id              Int               @id
+  courseId        String            @map("course_id")
   name            String
   week            Int
   endsAt          DateTime          @map("ends_at")
@@ -103,7 +103,7 @@ model UserLecture {
 
 model Assignment {
   id              Int               @id @default(autoincrement())
-  courseId        Int               @map("course_id")
+  courseId        String            @map("course_id")
   name            String
   week            Int
   endsAt          DateTime          @map("ends_at")
