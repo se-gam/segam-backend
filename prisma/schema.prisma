@@ -142,7 +142,8 @@ model Studyroom {
   updatedAt       DateTime          @updatedAt @map("updated_at")
   deletedAt       DateTime?         @map("deleted_at")
 
-  slots   StudyroomSlot[]
+  slots           StudyroomSlot[]
+  reservations    StudyroomReservation[]
 
   @@map("studyroom")
 }
@@ -166,12 +167,14 @@ model StudyroomSlot {
 
 model StudyroomReservation {
   id              Int               @id
-  pid             Int               
+  pid             Int
+  studyroomId     Int               @map("studyroom_id")
   reserveReason   String
   cancelReason    String?
   createdAt       DateTime          @default(now()) @map("created_at")
   updatedAt       DateTime          @updatedAt @map("updated_at")
 
+  studyroom       Studyroom         @relation(fields: [studyroomId], references: [id])
   slots           ReservationSlot[]
   users           UserReservation[]
 
