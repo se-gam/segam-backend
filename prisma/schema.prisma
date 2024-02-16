@@ -173,6 +173,7 @@ model StudyroomReservation {
   cancelReason    String?
   createdAt       DateTime          @default(now()) @map("created_at")
   updatedAt       DateTime          @updatedAt @map("updated_at")
+  deletedAt       DateTime?          
 
   studyroom       Studyroom         @relation(fields: [studyroomId], references: [id])
   slots           ReservationSlot[]
