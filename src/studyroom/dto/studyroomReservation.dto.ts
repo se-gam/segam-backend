@@ -8,6 +8,7 @@ export class StudyroomReservationDto {
   startsAt!: number;
   duration!: number;
   isLeader!: boolean;
+  isCinema: boolean;
   reason!: string;
   users!: UserDto[];
 
@@ -19,6 +20,7 @@ export class StudyroomReservationDto {
       startsAt: reservation.startsAt,
       duration: reservation.duration,
       isLeader: reservation.isLeader,
+      isCinema: reservation.isCinema,
       reason: reservation.reason,
       users: reservation.users,
     };

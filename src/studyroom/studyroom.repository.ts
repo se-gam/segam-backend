@@ -4,6 +4,8 @@ import { StudyroomQuery } from './query/studyroom.query';
 import { Studyroom } from './types/studyroom.type';
 import { ReservationResponse } from './types/reservationResponse.type';
 import { StudyroomReservation } from './types/studyroomReservation.type';
+import { Prisma, PrismaClient } from '@prisma/client';
+import * as _ from 'lodash';
 
 @Injectable()
 export class StudyroomRepository {
@@ -64,9 +66,11 @@ export class StudyroomRepository {
     const reservations = await this.prismaService.studyroomReservation.findMany(
       {
         where: {
+          deletedAt: null,
           users: {
             some: {
               studentId: userId,
+              deletedAt: null,
             },
           },
         },
@@ -76,6 +80,7 @@ export class StudyroomRepository {
           studyroom: {
             select: {
               name: true,
+              isCinema: true,
             },
           },
           slots: {
@@ -118,43 +123,23 @@ export class StudyroomRepository {
     });
   }
 
-  async updateReservations(
-    studentId: string,
+  private getSlotTime(time: string, idx: number): string {
+    const hour = parseInt(time.split(':')[0]) + idx;
+    return hour + ':00';
+  }
+
+  async createReservations(
+    userId: string,
     reservations: ReservationResponse,
+    tx: Prisma.TransactionClient,
   ) {
     for (const reservation of reservations.result) {
-      const existingReservation =
-        await this.prismaService.studyroomReservation.findUnique({
-          where: { id: parseInt(reservation.booking_id) },
-        });
+      const found = await tx.studyroomReservation.findUnique({
+        where: { id: parseInt(reservation.booking_id) },
+      });
 
-      if (!existingReservation) {
-        const slotIds: string[] = [];
-        const duration = parseInt(reservation.duration.match(/\d+/)[0]);
-        for (let i = 0; i < duration; i++) {
-          const foundSlot = await this.prismaService.studyroomSlot.findUnique({
-            where: {
-              studyroomId_date_startsAt: {
-                studyroomId: parseInt(reservation.room_id),
-                date: new Date(reservation.date).toISOString(),
-                startsAt: parseInt(reservation.starts_at.split(':')[0]) + i,
-              },
-            },
-          });
-          if (foundSlot) {
-            await this.prismaService.studyroomSlot.update({
-              where: { id: foundSlot.id },
-              data: { isReserved: true },
-            });
-            slotIds.push(foundSlot.id);
-          } else {
-            throw new NotFoundException('해당 slot을 찾을 수 없습니다.');
-          }
-        }
-
-        const userIds = reservation.users.map((user) => user.student_id);
-        userIds.push(studentId);
-        await this.prismaService.studyroomReservation.create({
+      if (!found) {
+        await tx.studyroomReservation.create({
           data: {
             id: parseInt(reservation.booking_id),
             pid: parseInt(reservation.ipid),
@@ -162,16 +147,22 @@ export class StudyroomRepository {
             reserveReason: reservation.purpose,
             slots: {
               createMany: {
-                data: slotIds.map((slotId) => ({
-                  slotId: slotId,
+                data: Array.from(
+                  { length: parseInt(reservation.duration) },
+                  (_, index) => index,
+                ).map((idx) => ({
+                  slotId: `${reservation.room_id}_${reservation.date}_${this.getSlotTime(reservation.starts_at, idx)}`,
                 })),
               },
             },
             users: {
               createMany: {
-                data: userIds.map((userId) => ({
-                  studentId: userId,
-                  isLeader: studentId === userId,
+                data: [
+                  ...reservation.users.map((user) => user.student_id),
+                  userId,
+                ].map((id) => ({
+                  studentId: id,
+                  isLeader: id === userId,
                 })),
               },
             },
@@ -179,5 +170,71 @@ export class StudyroomRepository {
         });
       }
     }
+  }
+
+  async deleteReservations(
+    userId: string,
+    reservations: ReservationResponse,
+    tx: Prisma.TransactionClient,
+  ) {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const myReservationIds = await tx.userReservation.findMany({
+      where: {
+        studentId: userId,
+        deletedAt: null,
+        isLeader: true,
+        studyroomReservation: {
+          slots: {
+            some: {
+              studyroomSlot: {
+                date: {
+                  gte: today,
+                },
+              },
+            },
+          },
+        },
+      },
+      select: {
+        reservationId: true,
+      },
+    });
+
+    const reservationIds = reservations.result.map((reservation) => {
+      return parseInt(reservation.booking_id);
+    });
+
+    for (const rawId of myReservationIds) {
+      if (!reservationIds.includes(rawId.reservationId)) {
+        await tx.studyroomReservation.update({
+          where: {
+            id: rawId.reservationId,
+          },
+          data: {
+            deletedAt: new Date(),
+            users: {
+              updateMany: {
+                where: {
+                  reservationId: rawId.reservationId,
+                },
+                data: {
+                  deletedAt: new Date(),
+                },
+              },
+            },
+          },
+        });
+      }
+    }
+  }
+
+  async updateReservations(userId: string, reservations: ReservationResponse) {
+    await this.prismaService.$transaction(
+      async (tx: Prisma.TransactionClient) => [
+        await this.createReservations(userId, reservations, tx),
+        await this.deleteReservations(userId, reservations, tx),
+      ],
+    );
   }
 }
