@@ -107,6 +107,7 @@ model UserLecture {
 
 model Assignment {
   id              Int               @id @default(autoincrement())
+  ecampusId       Int               @unique @map("ecampus_id")
   courseId        String            @map("course_id")
   name            String
   week            Int
@@ -119,6 +120,7 @@ model Assignment {
   users           UserAssignment[]
 
   @@map("assignment")
+  @@index([ecampusId])
 }
 
 model UserAssignment {
