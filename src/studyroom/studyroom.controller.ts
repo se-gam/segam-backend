@@ -23,6 +23,7 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
+import { StudyroomReservePayload } from './payload/studyroomReserve.payload';
 
 @ApiTags('studyroom')
 @Controller('studyroom')
@@ -75,6 +76,22 @@ export class StudyroomController {
 
   @Version('1')
   @ApiOperation({
+    summary: '예약 API',
+    description: 'id에 해당하는 스터디룸을 예약합니다.',
+  })
+  @ApiOkResponse()
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Post('reservation')
+  async reserveStudyroom(
+    @CurrentUser() user: UserInfo,
+    @Body() payload: StudyroomReservePayload,
+  ): Promise<void> {
+    return this.studyroomService.reserveStudyroom(user.studentId, payload);
+  }
+
+  @Version('1')
+  @ApiOperation({
     summary: '예약 취소 API',
     description: 'id에 해당하는 예약을 취소합니다.',
   })
@@ -86,7 +103,7 @@ export class StudyroomController {
     @Param('id') id: number,
     @CurrentUser() user: UserInfo,
     @Body() payload: StudyroomCancelPayload,
-  ) {
+  ): Promise<void> {
     return this.studyroomService.cancelStudyroomReservation(
       id,
       user.studentId,

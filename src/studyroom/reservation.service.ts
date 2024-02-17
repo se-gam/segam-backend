@@ -13,12 +13,15 @@ import { UserRepository } from 'src/user/user.repository';
 import * as _ from 'lodash';
 import { StudyroomCancelPayload } from './payload/studyroomCancel.payload';
 import { ResultResponse } from './types/resultResponse.type';
+import { StudyroomReservePayload } from './payload/studyroomReserve.payload';
+import { AxiosService } from 'src/common/services/axios.service';
 
 @Injectable()
 export class ReservationService {
   constructor(
     private readonly studyroomRepository: StudyroomRepository,
     private readonly userRepository: UserRepository,
+    private readonly axiosService: AxiosService,
   ) {}
 
   async updateUserReservations(userId: string, payload: UserInfoPayload) {
@@ -52,6 +55,48 @@ export class ReservationService {
     }
   }
 
+  async createReservation(
+    userId: string,
+    payload: StudyroomReservePayload,
+  ): Promise<ResultResponse> {
+    const rawUsers = await this.userRepository.getUsersByStudentIds([
+      ...payload.users,
+      userId,
+    ]);
+    if (rawUsers.length != payload.users.length + 1)
+      throw new InternalServerErrorException('모든 유저를 찾지 못했습니다.');
+    const users = rawUsers.map((user) => {
+      return {
+        name: user.name,
+        student_id: user.studentId,
+        ipid: user.sejongPid,
+      };
+    });
+
+    try {
+      const response = await this.axiosService.post<ResultResponse>(
+        process.env.CREATE_RESERVATION_URL,
+        {
+          id: userId,
+          password: payload.password,
+          room_id: payload.studyroomId,
+          users: users,
+          year: payload.date.getFullYear().toString(),
+          month: (payload.date.getMonth() + 1).toString(),
+          day: payload.date.getDate().toString(),
+          start_time: payload.startsAt.toString(),
+          hours: payload.duration.toString(),
+          purpose: payload.reason,
+        },
+      );
+      return response.data;
+    } catch (error) {
+      console.log(error.response.status);
+      console.log(error.response.data.result);
+      throw error;
+    }
+  }
+
   async cancelReservation(
     id: number,
     userId: string,
@@ -63,7 +108,7 @@ export class ReservationService {
       throw new NotFoundException('해당 id의 예약이 존재하지 않습니다');
 
     try {
-      const response = await axios.post<ResultResponse>(
+      const response = await this.axiosService.post<ResultResponse>(
         process.env.CANCEL_RESERVATION_URL,
         {
           id: userId,

@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString } from 'class-validator';
+import { StudyroomReservePayload } from 'src/studyroom/payload/studyroomReserve.payload';
 
 export class UserInfoPayload {
   @ApiProperty({
@@ -8,4 +9,10 @@ export class UserInfoPayload {
   })
   @IsString()
   password!: string;
+
+  static from(password: string) {
+    return {
+      password: password,
+    };
+  }
 }

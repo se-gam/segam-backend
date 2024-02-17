@@ -15,6 +15,16 @@ export class UserRepository {
     });
   }
 
+  async getUsersByStudentIds(ids: string[]): Promise<User[]> {
+    return await this.prismaService.user.findMany({
+      where: {
+        studentId: {
+          in: ids,
+        },
+      },
+    });
+  }
+
   async createNewUsers(rawUsers: RawUser[]) {
     await this.prismaService.user.createMany({
       data: rawUsers.map((user) => {
