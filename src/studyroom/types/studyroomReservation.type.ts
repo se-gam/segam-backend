@@ -20,8 +20,6 @@ export class StudyroomReservation {
     if (reservation.slots.length < 1) {
       throw new ForbiddenException('slot이 존재하지 않습니다.');
     }
-    console.log(studentId);
-    console.log(reservation.users);
     const user = reservation.users.find((user) => {
       return user.user.studentId === studentId;
     });

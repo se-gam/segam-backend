@@ -1,11 +1,13 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/common/services/prisma.service';
 import { StudyroomQuery } from './query/studyroom.query';
 import { Studyroom } from './types/studyroom.type';
 import { ReservationResponse } from './types/reservationResponse.type';
 import { StudyroomReservation } from './types/studyroomReservation.type';
-import { Prisma, PrismaClient } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import * as _ from 'lodash';
+import { StudyroomReservation as PrismaStudyroomReservation } from '@prisma/client';
+import { StudyroomCancelPayload } from './payload/studyroomCancel.payload';
 
 @Injectable()
 export class StudyroomRepository {
@@ -60,9 +62,18 @@ export class StudyroomRepository {
     return studyroom;
   }
 
+  async getReservationById(id: number): Promise<PrismaStudyroomReservation> {
+    return await this.prismaService.studyroomReservation.findUnique({
+      where: {
+        id: id,
+      },
+    });
+  }
+
   async getReservations(userId: string): Promise<StudyroomReservation[]> {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
+
     const reservations = await this.prismaService.studyroomReservation.findMany(
       {
         where: {
@@ -117,6 +128,9 @@ export class StudyroomRepository {
         },
       },
     );
+
+    console.log(reservations[0].slots);
+    console.log(today);
 
     return reservations.map((reservation) => {
       return StudyroomReservation.from(userId, reservation);
@@ -207,26 +221,35 @@ export class StudyroomRepository {
 
     for (const rawId of myReservationIds) {
       if (!reservationIds.includes(rawId.reservationId)) {
-        await tx.studyroomReservation.update({
-          where: {
-            id: rawId.reservationId,
-          },
-          data: {
-            deletedAt: new Date(),
-            users: {
-              updateMany: {
-                where: {
-                  reservationId: rawId.reservationId,
-                },
-                data: {
-                  deletedAt: new Date(),
-                },
-              },
-            },
-          },
-        });
+        this.deleteReservation(rawId.reservationId, null, tx);
       }
     }
+  }
+
+  async deleteReservation(
+    reservationId: number,
+    cancelReason: string,
+    tx: Prisma.TransactionClient = this.prismaService,
+  ) {
+    await tx.studyroomReservation.update({
+      where: {
+        id: reservationId,
+      },
+      data: {
+        deletedAt: new Date(),
+        cancelReason: cancelReason,
+        users: {
+          updateMany: {
+            where: {
+              reservationId: reservationId,
+            },
+            data: {
+              deletedAt: new Date(),
+            },
+          },
+        },
+      },
+    });
   }
 
   async updateReservations(userId: string, reservations: ReservationResponse) {
@@ -236,5 +259,9 @@ export class StudyroomRepository {
         await this.deleteReservations(userId, reservations, tx),
       ],
     );
+  }
+
+  async cancelReservation(reservationId: number, cancelReason: string) {
+    this.deleteReservation(reservationId, cancelReason);
   }
 }

@@ -9,6 +9,7 @@ import { StudyroomRepository } from './studyroom.repository';
 import { StudyroomReservatoinListDto } from './dto/studyroomReservation.dto';
 import { UserInfoPayload } from 'src/user/payload/UserInfoPayload.payload';
 import { ReservationService } from './reservation.service';
+import { StudyroomCancelPayload } from './payload/studyroomCancel.payload';
 
 @Injectable()
 export class StudyroomService {
@@ -75,5 +76,13 @@ export class StudyroomService {
       payload.studentId,
     );
     return StudyroomReservatoinListDto.from(reservations);
+  }
+
+  async cancelStudyroomReservation(
+    id: number,
+    payload: StudyroomCancelPayload,
+  ) {
+    await this.reservationService.cancelReservation(id, payload);
+    await this.studyroomRepository.cancelReservation(id, payload.cancelReason);
   }
 }

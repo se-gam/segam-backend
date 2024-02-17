@@ -4,6 +4,7 @@ import { StudyroomQuery } from './query/studyroom.query';
 import { StudyroomDto, StudyroomListDto } from './dto/studyroom.dto';
 import { StudyroomReservatoinListDto } from './dto/studyroomReservation.dto';
 import { UserInfoPayload } from 'src/user/payload/UserInfoPayload.payload';
+import { StudyroomCancelPayload } from './payload/studyroomCancel.payload';
 
 @Controller('studyroom')
 export class StudyroomController {
@@ -26,5 +27,13 @@ export class StudyroomController {
     @Body() payload: UserInfoPayload,
   ): Promise<StudyroomReservatoinListDto> {
     return this.studyroomService.getStudyroomReservations(payload);
+  }
+
+  @Post('reservation/cancel/:id')
+  async cancelStudyroomReservation(
+    @Param('id') id: number,
+    @Body() payload: StudyroomCancelPayload,
+  ) {
+    return this.studyroomService.cancelStudyroomReservation(id, payload);
   }
 }
