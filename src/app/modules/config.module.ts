@@ -14,5 +14,9 @@ export const configModule = ConfigModule.forRoot({
     JWT_REFRESH_TOKEN_EXPIRE_TIME: Joi.string().required(),
     PASSWORD_SALT: Joi.string().required(),
     PASSWORD_ENCRYPT_KEY: Joi.string().required(),
+    GET_USER_RESEVATIONS_URL: Joi.string().required(),
+    CREATE_RESERVATION_URL: Joi.string().required(),
+    CANCEL_RESERVATION_URL: Joi.string().required(),
+    GET_USER_AVAILABILITY_URL: Joi.string().required(),
   }),
 });

@@ -17,6 +17,7 @@ import { StudyroomReservePayload } from './payload/studyroomReserve.payload';
 import { AxiosService } from 'src/common/services/axios.service';
 import { StudyroomUserPayload } from './payload/studyroomUserPayload.payload';
 import { UserPidResponse } from './types/userPidResponse.type';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class ReservationService {
@@ -24,6 +25,7 @@ export class ReservationService {
     private readonly studyroomRepository: StudyroomRepository,
     private readonly userRepository: UserRepository,
     private readonly axiosService: AxiosService,
+    private readonly configService: ConfigService,
   ) {}
 
   async updateUserReservations(userId: string, payload: UserInfoPayload) {
@@ -34,7 +36,7 @@ export class ReservationService {
 
     try {
       const response = await axios.post<ReservationResponse>(
-        process.env.GET_USER_RESEVATIONS_URL,
+        this.configService.get<string>('GET_USER_RESEVATIONS_URL'),
         {
           student_id: userId,
           password: payload.password,
@@ -69,7 +71,7 @@ export class ReservationService {
 
     try {
       const response = await this.axiosService.post(
-        process.env.GET_USER_AVAILABILITY_URL,
+        this.configService.get<string>('GET_USER_AVAILABILITY_URL'),
         JSON.stringify({
           id: userId,
           password: payload.password,
@@ -125,7 +127,7 @@ export class ReservationService {
 
     try {
       const response = await this.axiosService.post<ResultResponse>(
-        process.env.CREATE_RESERVATION_URL,
+        this.configService.get<string>('CREATE_RESERVATION_URL'),
         {
           id: userId,
           password: payload.password,
@@ -159,7 +161,7 @@ export class ReservationService {
 
     try {
       const response = await this.axiosService.post<ResultResponse>(
-        process.env.CANCEL_RESERVATION_URL,
+        this.configService.get<string>('CANCEL_RESERVATION_URL'),
         {
           id: userId,
           password: payload.password,
