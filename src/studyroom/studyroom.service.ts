@@ -11,6 +11,7 @@ import { UserInfoPayload } from 'src/user/payload/UserInfoPayload.payload';
 import { ReservationService } from './reservation.service';
 import { StudyroomCancelPayload } from './payload/studyroomCancel.payload';
 import { StudyroomReservePayload } from './payload/studyroomReserve.payload';
+import { StudyroomUserPayload } from './payload/studyroomUserPayload.payload';
 
 @Injectable()
 export class StudyroomService {
@@ -79,6 +80,13 @@ export class StudyroomService {
     await this.reservationService.updateUserReservations(userId, payload);
     const reservations = await this.studyroomRepository.getReservations(userId);
     return StudyroomReservatoinListDto.from(reservations);
+  }
+
+  async checkUserAvailablity(
+    userId: string,
+    payload: StudyroomUserPayload,
+  ): Promise<void> {
+    await this.reservationService.checkUserAvailablity(userId, payload);
   }
 
   async reserveStudyroom(

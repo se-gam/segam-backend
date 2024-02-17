@@ -24,6 +24,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { StudyroomReservePayload } from './payload/studyroomReserve.payload';
+import { StudyroomUserPayload } from './payload/studyroomUserPayload.payload';
 
 @ApiTags('studyroom')
 @Controller('studyroom')
@@ -109,5 +110,21 @@ export class StudyroomController {
       user.studentId,
       payload,
     );
+  }
+
+  @Version('1')
+  @ApiOperation({
+    summary: '스터디룸 인원 추가 확인 API',
+    description: '추가 가능한 친구인지 확인합니다.',
+  })
+  @ApiOkResponse()
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Post('user')
+  async checkUserAvailablity(
+    @CurrentUser() user: UserInfo,
+    @Body() payload: StudyroomUserPayload,
+  ): Promise<void> {
+    return this.studyroomService.checkUserAvailablity(user.studentId, payload);
   }
 }

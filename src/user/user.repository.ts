@@ -25,6 +25,17 @@ export class UserRepository {
     });
   }
 
+  async updateUserPid(studentId: string, pid: string) {
+    await this.prismaService.user.update({
+      where: {
+        studentId: studentId,
+      },
+      data: {
+        sejongPid: pid,
+      },
+    });
+  }
+
   async createNewUsers(rawUsers: RawUser[]) {
     await this.prismaService.user.createMany({
       data: rawUsers.map((user) => {

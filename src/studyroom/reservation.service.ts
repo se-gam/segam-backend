@@ -15,6 +15,8 @@ import { StudyroomCancelPayload } from './payload/studyroomCancel.payload';
 import { ResultResponse } from './types/resultResponse.type';
 import { StudyroomReservePayload } from './payload/studyroomReserve.payload';
 import { AxiosService } from 'src/common/services/axios.service';
+import { StudyroomUserPayload } from './payload/studyroomUserPayload.payload';
+import { UserPidResponse } from './types/userPidResponse.type';
 
 @Injectable()
 export class ReservationService {
@@ -52,6 +54,54 @@ export class ReservationService {
       } else if (error.response.status != 404) {
         throw new InternalServerErrorException('서버에서 오류가 발생했습니다.');
       }
+    }
+  }
+
+  async checkUserAvailablity(
+    userId: string,
+    payload: StudyroomUserPayload,
+  ): Promise<UserPidResponse> {
+    const friend = await this.userRepository.getUserByStudentId(
+      payload.friendId,
+    );
+    if (!friend)
+      throw new NotFoundException('해당 학번의 학생이 존재하지 않습니다');
+
+    try {
+      const response = await this.axiosService.post(
+        process.env.GET_USER_AVAILABILITY_URL,
+        JSON.stringify({
+          id: userId,
+          password: payload.password,
+          user_name: friend.name,
+          student_id: friend.studentId,
+          year: payload.date.getFullYear(),
+          month: String(payload.date.getMonth() + 1).padStart(2, '0'),
+          day: String(payload.date.getDate()).padStart(2, '0'),
+        }),
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        },
+      );
+
+      const friendPid = JSON.parse(response.data).ipid;
+
+      if (!friendPid)
+        throw new BadRequestException('추가할 수 없는 사용자입니다.');
+
+      if (friend.sejongPid != friendPid) {
+        await this.userRepository.updateUserPid(
+          friend.studentId,
+          response.data.ipid,
+        );
+      }
+
+      return response.data;
+    } catch (error) {
+      console.log(error);
+      throw new BadRequestException('추가할 수 없는 사용자입니다.');
     }
   }
 
