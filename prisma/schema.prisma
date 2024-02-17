@@ -23,7 +23,7 @@ model Department {
 
 model Course {
   id              String            @id
-  ecampusId       Int?              @map("ecampus_id")
+  ecampusId       Int?              @unique @map("ecampus_id")
   name            String      
   createdAt       DateTime          @default(now()) @map("created_at")
   updatedAt       DateTime          @updatedAt @map("updated_at")
@@ -34,6 +34,7 @@ model Course {
   assignments     Assignment[]
 
   @@map("course")
+  @@index([ecampusId])
 }
 
 model User {
@@ -72,7 +73,7 @@ model UserCourse {
 
 model Lecture {
   id              Int               @id @default(autoincrement())
-  ecampusId       Int               @map("ecampus_id")
+  ecampusId       Int               @unique @map("ecampus_id")
   courseId        String            @map("course_id")
   name            String
   week            Int
@@ -86,6 +87,7 @@ model Lecture {
   users           UserLecture[]
 
   @@map("lecture")
+  @@index([ecampusId])
 }
 
 model UserLecture {
