@@ -76,7 +76,6 @@ model Lecture {
   week            Int
   startsAt        DateTime          @map("starts_at")
   endsAt          DateTime          @map("ends_at")
-  length          String?
   createdAt       DateTime          @default(now()) @map("created_at")
   updatedAt       DateTime          @updatedAt @map("updated_at")
   deletedAt       DateTime?         @map("deleted_at")
