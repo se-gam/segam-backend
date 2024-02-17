@@ -23,7 +23,7 @@ model Department {
 
 model Course {
   id              String            @id
-  ecampusId       String?            @map("ecampus_id")
+  ecampusId       Int?              @map("ecampus_id")
   name            String      
   createdAt       DateTime          @default(now()) @map("created_at")
   updatedAt       DateTime          @updatedAt @map("updated_at")
@@ -72,7 +72,7 @@ model UserCourse {
 
 model Lecture {
   id              Int               @id @default(autoincrement())
-  ecampusId       String            @map("ecampus_id")
+  ecampusId       Int               @map("ecampus_id")
   courseId        String            @map("course_id")
   name            String
   week            Int
