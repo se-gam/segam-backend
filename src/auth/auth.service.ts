@@ -16,16 +16,10 @@ export class AuthService {
   ) {}
 
   async signup(payload: SignUpPayload): Promise<TokenDto> {
-    const user = {
-      studentId: payload.studentId,
-    };
-
-    console.log();
-
     const res = await this.axiosService.post(
       this.configService.get('PORTAL_AUTH_URL'),
       JSON.stringify({
-        id: user.studentId,
+        id: payload.studentId,
         password:
           this.configService.get('NODE_ENV') === 'local'
             ? payload.password
@@ -47,7 +41,7 @@ export class AuthService {
     }
 
     // TODO: DB 유저로 토큰 생성
-    return this.tokenService.generateTokens({ studentId: user.studentId });
+    return this.tokenService.generateTokens({ studentId: payload.studentId });
   }
 
   async refresh(refreshToken: string): Promise<TokenDto> {
