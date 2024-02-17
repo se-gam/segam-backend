@@ -3,6 +3,7 @@ import { parse } from 'node-html-parser';
 import { PasswordPayload } from 'src/auth/payload/password.payload';
 import { UserInfo } from 'src/auth/types/user-info.type';
 import { AxiosService } from 'src/common/services/axios.service';
+import { AttendanceRepository } from './attendance.repository';
 import { CourseAttendance } from './types/courseAttendance';
 import { RawAssignment } from './types/rawAssignment';
 import { RawLecture } from './types/rawLecture';
@@ -14,11 +15,22 @@ export class EcampusService {
   private courseUrl: string;
   private assignmentUrl: string;
 
-  constructor(private readonly axiosService: AxiosService) {
+  constructor(
+    private readonly axiosService: AxiosService,
+    private readonly attendanceRepository: AttendanceRepository,
+  ) {
     this.loginUrl = 'https://ecampus.sejong.ac.kr/login/index.php';
     this.dashboardUrl = 'https://ecampus.sejong.ac.kr/dashboard.php';
     this.courseUrl = 'https://ecampus.sejong.ac.kr/course/view.php';
     this.assignmentUrl = 'https://ecampus.sejong.ac.kr/mod/assign/view.php';
+  }
+
+  async updateUserAttendance(
+    user: UserInfo,
+    payload: PasswordPayload,
+  ): Promise<void> {
+    const courses = await this.getAllCourseAttendance(user, payload);
+    await this.attendanceRepository.updateUserAttendance(user, courses);
   }
 
   private createFormData(username: string, password: string): FormData {
@@ -48,7 +60,7 @@ export class EcampusService {
     return { id, endsAt };
   }
 
-  async getAllCourseAttendance(
+  private async getAllCourseAttendance(
     user: UserInfo,
     payload: PasswordPayload,
   ): Promise<CourseAttendance[]> {
@@ -72,7 +84,7 @@ export class EcampusService {
     return courseAttendances;
   }
 
-  async getCourseAttendance(
+  private async getCourseAttendance(
     user: UserInfo,
     payload: PasswordPayload,
     ecampusId: number,
@@ -103,6 +115,7 @@ export class EcampusService {
 
     const contents = root.querySelectorAll('li.section.main.clearfix');
 
+    // TODO: 비교과는 제외
     contents.forEach((content) => {
       const week = content.getAttribute('id')?.split('-')[1];
       if (week === '0') return;
@@ -127,9 +140,9 @@ export class EcampusService {
           .split('=')[1];
 
         const assignmentData: RawAssignment = {
-          ecampusId: Number(assignmentId),
+          id: Number(assignmentId),
           name,
-          week,
+          week: parseInt(week),
           isDone: isSubmitted.trim() === '완료함' ? true : false,
         };
         assignments.push(assignmentData);
@@ -150,10 +163,10 @@ export class EcampusService {
           .split('=')[1];
 
         const lectureData: RawLecture = {
-          ecampusId: Number(lectureId),
+          id: Number(lectureId),
           name,
           isDone: isSubmitted.trim() === '완료함' ? true : false,
-          week,
+          week: parseInt(week),
           startsAt: new Date(startsAt),
           endsAt: new Date(endsAt),
         };
@@ -162,15 +175,13 @@ export class EcampusService {
     });
 
     const assignmentEndTimes = await Promise.all(
-      assignments.map((assignment) =>
-        this.getAssignmentEndTime(assignment.ecampusId),
-      ),
+      assignments.map((assignment) => this.getAssignmentEndTime(assignment.id)),
     );
 
     // TODO: Lodash로 바꾸기
     assignments = assignments.map((assignment) => {
       const endTime = assignmentEndTimes.find(
-        (assignmentEndTime) => assignmentEndTime.id === assignment.ecampusId,
+        (assignmentEndTime) => assignmentEndTime.id === assignment.id,
       );
       if (!endTime.endsAt) return;
       return {
@@ -188,7 +199,7 @@ export class EcampusService {
     };
   }
 
-  async getCourseList(
+  private async getCourseList(
     user: UserInfo,
     payload: PasswordPayload,
     isLoginRequired = true,
