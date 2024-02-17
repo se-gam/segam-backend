@@ -1,7 +1,7 @@
 export type RawLecture = {
-  ecampusId: number;
+  id: number;
   name: string;
-  week: string;
+  week: number;
   startsAt: Date;
   endsAt: Date;
   isDone: boolean;

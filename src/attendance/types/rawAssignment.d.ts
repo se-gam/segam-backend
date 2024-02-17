@@ -1,7 +1,7 @@
 export type RawAssignment = {
-  ecampusId: number;
+  id: number;
   name: string;
-  week: string;
+  week: number;
   endsAt?: Date;
   isDone: boolean;
 };
