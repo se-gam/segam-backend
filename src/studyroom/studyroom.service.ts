@@ -20,7 +20,6 @@ export class StudyroomService {
     private readonly studyroomRepository: StudyroomRepository,
     private readonly reservationService: ReservationService,
     private readonly axiosService: AxiosService,
-
   ) {}
 
   private getSlotTime(time: string) {
