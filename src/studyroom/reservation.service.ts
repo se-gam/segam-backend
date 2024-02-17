@@ -49,13 +49,13 @@ export class ReservationService {
 
       await this.studyroomRepository.updateReservations(userId, response.data);
     } catch (error) {
-      console.log(error.response.data.result);
-
-      if (error.response.status == 401) {
-        throw new UnauthorizedException(error.response.data.result);
-      } else if (error.response.status != 404) {
-        throw new InternalServerErrorException('서버에서 오류가 발생했습니다.');
-      }
+      console.log(error);
+      throw error;
+      // if (error.response.status == 401) {
+      //   throw new UnauthorizedException(error.response);
+      // } else if (error.response.status != 404) {
+      //   throw new InternalServerErrorException('서버에서 오류가 발생했습니다.');
+      // }
     }
   }
 
@@ -94,10 +94,7 @@ export class ReservationService {
         throw new BadRequestException('추가할 수 없는 사용자입니다.');
 
       if (friend.sejongPid != friendPid) {
-        await this.userRepository.updateUserPid(
-          friend.studentId,
-          response.data.ipid,
-        );
+        await this.userRepository.updateUserPid(friend.studentId, friendPid);
       }
 
       return response.data;
@@ -111,11 +108,10 @@ export class ReservationService {
     userId: string,
     payload: StudyroomReservePayload,
   ): Promise<ResultResponse> {
-    const rawUsers = await this.userRepository.getUsersByStudentIds([
-      ...payload.users,
-      userId,
-    ]);
-    if (rawUsers.length != payload.users.length + 1)
+    const rawUsers = await this.userRepository.getUsersByStudentIds(
+      payload.users,
+    );
+    if (rawUsers.length != payload.users.length)
       throw new InternalServerErrorException('모든 유저를 찾지 못했습니다.');
     const users = rawUsers.map((user) => {
       return {
@@ -126,9 +122,9 @@ export class ReservationService {
     });
 
     try {
-      const response = await this.axiosService.post<ResultResponse>(
+      const res = await this.axiosService.post(
         this.configService.get<string>('CREATE_RESERVATION_URL'),
-        {
+        JSON.stringify({
           id: userId,
           password: payload.password,
           room_id: payload.studyroomId,
@@ -139,12 +135,24 @@ export class ReservationService {
           start_time: payload.startsAt.toString(),
           hours: payload.duration.toString(),
           purpose: payload.reason,
+        }),
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
         },
       );
-      return response.data;
+
+      if (res.status >= 400)
+        throw new InternalServerErrorException('Internal Server Error');
+
+      const response = JSON.parse(res.data);
+
+      console.log(response);
+
+      return response;
     } catch (error) {
-      console.log(error.response.status);
-      console.log(error.response.data.result);
+      console.error(error);
       throw error;
     }
   }
