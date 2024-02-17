@@ -72,20 +72,24 @@ export class StudyroomService {
   }
 
   async getStudyroomReservations(
+    userId: string,
     payload: UserInfoPayload,
   ): Promise<StudyroomReservatoinListDto> {
-    await this.reservationService.updateUserReservations(payload);
-    const reservations = await this.studyroomRepository.getReservations(
-      payload.studentId,
-    );
+    await this.reservationService.updateUserReservations(userId, payload);
+    const reservations = await this.studyroomRepository.getReservations(userId);
     return StudyroomReservatoinListDto.from(reservations);
   }
 
   async cancelStudyroomReservation(
     id: number,
+    userId: string,
     payload: StudyroomCancelPayload,
   ) {
-    await this.reservationService.cancelReservation(id, payload);
-    await this.studyroomRepository.cancelReservation(id, payload.cancelReason);
+    await this.reservationService.cancelReservation(id, userId, payload);
+    await this.studyroomRepository.cancelReservation(
+      id,
+      userId,
+      payload.cancelReason,
+    );
   }
 }

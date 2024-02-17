@@ -21,10 +21,8 @@ export class ReservationService {
     private readonly userRepository: UserRepository,
   ) {}
 
-  async updateUserReservations(payload: UserInfoPayload) {
-    const user = await this.userRepository.getUserByStudentId(
-      payload.studentId,
-    );
+  async updateUserReservations(userId: string, payload: UserInfoPayload) {
+    const user = await this.userRepository.getUserByStudentId(userId);
 
     if (!user)
       throw new NotFoundException('해당 학번의 학생이 존재하지 않습니다');
@@ -33,7 +31,7 @@ export class ReservationService {
       const response = await axios.post<ReservationResponse>(
         process.env.GET_USER_RESEVATIONS_URL,
         {
-          student_id: payload.studentId,
+          student_id: userId,
           password: payload.password,
         },
       );
@@ -42,10 +40,7 @@ export class ReservationService {
         _.flatMap(response.data.result, 'users'),
       );
 
-      await this.studyroomRepository.updateReservations(
-        payload.studentId,
-        response.data,
-      );
+      await this.studyroomRepository.updateReservations(userId, response.data);
     } catch (error) {
       console.log(error.response.data.result);
 
@@ -59,6 +54,7 @@ export class ReservationService {
 
   async cancelReservation(
     id: number,
+    userId: string,
     payload: StudyroomCancelPayload,
   ): Promise<ResultResponse> {
     const reservation = await this.studyroomRepository.getReservationById(id);
@@ -70,7 +66,7 @@ export class ReservationService {
       const response = await axios.post<ResultResponse>(
         process.env.CANCEL_RESERVATION_URL,
         {
-          id: payload.studentId,
+          id: userId,
           password: payload.password,
           booking_id: id.toString(),
           room_id: reservation.studyroomId,

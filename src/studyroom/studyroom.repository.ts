@@ -259,7 +259,11 @@ export class StudyroomRepository {
     );
   }
 
-  async cancelReservation(reservationId: number, cancelReason: string) {
+  async cancelReservation(
+    reservationId: number,
+    userId: string,
+    cancelReason: string,
+  ) {
     this.deleteReservation(reservationId, cancelReason);
   }
 }
