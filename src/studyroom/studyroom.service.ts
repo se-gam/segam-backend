@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
-import axios from 'axios';
+import { AxiosService } from 'src/common/services/axios.service';
 import { PrismaService } from 'src/common/services/prisma.service';
 import { RawStudyroom } from './types/rawStudyroom';
 import { StudyroomQuery } from './query/studyroom.query';
@@ -17,6 +17,7 @@ export class StudyroomService {
     private readonly prismaService: PrismaService,
     private readonly studyroomRepository: StudyroomRepository,
     private readonly reservationService: ReservationService,
+    private readonly axiosService: AxiosService,
   ) {}
 
   private getSlotTime(time: string) {
@@ -28,8 +29,10 @@ export class StudyroomService {
 
   @Cron('*/10 * * * * *')
   async handleCron() {
-    const res = await axios.get(process.env.CRAWLER_API_ROOT + '/calendar');
-    const rawStudyrooms = res.data as RawStudyroom[];
+    const res = await this.axiosService.get(
+      process.env.CRAWLER_API_ROOT + '/calendar',
+    );
+    const rawStudyrooms = JSON.parse(res.data);
     const studyrooms = rawStudyrooms.flatMap((studyroom) =>
       studyroom.slots.map((slot) => ({ room_id: studyroom.room_id, slot })),
     );
