@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -80,7 +81,11 @@ export class ReservationService {
     } catch (error) {
       console.log(error.response.status);
       console.log(error.response.data.result);
-      throw error;
+      if (error.response.status == 400) {
+        throw new BadRequestException('예약을 찾을 수 없습니다.');
+      } else {
+        throw error;
+      }
     }
   }
 }

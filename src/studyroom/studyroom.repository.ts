@@ -66,13 +66,13 @@ export class StudyroomRepository {
     return await this.prismaService.studyroomReservation.findUnique({
       where: {
         id: id,
+        deletedAt: null,
       },
     });
   }
 
   async getReservations(userId: string): Promise<StudyroomReservation[]> {
     const today = new Date();
-    today.setHours(0, 0, 0, 0);
 
     const reservations = await this.prismaService.studyroomReservation.findMany(
       {
@@ -82,6 +82,15 @@ export class StudyroomRepository {
             some: {
               studentId: userId,
               deletedAt: null,
+            },
+          },
+          slots: {
+            some: {
+              studyroomSlot: {
+                date: {
+                  gte: today,
+                },
+              },
             },
           },
         },
@@ -95,13 +104,6 @@ export class StudyroomRepository {
             },
           },
           slots: {
-            where: {
-              studyroomSlot: {
-                date: {
-                  gte: today,
-                },
-              },
-            },
             select: {
               studyroomSlot: {
                 select: {
@@ -128,9 +130,6 @@ export class StudyroomRepository {
         },
       },
     );
-
-    console.log(reservations[0].slots);
-    console.log(today);
 
     return reservations.map((reservation) => {
       return StudyroomReservation.from(userId, reservation);
@@ -192,7 +191,6 @@ export class StudyroomRepository {
     tx: Prisma.TransactionClient,
   ) {
     const today = new Date();
-    today.setHours(0, 0, 0, 0);
     const myReservationIds = await tx.userReservation.findMany({
       where: {
         studentId: userId,
