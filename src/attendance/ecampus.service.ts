@@ -108,10 +108,11 @@ export class EcampusService {
       this.courseUrl + `?id=${ecampusId}`,
     );
     const root = parse(res.data);
-    const [name, id] = root
+    let [name, id] = root
       .querySelector('h2.coursename')
-      .structuredText.slice(0, -1)
-      .split('(');
+      .structuredText.split(' ');
+
+    id = id.slice(1, -1);
 
     const contents = root.querySelectorAll('li.section.main.clearfix');
 
@@ -218,7 +219,7 @@ export class EcampusService {
     const res = await this.axiosService.get(this.dashboardUrl);
     const root = parse(res.data);
 
-    const contents = root.querySelectorAll('li.course-label-ir');
+    const contents = root.querySelectorAll('li.course-label-r');
 
     const courseList = contents.map((content) => {
       const courseId = content

@@ -26,7 +26,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
       },
     });
     if (!user) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('토큰에 해당하는 유저가 없습니다.');
     }
     return user;
   }

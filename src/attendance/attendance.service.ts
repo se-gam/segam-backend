@@ -1,6 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { PasswordPayload } from 'src/auth/payload/password.payload';
 import { UserInfo } from 'src/auth/types/user-info.type';
+import { PasswordService } from 'src/common/services/password.service';
 import { AttendanceRepository } from './attendance.repository';
 import { AssignmentAttendanceListDto } from './dto/assignment-attendance.dto';
 import { CourseAttendanceListDto } from './dto/course-attendace-list.dto';
@@ -13,6 +15,8 @@ export class AttendanceService {
   constructor(
     private readonly ecampusService: EcampusService,
     private readonly attendanceRepository: AttendanceRepository,
+    private readonly passwordService: PasswordService,
+    private readonly configService: ConfigService,
   ) {}
 
   async getCourseAttendance(
@@ -20,6 +24,12 @@ export class AttendanceService {
     payload: PasswordPayload,
   ): Promise<CourseAttendanceListDto> {
     if (payload.password) {
+      // TODO: 이거 굉장히 별로임
+      if (this.configService.get('NODE_ENV') !== 'local') {
+        payload.password = this.passwordService.decryptPassword(
+          payload.password,
+        );
+      }
       await this.ecampusService.updateUserAttendance(user, payload);
     }
 
@@ -35,6 +45,12 @@ export class AttendanceService {
     ecampusId: number,
   ): Promise<CourseAttendanceDto> {
     if (payload.password) {
+      // TODO: 이거 굉장히 별로임
+      if (this.configService.get('NODE_ENV') !== 'local') {
+        payload.password = this.passwordService.decryptPassword(
+          payload.password,
+        );
+      }
       await this.ecampusService.updateUserAttendance(user, payload);
     }
     const course =
@@ -54,6 +70,12 @@ export class AttendanceService {
     payload: PasswordPayload,
   ): Promise<LectureAttendanceListDto> {
     if (payload.password) {
+      // TODO: 이거 굉장히 별로임
+      if (this.configService.get('NODE_ENV') !== 'local') {
+        payload.password = this.passwordService.decryptPassword(
+          payload.password,
+        );
+      }
       await this.ecampusService.updateUserAttendance(user, payload);
     }
     const lectures =
@@ -66,6 +88,12 @@ export class AttendanceService {
     payload: PasswordPayload,
   ): Promise<AssignmentAttendanceListDto> {
     if (payload.password) {
+      // TODO: 이거 굉장히 별로임
+      if (this.configService.get('NODE_ENV') !== 'local') {
+        payload.password = this.passwordService.decryptPassword(
+          payload.password,
+        );
+      }
       await this.ecampusService.updateUserAttendance(user, payload);
     }
     const assignments =
