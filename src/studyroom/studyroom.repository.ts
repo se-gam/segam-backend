@@ -185,13 +185,10 @@ export class StudyroomRepository {
     }
   }
 
-  async deleteReservations(
-    userId: string,
-    reservations: ReservationResponse,
-    tx: Prisma.TransactionClient,
-  ) {
+  async deleteReservations(userId: string, reservations: ReservationResponse) {
     const today = new Date();
-    const myReservationIds = await tx.userReservation.findMany({
+
+    const myReservationIds = await this.prismaService.userReservation.findMany({
       where: {
         studentId: userId,
         deletedAt: null,
@@ -219,7 +216,7 @@ export class StudyroomRepository {
 
     for (const rawId of myReservationIds) {
       if (!reservationIds.includes(rawId.reservationId)) {
-        this.deleteReservation(rawId.reservationId, null, tx);
+        this.deleteReservation(rawId.reservationId, null);
       }
     }
   }
@@ -254,16 +251,13 @@ export class StudyroomRepository {
     await this.prismaService.$transaction(
       async (tx: Prisma.TransactionClient) => [
         await this.createReservations(userId, reservations, tx),
-        await this.deleteReservations(userId, reservations, tx),
       ],
     );
+
+    await this.deleteReservations(userId, reservations);
   }
 
-  async cancelReservation(
-    reservationId: number,
-    userId: string,
-    cancelReason: string,
-  ) {
+  async cancelReservation(reservationId: number, cancelReason: string) {
     this.deleteReservation(reservationId, cancelReason);
   }
 }

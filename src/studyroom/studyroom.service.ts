@@ -106,10 +106,6 @@ export class StudyroomService {
     payload: StudyroomCancelPayload,
   ): Promise<void> {
     await this.reservationService.cancelReservation(id, userId, payload);
-    await this.studyroomRepository.cancelReservation(
-      id,
-      userId,
-      payload.cancelReason,
-    );
+    await this.studyroomRepository.cancelReservation(id, payload.cancelReason);
   }
 }

@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  HttpException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -50,12 +51,11 @@ export class ReservationService {
       await this.studyroomRepository.updateReservations(userId, response.data);
     } catch (error) {
       console.log(error);
-      throw error;
-      // if (error.response.status == 401) {
-      //   throw new UnauthorizedException(error.response);
-      // } else if (error.response.status != 404) {
-      //   throw new InternalServerErrorException('서버에서 오류가 발생했습니다.');
-      // }
+      if (error.response.status == 401) {
+        throw new UnauthorizedException(error.response);
+      } else if (error.response.status != 404) {
+        throw new InternalServerErrorException('서버에서 오류가 발생했습니다.');
+      }
     }
   }
 
@@ -121,40 +121,32 @@ export class ReservationService {
       };
     });
 
-    try {
-      const res = await this.axiosService.post(
-        this.configService.get<string>('CREATE_RESERVATION_URL'),
-        JSON.stringify({
-          id: userId,
-          password: payload.password,
-          room_id: payload.studyroomId,
-          users: users,
-          year: payload.date.getFullYear().toString(),
-          month: (payload.date.getMonth() + 1).toString(),
-          day: payload.date.getDate().toString(),
-          start_time: payload.startsAt.toString(),
-          hours: payload.duration.toString(),
-          purpose: payload.reason,
-        }),
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
+    const res = await this.axiosService.post(
+      this.configService.get<string>('CREATE_RESERVATION_URL'),
+      JSON.stringify({
+        id: userId,
+        password: payload.password,
+        room_id: payload.studyroomId,
+        users: users,
+        year: payload.date.getFullYear(),
+        month: String(payload.date.getMonth() + 1).padStart(2, '0'),
+        day: String(payload.date.getDate()).padStart(2, '0'),
+        start_time: payload.startsAt,
+        hours: payload.duration,
+        purpose: payload.reason,
+      }),
+      {
+        headers: {
+          'Content-Type': 'application/json',
         },
-      );
+      },
+    );
 
-      if (res.status >= 400)
-        throw new InternalServerErrorException('Internal Server Error');
-
-      const response = JSON.parse(res.data);
-
-      console.log(response);
-
-      return response;
-    } catch (error) {
-      console.error(error);
-      throw error;
+    const response = JSON.parse(res.data);
+    if (res.status >= 400) {
+      throw new HttpException(response.error, res.status);
     }
+    return res.data;
   }
 
   async cancelReservation(
