@@ -1,18 +1,247 @@
 import { Injectable } from '@nestjs/common';
 import { UserInfo } from 'src/auth/types/user-info.type';
 import { PrismaService } from 'src/common/services/prisma.service';
-import { CourseAttendance } from './types/courseAttendance';
+import { AssignmentData } from './types/assignment-data';
+import { CourseData } from './types/course-data';
+import { LectureData } from './types/lecture-data';
+import { RawCourse } from './types/raw-course';
 
 @Injectable()
 export class AttendanceRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
+  async getCourseAttendanceList(user: UserInfo): Promise<CourseData[]> {
+    return await this.prismaService.course.findMany({
+      where: {
+        users: {
+          some: {
+            studentId: user.studentId,
+          },
+        },
+        deletedAt: null,
+      },
+      select: {
+        id: true,
+        ecampusId: true,
+        name: true,
+        lectures: {
+          where: {
+            deletedAt: null,
+            users: {
+              some: {
+                studentId: user.studentId,
+              },
+            },
+          },
+          select: {
+            id: true,
+            name: true,
+            week: true,
+            startsAt: true,
+            endsAt: true,
+            users: {
+              where: {
+                studentId: user.studentId,
+              },
+              select: {
+                isDone: true,
+              },
+            },
+          },
+          orderBy: {
+            endsAt: 'asc',
+          },
+        },
+        assignments: {
+          where: {
+            deletedAt: null,
+            users: {
+              some: {
+                studentId: user.studentId,
+              },
+            },
+          },
+          select: {
+            id: true,
+            name: true,
+            week: true,
+            endsAt: true,
+            users: {
+              select: {
+                isDone: true,
+              },
+            },
+          },
+          orderBy: {
+            endsAt: 'asc',
+          },
+        },
+      },
+    });
+  }
+
+  async getCourseAttendanceByEcampusId(
+    user: UserInfo,
+    ecampusId: number,
+  ): Promise<CourseData> {
+    return await this.prismaService.course.findFirst({
+      where: {
+        ecampusId,
+        users: {
+          some: {
+            studentId: user.studentId,
+          },
+        },
+        deletedAt: null,
+      },
+      select: {
+        id: true,
+        ecampusId: true,
+        name: true,
+        lectures: {
+          where: {
+            deletedAt: null,
+            users: {
+              some: {
+                studentId: user.studentId,
+              },
+            },
+          },
+          select: {
+            id: true,
+            name: true,
+            week: true,
+            startsAt: true,
+            endsAt: true,
+            users: {
+              where: {
+                studentId: user.studentId,
+              },
+              select: {
+                isDone: true,
+              },
+            },
+          },
+          orderBy: {
+            endsAt: 'asc',
+          },
+        },
+        assignments: {
+          where: {
+            deletedAt: null,
+            users: {
+              some: {
+                studentId: user.studentId,
+              },
+            },
+          },
+          select: {
+            id: true,
+            name: true,
+            week: true,
+            endsAt: true,
+            users: {
+              select: {
+                isDone: true,
+              },
+            },
+          },
+          orderBy: {
+            endsAt: 'asc',
+          },
+        },
+      },
+    });
+  }
+
+  async getLectureAttendanceList(user: UserInfo): Promise<LectureData[]> {
+    return await this.prismaService.lecture.findMany({
+      where: {
+        users: {
+          some: {
+            studentId: user.studentId,
+          },
+        },
+        deletedAt: null,
+      },
+      select: {
+        id: true,
+        name: true,
+        week: true,
+        startsAt: true,
+        endsAt: true,
+        users: {
+          where: {
+            studentId: user.studentId,
+          },
+          select: {
+            isDone: true,
+          },
+        },
+      },
+      orderBy: {
+        endsAt: 'asc',
+      },
+    });
+  }
+
+  async getAssignmentAttendanceList(user: UserInfo): Promise<AssignmentData[]> {
+    return await this.prismaService.assignment.findMany({
+      where: {
+        users: {
+          some: {
+            studentId: user.studentId,
+          },
+        },
+        deletedAt: null,
+      },
+      select: {
+        id: true,
+        name: true,
+        week: true,
+        endsAt: true,
+        users: {
+          where: {
+            studentId: user.studentId,
+          },
+          select: {
+            isDone: true,
+          },
+        },
+      },
+      orderBy: {
+        endsAt: 'asc',
+      },
+    });
+  }
+
   async updateUserAttendance(
     user: UserInfo,
-    courses: CourseAttendance[],
+    courses: RawCourse[],
   ): Promise<void> {
-    console.log(user.studentId);
-    courses.forEach(async (course: CourseAttendance) => {
+    await this.prismaService.$transaction([
+      this.prismaService.course.createMany({
+        data: courses.map((course) => {
+          return {
+            id: course.id,
+            ecampusId: course.ecampusId,
+            name: course.name,
+          };
+        }),
+        skipDuplicates: true,
+      }),
+      this.prismaService.userCourse.createMany({
+        data: courses.map((course) => {
+          return {
+            studentId: user.studentId,
+            courseId: course.id,
+          };
+        }),
+        skipDuplicates: true,
+      }),
+    ]);
+
+    for (const course of courses) {
       await this.prismaService.$transaction(async (tx) => {
         for (const rawLecture of course.lectures) {
           const lecture = await tx.lecture.upsert({
@@ -30,16 +259,8 @@ export class AttendanceRepository {
               startsAt: rawLecture.startsAt,
               endsAt: rawLecture.endsAt,
               course: {
-                connectOrCreate: {
-                  where: {
-                    ecampusId: course.ecampusId,
-                    deletedAt: null,
-                  },
-                  create: {
-                    id: course.id,
-                    ecampusId: course.ecampusId,
-                    name: course.name,
-                  },
+                connect: {
+                  id: course.id,
                 },
               },
             },
@@ -132,6 +353,6 @@ export class AttendanceRepository {
           });
         }
       });
-    });
+    }
   }
 }

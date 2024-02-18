@@ -4,9 +4,9 @@ import { PasswordPayload } from 'src/auth/payload/password.payload';
 import { UserInfo } from 'src/auth/types/user-info.type';
 import { AxiosService } from 'src/common/services/axios.service';
 import { AttendanceRepository } from './attendance.repository';
-import { CourseAttendance } from './types/courseAttendance';
-import { RawAssignment } from './types/rawAssignment';
-import { RawLecture } from './types/rawLecture';
+import { RawAssignment } from './types/raw-assignment';
+import { RawCourse } from './types/raw-course';
+import { RawLecture } from './types/raw-lecture';
 
 @Injectable()
 export class EcampusService {
@@ -63,7 +63,7 @@ export class EcampusService {
   private async getAllCourseAttendance(
     user: UserInfo,
     payload: PasswordPayload,
-  ): Promise<CourseAttendance[]> {
+  ): Promise<RawCourse[]> {
     const loginRequest = await this.axiosService.post(
       this.loginUrl,
       this.createFormData(user.studentId, payload.password),
@@ -89,7 +89,7 @@ export class EcampusService {
     payload: PasswordPayload,
     ecampusId: number,
     isLoginRequired = true,
-  ): Promise<CourseAttendance> {
+  ): Promise<RawCourse> {
     if (isLoginRequired) {
       const loginRequest = await this.axiosService.post(
         this.loginUrl,
@@ -225,6 +225,7 @@ export class EcampusService {
         .querySelector('a')
         .getAttribute('href')
         .split('=')[1];
+
       return Number(courseId);
     });
 
