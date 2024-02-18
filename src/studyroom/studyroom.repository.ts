@@ -214,11 +214,15 @@ export class StudyroomRepository {
       return parseInt(reservation.booking_id);
     });
 
-    for (const rawId of myReservationIds) {
-      if (!reservationIds.includes(rawId.reservationId)) {
-        this.deleteReservation(rawId.reservationId, null);
-      }
-    }
+    await this.prismaService.$transaction(
+      async (tx: Prisma.TransactionClient) => {
+        for (const rawId of myReservationIds) {
+          if (!reservationIds.includes(rawId.reservationId)) {
+            await this.deleteReservation(rawId.reservationId, null, tx);
+          }
+        }
+      },
+    );
   }
 
   async deleteReservation(
