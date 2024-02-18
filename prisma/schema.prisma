@@ -22,7 +22,8 @@ model Department {
 }
 
 model Course {
-  id              Int               @id @default(autoincrement())
+  id              String            @id
+  ecampusId       Int?              @unique @map("ecampus_id")
   name            String      
   createdAt       DateTime          @default(now()) @map("created_at")
   updatedAt       DateTime          @updatedAt @map("updated_at")
@@ -33,6 +34,7 @@ model Course {
   assignments     Assignment[]
 
   @@map("course")
+  @@index([ecampusId])
 }
 
 model User {
@@ -58,7 +60,7 @@ model User {
 model UserCourse {
   id              Int               @id @default(autoincrement())
   studentId       String            @map("student_id")
-  courseId        Int               @map("course_id")
+  courseId        String            @map("course_id")
   createdAt       DateTime          @default(now()) @map("created_at")
   updatedAt       DateTime          @updatedAt @map("updated_at")
 
@@ -70,12 +72,12 @@ model UserCourse {
 }
 
 model Lecture {
-  id              Int               @id @default(autoincrement())
-  courseId        Int               @map("course_id")
+  id              Int               @id
+  courseId        String            @map("course_id")
   name            String
   week            Int
+  startsAt        DateTime          @map("starts_at")
   endsAt          DateTime          @map("ends_at")
-  length          String?
   createdAt       DateTime          @default(now()) @map("created_at")
   updatedAt       DateTime          @updatedAt @map("updated_at")
   deletedAt       DateTime?         @map("deleted_at")
@@ -102,8 +104,8 @@ model UserLecture {
 }
 
 model Assignment {
-  id              Int               @id @default(autoincrement())
-  courseId        Int               @map("course_id")
+  id              Int               @id
+  courseId        String            @map("course_id")
   name            String
   week            Int
   endsAt          DateTime          @map("ends_at")
@@ -127,6 +129,7 @@ model UserAssignment {
   user            User              @relation(fields: [studentId], references: [studentId])
   assignment      Assignment        @relation(fields: [assignmentId], references: [id])
 
+  @@unique([studentId, assignmentId])
   @@map("user_assignment")
 }
 
