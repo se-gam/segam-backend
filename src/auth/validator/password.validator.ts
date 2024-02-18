@@ -4,8 +4,6 @@ import {
   ValidatorConstraintInterface,
 } from 'class-validator';
 
-// 2612e4c61d4cf3003896ad3440f9745d:ac332969b6df952287ddeb78e5962b11
-
 @ValidatorConstraint({ name: 'password', async: false })
 export class PasswordValidator implements ValidatorConstraintInterface {
   validate(value: any, validationArguments?: ValidationArguments): boolean {
