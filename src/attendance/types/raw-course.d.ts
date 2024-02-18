@@ -1,4 +1,4 @@
-export type CourseAttendance = {
+export type RawCourse = {
   id: string;
   name: string;
   ecampusId: number;
