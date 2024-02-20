@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   Param,
   ParseIntPipe,
   Post,
@@ -29,59 +30,66 @@ export class AttendanceController {
   constructor(private readonly attendanceService: AttendanceService) {}
 
   @Version('1')
-  @Post('course')
+  @Post('update')
+  @ApiOperation({ summary: '출석 정보 업데이트' })
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  async updateCourseAttendance(
+    @CurrentUser() user: UserInfo,
+    @Body() payload: PasswordPayload,
+  ): Promise<void> {
+    return this.attendanceService.updateCourseAttendance(user, payload);
+  }
+
+  @Version('1')
+  @Get('course')
   @ApiOperation({ summary: '과목별 출결 현황' })
   @ApiCreatedResponse({ type: CourseAttendanceListDto })
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   async getCourseAttendance(
     @CurrentUser() user: UserInfo,
-    @Body() payload: PasswordPayload,
   ): Promise<CourseAttendanceListDto> {
-    return this.attendanceService.getCourseAttendance(user, payload);
+    return this.attendanceService.getCourseAttendance(user);
   }
 
   @Version('1')
-  @Post('course/:ecampusId')
+  @Get('course/:ecampusId')
   @ApiOperation({ summary: '과목 출결 현황' })
   @ApiCreatedResponse({ type: CourseAttendanceDto })
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   async getCourseAttendanceById(
     @CurrentUser() user: UserInfo,
-    @Body() payload: PasswordPayload,
     @Param('ecampusId', ParseIntPipe) ecampusId: number,
   ): Promise<CourseAttendanceDto> {
     return this.attendanceService.getCourseAttendanceByEcampusId(
       user,
-      payload,
       ecampusId,
     );
   }
 
   @Version('1')
-  @Post('lecture')
+  @Get('lecture')
   @ApiOperation({ summary: '강의별 출결 현황' })
   @ApiCreatedResponse({ type: LectureAttendanceListDto })
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   async getLectureAttendance(
     @CurrentUser() user: UserInfo,
-    @Body() payload: PasswordPayload,
   ): Promise<LectureAttendanceListDto> {
-    return this.attendanceService.getLectureAttendance(user, payload);
+    return this.attendanceService.getLectureAttendance(user);
   }
 
   @Version('1')
-  @Post('assignment')
+  @Get('assignment')
   @ApiOperation({ summary: '과제별 출결 현황' })
   @ApiCreatedResponse({ type: AssignmentAttendanceListDto })
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   async getAssignmentAttendance(
     @CurrentUser() user: UserInfo,
-    @Body() payload: PasswordPayload,
   ): Promise<AssignmentAttendanceListDto> {
-    return this.attendanceService.getAssignmentAttendance(user, payload);
+    return this.attendanceService.getAssignmentAttendance(user);
   }
 }

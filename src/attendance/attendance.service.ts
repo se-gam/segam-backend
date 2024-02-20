@@ -19,20 +19,17 @@ export class AttendanceService {
     private readonly configService: ConfigService,
   ) {}
 
-  async getCourseAttendance(
+  async updateCourseAttendance(
     user: UserInfo,
     payload: PasswordPayload,
-  ): Promise<CourseAttendanceListDto> {
-    if (payload.password) {
-      // TODO: 이거 굉장히 별로임
-      if (this.configService.get('NODE_ENV') !== 'local') {
-        payload.password = this.passwordService.decryptPassword(
-          payload.password,
-        );
-      }
-      await this.ecampusService.updateUserAttendance(user, payload);
+  ): Promise<void> {
+    if (this.configService.get('NODE_ENV') !== 'local') {
+      payload.password = this.passwordService.decryptPassword(payload.password);
     }
+    await this.ecampusService.updateUserAttendance(user, payload);
+  }
 
+  async getCourseAttendance(user: UserInfo): Promise<CourseAttendanceListDto> {
     const courses =
       await this.attendanceRepository.getCourseAttendanceList(user);
 
@@ -41,18 +38,8 @@ export class AttendanceService {
 
   async getCourseAttendanceByEcampusId(
     user: UserInfo,
-    payload: PasswordPayload,
     ecampusId: number,
   ): Promise<CourseAttendanceDto> {
-    if (payload.password) {
-      // TODO: 이거 굉장히 별로임
-      if (this.configService.get('NODE_ENV') !== 'local') {
-        payload.password = this.passwordService.decryptPassword(
-          payload.password,
-        );
-      }
-      await this.ecampusService.updateUserAttendance(user, payload);
-    }
     const course =
       await this.attendanceRepository.getCourseAttendanceByEcampusId(
         user,
@@ -67,17 +54,7 @@ export class AttendanceService {
 
   async getLectureAttendance(
     user: UserInfo,
-    payload: PasswordPayload,
   ): Promise<LectureAttendanceListDto> {
-    if (payload.password) {
-      // TODO: 이거 굉장히 별로임
-      if (this.configService.get('NODE_ENV') !== 'local') {
-        payload.password = this.passwordService.decryptPassword(
-          payload.password,
-        );
-      }
-      await this.ecampusService.updateUserAttendance(user, payload);
-    }
     const lectures =
       await this.attendanceRepository.getLectureAttendanceList(user);
     return LectureAttendanceListDto.from(lectures);
@@ -85,17 +62,7 @@ export class AttendanceService {
 
   async getAssignmentAttendance(
     user: UserInfo,
-    payload: PasswordPayload,
   ): Promise<AssignmentAttendanceListDto> {
-    if (payload.password) {
-      // TODO: 이거 굉장히 별로임
-      if (this.configService.get('NODE_ENV') !== 'local') {
-        payload.password = this.passwordService.decryptPassword(
-          payload.password,
-        );
-      }
-      await this.ecampusService.updateUserAttendance(user, payload);
-    }
     const assignments =
       await this.attendanceRepository.getAssignmentAttendanceList(user);
     return AssignmentAttendanceListDto.from(assignments);
