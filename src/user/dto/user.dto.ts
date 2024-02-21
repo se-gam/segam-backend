@@ -8,6 +8,12 @@ export class UserDto {
   studentId!: string;
 
   @ApiProperty({
+    description: '세종대학교 학술정보원 PID',
+    type: String,
+  })
+  sejongPid!: string;
+
+  @ApiProperty({
     description: '이름',
     type: String,
   })
