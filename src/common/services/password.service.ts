@@ -31,8 +31,8 @@ export class PasswordService {
     const parts = encryptedPassword.split(':');
     const iv = Buffer.from(parts.shift(), 'hex');
     const encryptedText = parts.join(':');
-    const decipher = createDecipheriv(this.algorithm, this.key, iv);
     try {
+      const decipher = createDecipheriv(this.algorithm, this.key, iv);
       let decrypted = decipher.update(encryptedText, 'hex', 'utf8');
       decrypted += decipher.final('utf8');
       return decrypted;
