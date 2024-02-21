@@ -23,9 +23,6 @@ export class AttendanceService {
     user: UserInfo,
     payload: PasswordPayload,
   ): Promise<void> {
-    if (this.configService.get('NODE_ENV') !== 'local') {
-      payload.password = this.passwordService.decryptPassword(payload.password);
-    }
     await this.ecampusService.updateUserAttendance(user, payload);
   }
 

@@ -4,6 +4,7 @@ import { AuthService } from './auth.service';
 import { TokenDto } from './dto/token.dto';
 import { RefreshTokenPayload } from './payload/refresh-token.payload';
 import { SignUpPayload } from './payload/signup.payload';
+import { SignUpValidationPipe } from './pipes/password-validation.pipe';
 
 @Controller('auth')
 export class AuthController {
@@ -17,7 +18,9 @@ export class AuthController {
       '학번과 비밀번호를 입력해서 포탈에 검증한 뒤 JWT를 발급합니다.',
   })
   @ApiCreatedResponse({ type: TokenDto })
-  async signup(@Body() payload: SignUpPayload): Promise<TokenDto> {
+  async signup(
+    @Body(SignUpValidationPipe) payload: SignUpPayload,
+  ): Promise<TokenDto> {
     return this.authService.signup(payload);
   }
 

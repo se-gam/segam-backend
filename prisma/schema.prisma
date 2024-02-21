@@ -11,8 +11,7 @@ datasource db {
 }
 
 model Department {
-  id              Int               @id @default(autoincrement())
-  name            String        
+  name            String            @id        
   createdAt       DateTime          @default(now()) @map("created_at")
   deletedAt       DateTime?         @map("deleted_at") 
 
@@ -41,12 +40,12 @@ model User {
   studentId       String            @id @map("student_id")
   name            String
   sejongPid       String            @map("sejong_pid")
-  departmentId    Int?              @map("department_id")
+  departmentName  String?           @map("department_id")
   createdAt       DateTime          @default(now()) @map("created_at")
   updatedAt       DateTime          @updatedAt @map("updated_at")
   deletedAt       DateTime?         @map("deleted_at")
   
-  department      Department?       @relation(fields: [departmentId], references: [id])
+  department      Department?       @relation(fields: [departmentName], references: [name])
   courses         UserCourse[]
   lectures        UserLecture[]
   assignments     UserAssignment[]
