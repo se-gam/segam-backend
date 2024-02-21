@@ -16,11 +16,7 @@ export class UserRepository {
         studentId: true,
         sejongPid: true,
         name: true,
-        department: {
-          select: {
-            name: true,
-          },
-        },
+        departmentName: true,
       },
     });
   }
