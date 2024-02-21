@@ -1,8 +1,6 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { EcampusService } from 'src/attendance/ecampus.service';
 import { AxiosService } from 'src/common/services/axios.service';
-import { PasswordService } from 'src/common/services/password.service';
 import { AuthRepository } from './auth.repository';
 import { TokenDto } from './dto/token.dto';
 import { SignUpPayload } from './payload/signup.payload';
@@ -15,9 +13,8 @@ export class AuthService {
     private readonly tokenService: TokenService,
     private readonly configService: ConfigService,
     private readonly axiosService: AxiosService,
-    private readonly passwordService: PasswordService,
     private readonly authRepository: AuthRepository,
-    private readonly ecampusService: EcampusService,
+    // private readonly ecampusService: EcampusService,
   ) {}
 
   async signup(payload: SignUpPayload): Promise<TokenDto> {
@@ -25,10 +22,7 @@ export class AuthService {
       this.configService.get('PORTAL_AUTH_URL'),
       JSON.stringify({
         id: payload.studentId,
-        password:
-          this.configService.get('NODE_ENV') === 'local'
-            ? payload.password
-            : this.passwordService.decryptPassword(payload.password),
+        password: payload.password,
       }),
       {
         headers: {
