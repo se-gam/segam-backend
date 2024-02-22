@@ -1,4 +1,4 @@
-import { UserDto } from 'src/user/dto/user.dto';
+import { UserDto, UserDto2 } from 'src/user/dto/user.dto';
 import { ApiProperty } from '@nestjs/swagger';
 import { StudyroomReservationInfo } from '../types/studyroomReservationInfo.type';
 import { ForbiddenException, NotFoundException } from '@nestjs/common';
@@ -54,9 +54,9 @@ export class StudyroomReservationDto {
 
   @ApiProperty({
     description: '사용자들 정보',
-    type: [UserDto],
+    type: [UserDto2],
   })
-  users!: UserDto[];
+  users!: UserDto2[];
 
   static from(
     userId: string,

@@ -17,6 +17,7 @@ import {
 import { CurrentUser } from 'src/auth/decorator/user.decorator';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
 import { PasswordPayload } from 'src/auth/payload/password.payload';
+import { PasswordValidationPipe } from 'src/auth/pipes/signup-validation.pipe';
 import { UserInfo } from 'src/auth/types/user-info.type';
 import { AttendanceService } from './attendance.service';
 import { AssignmentAttendanceListDto } from './dto/assignment-attendance.dto';
@@ -36,7 +37,7 @@ export class AttendanceController {
   @UseGuards(JwtAuthGuard)
   async updateCourseAttendance(
     @CurrentUser() user: UserInfo,
-    @Body() payload: PasswordPayload,
+    @Body(PasswordValidationPipe) payload: PasswordPayload,
   ): Promise<void> {
     return this.attendanceService.updateCourseAttendance(user, payload);
   }
