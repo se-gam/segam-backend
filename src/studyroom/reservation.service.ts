@@ -6,7 +6,6 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { UserInfoPayload } from 'src/user/payload/UserInfoPayload.payload';
 import { StudyroomRepository } from './studyroom.repository';
 import axios from 'axios';
 import { ReservationResponse } from './types/reservationResponse.type';
@@ -50,12 +49,8 @@ export class ReservationService {
 
       await this.studyroomRepository.updateReservations(userId, response.data);
     } catch (error) {
-      console.log(error);
-      if (error.response.status === 401) {
-        throw new UnauthorizedException(error.response);
-      } else if (error.response.status !== 404) {
-        throw new InternalServerErrorException('서버에서 오류가 발생했습니다.');
-      }
+      console.log(error.response);
+      throw new HttpException(error.response.data, error.response.status);
     }
   }
 
@@ -69,39 +64,39 @@ export class ReservationService {
     if (!friend)
       throw new NotFoundException('해당 학번의 학생이 존재하지 않습니다');
 
-    try {
-      const response = await this.axiosService.post(
-        this.configService.get<string>('GET_USER_AVAILABILITY_URL'),
-        JSON.stringify({
-          id: userId,
-          password: payload.password,
-          user_name: friend.name,
-          student_id: friend.studentId,
-          year: payload.date.getFullYear(),
-          month: String(payload.date.getMonth() + 1).padStart(2, '0'),
-          day: String(payload.date.getDate()).padStart(2, '0'),
-        }),
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
+    const response = await this.axiosService.post(
+      this.configService.get<string>('GET_USER_AVAILABILITY_URL'),
+      JSON.stringify({
+        id: userId,
+        password: payload.password,
+        user_name: friend.name,
+        student_id: friend.studentId,
+        year: payload.date.getFullYear(),
+        month: String(payload.date.getMonth() + 1).padStart(2, '0'),
+        day: String(payload.date.getDate()).padStart(2, '0'),
+      }),
+      {
+        headers: {
+          'Content-Type': 'application/json',
         },
-      );
+      },
+    );
 
-      const friendPid = JSON.parse(response.data).ipid;
-
-      if (!friendPid)
-        throw new BadRequestException('추가할 수 없는 사용자입니다.');
-
-      if (friend.sejongPid !== friendPid) {
-        await this.userRepository.updateUserPid(friend.studentId, friendPid);
-      }
-
-      return response.data;
-    } catch (error) {
-      console.log(error);
-      throw new BadRequestException('추가할 수 없는 사용자입니다.');
+    if (response.status >= 400) {
+      console.log(response);
+      throw new HttpException(response.data.error, response.status);
     }
+
+    const friendPid = JSON.parse(response.data).ipid.toString();
+
+    if (!friendPid)
+      throw new InternalServerErrorException('추가할 수 없는 사용자입니다.');
+
+    if (friend.sejongPid !== friendPid) {
+      await this.userRepository.updateUserPid(friend.studentId, friendPid);
+    }
+
+    return response.data;
   }
 
   async createReservation(
@@ -159,26 +154,29 @@ export class ReservationService {
     if (!reservation)
       throw new NotFoundException('해당 id의 예약이 존재하지 않습니다');
 
-    try {
-      const response = await this.axiosService.post<ResultResponse>(
-        this.configService.get<string>('CANCEL_RESERVATION_URL'),
-        {
-          id: userId,
-          password: payload.password,
-          booking_id: id.toString(),
-          room_id: reservation.studyroomId,
-          cancel_msg: payload.cancelReason,
+    const response = await this.axiosService.post(
+      this.configService.get<string>('CANCEL_RESERVATION_URL'),
+      JSON.stringify({
+        id: userId,
+        password: payload.password,
+        booking_id: `${reservation.id}`,
+        room_id: `${reservation.studyroomId}`,
+        cancel_msg: payload.cancelReason,
+      }),
+      {
+        headers: {
+          'Content-Type': 'application/json',
         },
+      },
+    );
+
+    if (response.status >= 400) {
+      console.log(response.status, JSON.parse(response.data).result);
+      throw new HttpException(
+        JSON.parse(response.data).result,
+        response.status,
       );
-      return response.data;
-    } catch (error) {
-      console.log(error.response.status);
-      console.log(error.response.data.result);
-      if (error.response.status === 400) {
-        throw new BadRequestException('예약을 찾을 수 없습니다.');
-      } else {
-        throw error;
-      }
     }
+    return response.data;
   }
 }
