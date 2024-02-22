@@ -207,27 +207,40 @@ export class StudyroomRepository {
       },
     });
 
-    const reservationIds = reservations.result.map((reservation) => {
-      return parseInt(reservation.booking_id);
+    const deletedReservationIds = reservations.result
+      .map((reservation) => {
+        return parseInt(reservation.booking_id);
+      })
+      .filter(
+        (reservationId) =>
+          !_.flatMap(myReservationIds, 'reservationId').includes(reservationId),
+      );
+
+    await this.prismaService.userReservation.updateMany({
+      where: {
+        reservationId: {
+          in: deletedReservationIds,
+        },
+      },
+      data: {
+        deletedAt: new Date(),
+      },
     });
 
-    await this.prismaService.$transaction(
-      async (tx: Prisma.TransactionClient) => {
-        for (const rawId of myReservationIds) {
-          if (!reservationIds.includes(rawId.reservationId)) {
-            await this.deleteReservation(rawId.reservationId, null, tx);
-          }
-        }
+    await this.prismaService.studyroomReservation.updateMany({
+      where: {
+        id: {
+          in: deletedReservationIds,
+        },
       },
-    );
+      data: {
+        deletedAt: new Date(),
+      },
+    });
   }
 
-  async deleteReservation(
-    reservationId: number,
-    cancelReason: string,
-    tx: Prisma.TransactionClient = this.prismaService,
-  ) {
-    await tx.studyroomReservation.update({
+  async deleteReservation(reservationId: number, cancelReason: string) {
+    await this.prismaService.studyroomReservation.update({
       where: {
         id: reservationId,
       },
