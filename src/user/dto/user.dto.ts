@@ -1,16 +1,14 @@
 import { User } from '../type/user.type';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class UserDto2 {
+export class UserInfoDto {
   studentId!: string;
   name!: string;
-  departmentId?: number;
 
-  static from(user: User): UserDto2 {
+  static from(user: User): UserInfoDto {
     return {
       studentId: user.studentId,
       name: user.name,
-      departmentId: user.departmentId,
     };
   }
 }
