@@ -40,7 +40,7 @@ model User {
   studentId       String            @id @map("student_id")
   name            String
   sejongPid       String            @map("sejong_pid")
-  departmentName  String?           @map("department_id")
+  departmentName  String?           @map("department_name")
   createdAt       DateTime          @default(now()) @map("created_at")
   updatedAt       DateTime          @updatedAt @map("updated_at")
   deletedAt       DateTime?         @map("deleted_at")
