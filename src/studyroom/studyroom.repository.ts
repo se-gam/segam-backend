@@ -183,59 +183,61 @@ export class StudyroomRepository {
   }
 
   async deleteReservations(userId: string, reservations: ReservationResponse) {
-    const today = new Date();
-
-    const myReservationIds = await this.prismaService.userReservation.findMany({
-      where: {
-        studentId: userId,
-        deletedAt: null,
-        isLeader: true,
-        studyroomReservation: {
-          slots: {
-            some: {
-              studyroomSlot: {
-                date: {
-                  gte: today,
+    await this.prismaService.$transaction(async (tx) => {
+      const myReservationIds = tx.userReservation.findMany({
+        where: {
+          studentId: userId,
+          deletedAt: null,
+          isLeader: true,
+          studyroomReservation: {
+            slots: {
+              some: {
+                studyroomSlot: {
+                  date: {
+                    gte: new Date(),
+                  },
                 },
               },
             },
           },
         },
-      },
-      select: {
-        reservationId: true,
-      },
-    });
-
-    const deletedReservationIds = reservations.result
-      .map((reservation) => {
-        return parseInt(reservation.booking_id);
-      })
-      .filter(
-        (reservationId) =>
-          !_.flatMap(myReservationIds, 'reservationId').includes(reservationId),
-      );
-
-    await this.prismaService.userReservation.updateMany({
-      where: {
-        reservationId: {
-          in: deletedReservationIds,
+        select: {
+          reservationId: true,
         },
-      },
-      data: {
-        deletedAt: new Date(),
-      },
-    });
+      });
 
-    await this.prismaService.studyroomReservation.updateMany({
-      where: {
-        id: {
-          in: deletedReservationIds,
+      const deletedReservationIds = reservations.result
+        .map((reservation) => {
+          return parseInt(reservation.booking_id);
+        })
+        .filter(
+          (reservationId) =>
+            !_.flatMap(myReservationIds, 'reservationId').includes(
+              reservationId,
+            ),
+        );
+
+      tx.userReservation.updateMany({
+        where: {
+          reservationId: {
+            in: deletedReservationIds,
+          },
         },
-      },
-      data: {
-        deletedAt: new Date(),
-      },
+        data: {
+          deletedAt: new Date(),
+        },
+      });
+
+      tx.studyroomReservation.updateMany({
+        where: {
+          id: {
+            in: deletedReservationIds,
+          },
+        },
+        data: {
+          deletedAt: new Date(),
+        },
+      });
     });
   }
 

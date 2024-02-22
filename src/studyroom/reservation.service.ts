@@ -1,10 +1,8 @@
 import {
-  BadRequestException,
   HttpException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { StudyroomRepository } from './studyroom.repository';
 import axios from 'axios';
