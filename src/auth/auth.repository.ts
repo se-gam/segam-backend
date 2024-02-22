@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/common/services/prisma.service';
+import { SignUpPayload } from './payload/signup.payload';
 import { PortalUserInfo } from './types/portal-user.type';
 import { UserInfo } from './types/user-info.type';
 
@@ -7,7 +8,10 @@ import { UserInfo } from './types/user-info.type';
 export class AuthRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async getOrCreateUser(portalUserInfo: PortalUserInfo): Promise<UserInfo> {
+  async getOrCreateUser(
+    portalUserInfo: PortalUserInfo,
+    payload: SignUpPayload,
+  ): Promise<UserInfo> {
     return await this.prismaService.$transaction(async (tx) => {
       const user = await tx.user.findUnique({
         where: {
@@ -27,6 +31,8 @@ export class AuthRepository {
             studentId: portalUserInfo.studentId,
             sejongPid: portalUserInfo.studentId,
             name: portalUserInfo.name,
+            os: payload.os,
+            pushToken: payload.pushToken,
             department: {
               connectOrCreate: {
                 where: {
@@ -43,6 +49,16 @@ export class AuthRepository {
             sejongPid: true,
             name: true,
             departmentName: true,
+          },
+        });
+      } else {
+        await tx.user.update({
+          where: {
+            studentId: portalUserInfo.studentId,
+          },
+          data: {
+            os: payload.os,
+            pushToken: payload.pushToken,
           },
         });
       }

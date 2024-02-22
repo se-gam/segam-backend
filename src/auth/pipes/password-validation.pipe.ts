@@ -9,6 +9,8 @@ export class SignUpValidationPipe extends PasswordValidationPipe {
       studentId: value.studentId,
       password: super.transform({ password: value.password }, metadata)
         .password,
+      os: value.os,
+      pushToken: value.pushToken,
     };
   }
 }

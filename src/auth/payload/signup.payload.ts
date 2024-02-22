@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString } from 'class-validator';
+import { OS } from '@prisma/client';
+import { IsEnum, IsString } from 'class-validator';
 
 export class SignUpPayload {
   @IsString()
@@ -16,4 +17,18 @@ export class SignUpPayload {
     type: String,
   })
   password!: string;
+
+  @IsEnum(OS)
+  @ApiProperty({
+    description: '사용사 기기 OS',
+    enum: OS,
+  })
+  os!: OS;
+
+  @IsString()
+  @ApiProperty({
+    description: 'FCM푸쉬 토큰',
+    type: String,
+  })
+  pushToken!: string;
 }
