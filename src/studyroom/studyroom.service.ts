@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import { AxiosService } from 'src/common/services/axios.service';
 import { PrismaService } from 'src/common/services/prisma.service';
-import { RawStudyroom } from './types/rawStudyroom';
 import { StudyroomQuery } from './query/studyroom.query';
 import { StudyroomDto, StudyroomListDto } from './dto/studyroom.dto';
 import { StudyroomRepository } from './studyroom.repository';
@@ -12,6 +11,7 @@ import { ReservationService } from './reservation.service';
 import { StudyroomCancelPayload } from './payload/studyroomCancel.payload';
 import { StudyroomReservePayload } from './payload/studyroomReserve.payload';
 import { StudyroomUserPayload } from './payload/studyroomUserPayload.payload';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class StudyroomService {
@@ -20,6 +20,7 @@ export class StudyroomService {
     private readonly studyroomRepository: StudyroomRepository,
     private readonly reservationService: ReservationService,
     private readonly axiosService: AxiosService,
+    private readonly configService: ConfigService,
   ) {}
 
   private getSlotTime(time: string) {
@@ -32,7 +33,7 @@ export class StudyroomService {
   @Cron('*/10 * * * * *')
   async handleCron() {
     const res = await this.axiosService.get(
-      process.env.CRAWLER_API_ROOT + '/calendar',
+      this.configService.get<string>('CRAWLER_API_ROOT') + '/calendar',
     );
     const rawStudyrooms = JSON.parse(res.data);
     const studyrooms = rawStudyrooms.flatMap((studyroom) =>
@@ -77,9 +78,12 @@ export class StudyroomService {
     userId: string,
     payload: UserInfoPayload,
   ): Promise<StudyroomReservatoinListDto> {
-    await this.reservationService.updateUserReservations(userId, payload);
+    await this.reservationService.updateUserReservations(
+      userId,
+      payload.password,
+    );
     const reservations = await this.studyroomRepository.getReservations(userId);
-    return StudyroomReservatoinListDto.from(reservations);
+    return StudyroomReservatoinListDto.from(userId, reservations);
   }
 
   async checkUserAvailablity(
@@ -96,7 +100,7 @@ export class StudyroomService {
     await this.reservationService.createReservation(userId, payload);
     await this.reservationService.updateUserReservations(
       userId,
-      UserInfoPayload.from(payload.password),
+      payload.password,
     );
   }
 
@@ -106,6 +110,6 @@ export class StudyroomService {
     payload: StudyroomCancelPayload,
   ): Promise<void> {
     await this.reservationService.cancelReservation(id, userId, payload);
-    await this.studyroomRepository.cancelReservation(id, payload.cancelReason);
+    await this.studyroomRepository.deleteReservation(id, payload.cancelReason);
   }
 }

@@ -18,7 +18,7 @@ export class StudyroomUserPayload {
   friendId!: string;
 
   @ApiProperty({
-    description: '예약 날짜',
+    description: '예약 날짜 (예: 2024-02-22)',
     type: Date,
   })
   @Type(() => Date)

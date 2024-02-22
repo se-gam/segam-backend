@@ -8,11 +8,13 @@ export class StudyroomDto {
     type: Number,
   })
   id!: number;
+
   @ApiProperty({
     description: '스터디룸 이름',
     type: String,
   })
   name!: string;
+
   @ApiProperty({
     description: '위치',
     type: String,
@@ -23,21 +25,25 @@ export class StudyroomDto {
     type: Number,
   })
   minUsers!: number;
+
   @ApiProperty({
     description: '최대 인원',
     type: Number,
   })
   maxUsers!: number;
+
   @ApiProperty({
     description: '스터디룸 유형',
     type: Boolean,
   })
   isCinema!: boolean;
+
   @ApiProperty({
     description: '운영 시간',
     type: String,
   })
   operatingHours!: string;
+
   @ApiProperty({
     description: '스터디룸 slot 정보',
     type: [StudyroomSlotDto],

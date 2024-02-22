@@ -7,21 +7,25 @@ export class StudyroomSlotDto {
     type: String,
   })
   id!: string;
+
   @ApiProperty({
     description: '날짜',
     type: Date,
   })
   date!: Date;
+
   @ApiProperty({
     description: '시간',
     type: Number,
   })
   startsAt!: number;
+
   @ApiProperty({
     description: '예약 여부',
     type: Boolean,
   })
   isReserved!: boolean;
+
   @ApiProperty({
     description: '폐관 여부',
     type: Boolean,

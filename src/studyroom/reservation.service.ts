@@ -29,7 +29,7 @@ export class ReservationService {
     private readonly configService: ConfigService,
   ) {}
 
-  async updateUserReservations(userId: string, payload: UserInfoPayload) {
+  async updateUserReservations(userId: string, password: string) {
     const user = await this.userRepository.getUserByStudentId(userId);
 
     if (!user)
@@ -40,7 +40,7 @@ export class ReservationService {
         this.configService.get<string>('GET_USER_RESEVATIONS_URL'),
         {
           student_id: userId,
-          password: payload.password,
+          password: password,
         },
       );
 
@@ -51,9 +51,9 @@ export class ReservationService {
       await this.studyroomRepository.updateReservations(userId, response.data);
     } catch (error) {
       console.log(error);
-      if (error.response.status == 401) {
+      if (error.response.status === 401) {
         throw new UnauthorizedException(error.response);
-      } else if (error.response.status != 404) {
+      } else if (error.response.status !== 404) {
         throw new InternalServerErrorException('서버에서 오류가 발생했습니다.');
       }
     }
@@ -93,7 +93,7 @@ export class ReservationService {
       if (!friendPid)
         throw new BadRequestException('추가할 수 없는 사용자입니다.');
 
-      if (friend.sejongPid != friendPid) {
+      if (friend.sejongPid !== friendPid) {
         await this.userRepository.updateUserPid(friend.studentId, friendPid);
       }
 
@@ -111,7 +111,7 @@ export class ReservationService {
     const rawUsers = await this.userRepository.getUsersByStudentIds(
       payload.users,
     );
-    if (rawUsers.length != payload.users.length)
+    if (rawUsers.length !== payload.users.length)
       throw new InternalServerErrorException('모든 유저를 찾지 못했습니다.');
     const users = rawUsers.map((user) => {
       return {
@@ -174,7 +174,7 @@ export class ReservationService {
     } catch (error) {
       console.log(error.response.status);
       console.log(error.response.data.result);
-      if (error.response.status == 400) {
+      if (error.response.status === 400) {
         throw new BadRequestException('예약을 찾을 수 없습니다.');
       } else {
         throw error;

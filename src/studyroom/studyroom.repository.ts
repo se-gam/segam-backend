@@ -3,11 +3,10 @@ import { PrismaService } from 'src/common/services/prisma.service';
 import { StudyroomQuery } from './query/studyroom.query';
 import { Studyroom } from './types/studyroom.type';
 import { ReservationResponse } from './types/reservationResponse.type';
-import { StudyroomReservation } from './types/studyroomReservation.type';
 import { Prisma } from '@prisma/client';
 import * as _ from 'lodash';
 import { StudyroomReservation as PrismaStudyroomReservation } from '@prisma/client';
-import { StudyroomCancelPayload } from './payload/studyroomCancel.payload';
+import { StudyroomReservationInfo } from './types/studyroomReservationInfo.type';
 
 @Injectable()
 export class StudyroomRepository {
@@ -71,7 +70,7 @@ export class StudyroomRepository {
     });
   }
 
-  async getReservations(userId: string): Promise<StudyroomReservation[]> {
+  async getReservations(userId: string): Promise<StudyroomReservationInfo[]> {
     const today = new Date();
 
     const reservations = await this.prismaService.studyroomReservation.findMany(
@@ -131,9 +130,7 @@ export class StudyroomRepository {
       },
     );
 
-    return reservations.map((reservation) => {
-      return StudyroomReservation.from(userId, reservation);
-    });
+    return reservations;
   }
 
   private getSlotTime(time: string, idx: number): string {
@@ -141,7 +138,7 @@ export class StudyroomRepository {
     return hour + ':00';
   }
 
-  async createReservations(
+  private async createReservations(
     userId: string,
     reservations: ReservationResponse,
     tx: Prisma.TransactionClient,
@@ -259,9 +256,5 @@ export class StudyroomRepository {
     );
 
     await this.deleteReservations(userId, reservations);
-  }
-
-  async cancelReservation(reservationId: number, cancelReason: string) {
-    this.deleteReservation(reservationId, cancelReason);
   }
 }
