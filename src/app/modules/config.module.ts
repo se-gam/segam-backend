@@ -14,5 +14,8 @@ export const configModule = ConfigModule.forRoot({
     JWT_REFRESH_TOKEN_EXPIRE_TIME: Joi.string().required(),
     PASSWORD_SALT: Joi.string().required(),
     PASSWORD_ENCRYPT_KEY: Joi.string().required(),
+    FIREBASE_PROJECT_ID: Joi.string().required(),
+    FIREBASE_CLIENT_EMAIL: Joi.string().required(),
+    FIREBASE_PRIVATE_KEY: Joi.string().required(),
   }),
 });
