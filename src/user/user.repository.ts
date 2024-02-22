@@ -57,6 +57,7 @@ export class UserRepository {
       data: rawUsers.map((user) => {
         return {
           studentId: user.student_id,
+          sejongPid: user.student_id,
           name: user.name,
         };
       }),
