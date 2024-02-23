@@ -1,12 +1,12 @@
 import { Optional } from '@nestjs/common';
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsDate, IsInt } from 'class-validator';
 
 export class StudyroomQuery {
   @ApiPropertyOptional({
     type: Date,
-    description: '선택 날짜(deafult: 오늘)',
+    description: '선택 날짜(default: 오늘)',
   })
   @Type(() => Date)
   @IsDate()
@@ -15,7 +15,7 @@ export class StudyroomQuery {
 
   @ApiPropertyOptional({
     type: Number,
-    description: '최소시간(deafult: 10)',
+    description: '최소시간(default: 10)',
   })
   @Type(() => Number)
   @IsInt()
@@ -24,7 +24,7 @@ export class StudyroomQuery {
 
   @ApiPropertyOptional({
     type: Number,
-    description: '최대시간(deafult: 22)',
+    description: '최대시간(default: 22)',
   })
   @Type(() => Number)
   @IsInt()
@@ -33,7 +33,7 @@ export class StudyroomQuery {
 
   @ApiPropertyOptional({
     type: Number,
-    description: '인원수(deafult: 3)',
+    description: '인원수(default: 3)',
   })
   @Type(() => Number)
   @IsInt()

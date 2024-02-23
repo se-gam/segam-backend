@@ -29,6 +29,7 @@ import {
 } from '@nestjs/swagger';
 import { StudyroomReservePayload } from './payload/studyroomReserve.payload';
 import { StudyroomUserPayload } from './payload/studyroomUserPayload.payload';
+import { StudyroomDateQuery } from './query/studyroomDateQuery.query';
 
 @ApiTags('스터디룸 API')
 @Controller('studyroom')
@@ -59,8 +60,11 @@ export class StudyroomController {
     description: '해당 id의 스터디룸을 찾을 수 없습니다.',
   })
   @Get(':id')
-  async getStudyroomById(@Param('id') id: number): Promise<StudyroomDto> {
-    return this.studyroomService.getStudyroomById(id);
+  async getStudyroomById(
+    @Param('id') id: number,
+    @Query() query: StudyroomDateQuery,
+  ): Promise<StudyroomDto> {
+    return this.studyroomService.getStudyroomById(id, query);
   }
 
   @Version('1')

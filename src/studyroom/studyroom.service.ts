@@ -12,6 +12,7 @@ import { StudyroomCancelPayload } from './payload/studyroomCancel.payload';
 import { StudyroomReservePayload } from './payload/studyroomReserve.payload';
 import { StudyroomUserPayload } from './payload/studyroomUserPayload.payload';
 import { ConfigService } from '@nestjs/config';
+import { StudyroomDateQuery } from './query/studyroomDateQuery.query';
 
 @Injectable()
 export class StudyroomService {
@@ -69,8 +70,14 @@ export class StudyroomService {
     return StudyroomListDto.from(studyrooms);
   }
 
-  async getStudyroomById(id: number): Promise<StudyroomDto> {
-    const studyroom = await this.studyroomRepository.getStudyroomById(id);
+  async getStudyroomById(
+    id: number,
+    query: StudyroomDateQuery,
+  ): Promise<StudyroomDto> {
+    const studyroom = await this.studyroomRepository.getStudyroomById(
+      id,
+      query,
+    );
     if (!studyroom) {
       throw new NotFoundException('해당 id의 스터디룸을 찾을 수 없습니다.');
     }

@@ -7,6 +7,7 @@ import { Prisma } from '@prisma/client';
 import * as _ from 'lodash';
 import { StudyroomReservation as PrismaStudyroomReservation } from '@prisma/client';
 import { StudyroomReservationInfo } from './types/studyroomReservationInfo.type';
+import { StudyroomDateQuery } from './query/studyroomDateQuery.query';
 
 @Injectable()
 export class StudyroomRepository {
@@ -47,11 +48,10 @@ export class StudyroomRepository {
     return studyrooms;
   }
 
-  async getStudyroomById(id: number): Promise<Studyroom> {
-    const today = new Date();
-    const nextWeek = new Date();
-    nextWeek.setDate(today.getDate() + 7);
-
+  async getStudyroomById(
+    id: number,
+    query: StudyroomDateQuery,
+  ): Promise<Studyroom> {
     const studyroom = await this.prismaService.studyroom.findUnique({
       where: {
         id: id,
@@ -60,10 +60,10 @@ export class StudyroomRepository {
       include: {
         slots: {
           where: {
-            date: {
-              gte: today,
-              lte: nextWeek,
-            },
+            date: query.date,
+          },
+          orderBy: {
+            startsAt: 'asc',
           },
         },
       },
