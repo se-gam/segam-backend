@@ -219,16 +219,16 @@ export class StudyroomRepository {
         },
       });
 
-      const deletedReservationIds = reservations
-        .map((reservation) => {
-          return parseInt(reservation.booking_id);
-        })
-        .filter(
-          (reservationId) =>
-            !_.flatMap(myReservationIds, 'reservationId').includes(
-              reservationId,
-            ),
-        );
+      const newIds = reservations.map((reservation) => {
+        return parseInt(reservation.booking_id);
+      });
+
+      const deletedReservationIds = _.flatMap(
+        myReservationIds,
+        'reservationId',
+      ).filter((id) => {
+        !newIds.includes(id);
+      });
 
       await tx.userReservation.updateMany({
         where: {

@@ -37,7 +37,9 @@ export class ReservationService {
     );
 
     const response = JSON.parse(res.data);
-    if (res.status >= 400) {
+    if (res.status === 404) {
+      return await this.studyroomRepository.updateReservations(userId, []);
+    } else if (res.status >= 400) {
       throw new HttpException(response, res.status);
     }
 
