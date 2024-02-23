@@ -59,7 +59,9 @@ export class StudyroomDto {
       maxUsers: studyroom.maxUsers,
       isCinema: studyroom.isCinema,
       operatingHours: studyroom.operatingHours,
-      slots: studyroom.slots,
+      slots: studyroom.slots.map((slot) => {
+        return StudyroomSlotDto.from(slot);
+      }),
     };
   }
 }

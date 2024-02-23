@@ -31,6 +31,16 @@ export class StudyroomRepository {
               lt: query.timeLt,
             },
           },
+          select: {
+            id: true,
+            date: true,
+            startsAt: true,
+            isReserved: true,
+            isClosed: true,
+          },
+          orderBy: {
+            startsAt: 'asc',
+          },
         },
       },
     });
@@ -185,7 +195,7 @@ export class StudyroomRepository {
   async deleteReservations(
     userId: string,
     reservations: ReservationResponse[],
-  ) {
+  ): Promise<void> {
     await this.prismaService.$transaction(async (tx) => {
       const myReservationIds = await tx.userReservation.findMany({
         where: {
@@ -244,7 +254,10 @@ export class StudyroomRepository {
     });
   }
 
-  async deleteReservation(reservationId: number, cancelReason: string) {
+  async deleteReservation(
+    reservationId: number,
+    cancelReason: string,
+  ): Promise<void> {
     await this.prismaService.studyroomReservation.update({
       where: {
         id: reservationId,
@@ -269,7 +282,7 @@ export class StudyroomRepository {
   async updateReservations(
     userId: string,
     reservations: ReservationResponse[],
-  ) {
+  ): Promise<void> {
     await this.prismaService.$transaction(
       async (tx: Prisma.TransactionClient) => [
         await this.createReservations(userId, reservations, tx),
