@@ -187,7 +187,7 @@ export class StudyroomRepository {
     reservations: ReservationResponse[],
   ) {
     await this.prismaService.$transaction(async (tx) => {
-      const myReservationIds = tx.userReservation.findMany({
+      const myReservationIds = await tx.userReservation.findMany({
         where: {
           studentId: userId,
           deletedAt: null,
@@ -220,7 +220,7 @@ export class StudyroomRepository {
             ),
         );
 
-      tx.userReservation.updateMany({
+      await tx.userReservation.updateMany({
         where: {
           reservationId: {
             in: deletedReservationIds,
@@ -231,7 +231,7 @@ export class StudyroomRepository {
         },
       });
 
-      tx.studyroomReservation.updateMany({
+      await tx.studyroomReservation.updateMany({
         where: {
           id: {
             in: deletedReservationIds,
