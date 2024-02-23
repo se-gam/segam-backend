@@ -1,14 +1,27 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { Cron } from '@nestjs/schedule';
 import { AxiosService } from 'src/common/services/axios.service';
 import { PrismaService } from 'src/common/services/prisma.service';
-import { RawStudyroom } from './types/rawStudyroom';
+import { UserInfoPayload } from 'src/user/payload/UserInfoPayload.payload';
+import { StudyroomDto, StudyroomListDto } from './dto/studyroom.dto';
+import { StudyroomReservatoinListDto } from './dto/studyroomReservation.dto';
+import { StudyroomCancelPayload } from './payload/studyroomCancel.payload';
+import { StudyroomReservePayload } from './payload/studyroomReserve.payload';
+import { StudyroomUserPayload } from './payload/studyroomUserPayload.payload';
+import { StudyroomDateQuery } from './query/studyroomDateQuery.query';
+import { StudyroomQuery } from './query/studyroom.query';
+import { ReservationService } from './reservation.service';
+import { StudyroomRepository } from './studyroom.repository';
 
 @Injectable()
 export class StudyroomService {
   constructor(
     private readonly prismaService: PrismaService,
+    private readonly studyroomRepository: StudyroomRepository,
+    private readonly reservationService: ReservationService,
     private readonly axiosService: AxiosService,
+    private readonly configService: ConfigService,
   ) {}
 
   private getSlotTime(time: string) {
@@ -21,43 +34,92 @@ export class StudyroomService {
   @Cron('*/10 * * * * *')
   async handleCron() {
     const res = await this.axiosService.get(
-      process.env.CRAWLER_API_ROOT + '/calendar',
+      this.configService.get<string>('CRAWLER_API_ROOT') + '/calendar',
+    );
+    const rawStudyrooms = JSON.parse(res.data);
+    const studyrooms = rawStudyrooms.flatMap((studyroom) =>
+      studyroom.slots.map((slot) => ({ room_id: studyroom.room_id, slot })),
     );
 
-    const studyRooms = JSON.parse(res.data);
-
-    studyRooms.forEach(async (rawStudyRoom: RawStudyroom) => {
+    studyrooms.forEach(async (rawStudyRoom) => {
+      const slotId = `${rawStudyRoom.room_id}_${rawStudyRoom.slot.date}_${rawStudyRoom.slot.time}`;
       await this.prismaService.$transaction([
-        this.prismaService.studyroomSlot.deleteMany({
+        this.prismaService.studyroomSlot.upsert({
           where: {
-            id: {
-              in: rawStudyRoom.slots.map(
-                (slot) => `${rawStudyRoom.room_id}_${slot.date}_${slot.time}`,
-              ),
-            },
+            id: slotId,
           },
-        }),
-        this.prismaService.studyroomSlot.createMany({
-          data: rawStudyRoom.slots.map((slot) => {
-            return {
-              id: `${rawStudyRoom.room_id}_${slot.date}_${slot.time}`,
-              studyroomId: parseInt(rawStudyRoom.room_id),
-              date: new Date(slot.date),
-              startsAt: this.getSlotTime(slot.time),
-              isReserved: slot.is_reserved,
-              isClosed: slot.is_closed,
-            };
-          }),
-          skipDuplicates: true,
+          update: {
+            isReserved: rawStudyRoom.slot.is_reserved,
+            isClosed: rawStudyRoom.slot.is_closed,
+          },
+          create: {
+            id: slotId,
+            studyroomId: parseInt(rawStudyRoom.room_id),
+            date: new Date(rawStudyRoom.slot.date),
+            startsAt: this.getSlotTime(rawStudyRoom.slot.time),
+            isReserved: rawStudyRoom.slot.is_reserved,
+            isClosed: rawStudyRoom.slot.is_closed,
+          },
         }),
       ]);
     });
+  }
 
-    // const studyRoomSlots = await this.prismaService.studyroomSlot.findMany({});
-    // console.log(studyRoomSlots);
+  async getAllStudyrooms(query: StudyroomQuery): Promise<StudyroomListDto> {
+    const studyrooms = await this.studyroomRepository.getAllStudyrooms(query);
+    return StudyroomListDto.from(studyrooms);
+  }
 
-    // console.log('------------------------');
-    // const studyRooms = await this.prismaService.studyroom.findMany({});
-    // console.log(studyRooms);
+  async getStudyroomById(
+    id: number,
+    query: StudyroomDateQuery,
+  ): Promise<StudyroomDto> {
+    const studyroom = await this.studyroomRepository.getStudyroomById(
+      id,
+      query,
+    );
+    if (!studyroom) {
+      throw new NotFoundException('해당 id의 스터디룸을 찾을 수 없습니다.');
+    }
+    return StudyroomDto.from(studyroom);
+  }
+
+  async getStudyroomReservations(
+    userId: string,
+    payload: UserInfoPayload,
+  ): Promise<StudyroomReservatoinListDto> {
+    await this.reservationService.updateUserReservations(
+      userId,
+      payload.password,
+    );
+    const reservations = await this.studyroomRepository.getReservations(userId);
+    return StudyroomReservatoinListDto.from(userId, reservations);
+  }
+
+  async checkUserAvailablity(
+    userId: string,
+    payload: StudyroomUserPayload,
+  ): Promise<void> {
+    await this.reservationService.checkUserAvailablity(userId, payload);
+  }
+
+  async reserveStudyroom(
+    userId: string,
+    payload: StudyroomReservePayload,
+  ): Promise<void> {
+    await this.reservationService.createReservation(userId, payload);
+    await this.reservationService.updateUserReservations(
+      userId,
+      payload.password,
+    );
+  }
+
+  async cancelStudyroomReservation(
+    id: number,
+    userId: string,
+    payload: StudyroomCancelPayload,
+  ): Promise<void> {
+    await this.reservationService.cancelReservation(id, userId, payload);
+    await this.studyroomRepository.deleteReservation(id, payload.cancelReason);
   }
 }
