@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import { AxiosService } from 'src/common/services/axios.service';
 import { PrismaService } from 'src/common/services/prisma.service';
@@ -71,6 +71,9 @@ export class StudyroomService {
 
   async getStudyroomById(id: number): Promise<StudyroomDto> {
     const studyroom = await this.studyroomRepository.getStudyroomById(id);
+    if (!studyroom) {
+      throw new NotFoundException('해당 id의 스터디룸을 찾을 수 없습니다.');
+    }
     return StudyroomDto.from(studyroom);
   }
 
