@@ -1,8 +1,10 @@
 import {
+  BadRequestException,
   HttpException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { StudyroomRepository } from './studyroom.repository';
 import { UserRepository } from 'src/user/user.repository';
@@ -39,8 +41,10 @@ export class ReservationService {
     const response = JSON.parse(res.data);
     if (res.status === 404) {
       return await this.studyroomRepository.updateReservations(userId, []);
+    } else if (res.status === 401) {
+      throw new UnauthorizedException(response.result);
     } else if (res.status >= 400) {
-      throw new HttpException(response, res.status);
+      throw new InternalServerErrorException('Internal Server Error');
     }
 
     await this.userRepository.createNewUsers(
@@ -82,10 +86,12 @@ export class ReservationService {
     );
 
     const response = JSON.parse(res.data);
-
-    if (res.status >= 400) {
-      console.log(res);
-      throw new HttpException(response.error, res.status);
+    if (res.status === 400) {
+      throw new BadRequestException(response.error);
+    } else if (res.status === 401) {
+      throw new UnauthorizedException(response.error);
+    } else if (res.status >= 400) {
+      throw new InternalServerErrorException('Internal Server Error');
     }
 
     const friendPid = response.ipid.toString();
@@ -139,9 +145,14 @@ export class ReservationService {
     );
 
     const response = JSON.parse(res.data);
-    if (res.status >= 400) {
-      throw new HttpException(response.error, res.status);
+    if (res.status === 400) {
+      throw new BadRequestException(response.error);
+    } else if (res.status === 401) {
+      throw new UnauthorizedException(response);
+    } else if (res.status >= 400) {
+      throw new InternalServerErrorException('Internal Server Error');
     }
+
     return response;
   }
 
@@ -160,8 +171,8 @@ export class ReservationService {
       JSON.stringify({
         id: userId,
         password: payload.password,
-        booking_id: `${reservation.id}`,
-        room_id: `${reservation.studyroomId}`,
+        booking_id: '318314',
+        room_id: '54',
         cancel_msg: payload.cancelReason,
       }),
       {
@@ -172,10 +183,16 @@ export class ReservationService {
     );
 
     const response = JSON.parse(res.data);
-    if (res.status >= 400) {
-      console.log(res);
-      throw new HttpException(response.result, res.status);
+    if (res.status === 400) {
+      throw new BadRequestException(response.result);
+    } else if (res.status === 401) {
+      throw new UnauthorizedException(response.result);
+    } else if (res.status === 404) {
+      throw new NotFoundException(response.result);
+    } else if (res.status >= 400) {
+      throw new InternalServerErrorException('Internal Server Error');
     }
+
     return response;
   }
 }
