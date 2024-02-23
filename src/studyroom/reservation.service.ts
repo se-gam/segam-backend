@@ -6,16 +6,16 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { StudyroomRepository } from './studyroom.repository';
-import { UserRepository } from 'src/user/user.repository';
-import * as _ from 'lodash';
-import { StudyroomCancelPayload } from './payload/studyroomCancel.payload';
-import { ResultResponse } from './types/resultResponse.type';
-import { StudyroomReservePayload } from './payload/studyroomReserve.payload';
-import { AxiosService } from 'src/common/services/axios.service';
-import { StudyroomUserPayload } from './payload/studyroomUserPayload.payload';
-import { UserPidResponse } from './types/userPidResponse.type';
 import { ConfigService } from '@nestjs/config';
+import * as _ from 'lodash';
+import { AxiosService } from 'src/common/services/axios.service';
+import { UserRepository } from 'src/user/user.repository';
+import { StudyroomCancelPayload } from './payload/studyroomCancel.payload';
+import { StudyroomReservePayload } from './payload/studyroomReserve.payload';
+import { StudyroomUserPayload } from './payload/studyroomUserPayload.payload';
+import { StudyroomRepository } from './studyroom.repository';
+import { ResultResponse } from './types/resultResponse.type';
+import { UserPidResponse } from './types/userPidResponse.type';
 
 @Injectable()
 export class ReservationService {

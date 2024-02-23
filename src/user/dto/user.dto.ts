@@ -1,5 +1,5 @@
-import { User } from '../type/user.type';
 import { ApiProperty } from '@nestjs/swagger';
+import { User } from '../type/user.type';
 
 export class UserInfoDto {
   studentId!: string;

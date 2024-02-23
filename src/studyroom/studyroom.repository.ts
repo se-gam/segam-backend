@@ -1,11 +1,13 @@
 import { Injectable } from '@nestjs/common';
+import {
+  Prisma,
+  StudyroomReservation as PrismaStudyroomReservation,
+} from '@prisma/client';
+import * as _ from 'lodash';
 import { PrismaService } from 'src/common/services/prisma.service';
 import { StudyroomQuery } from './query/studyroom.query';
-import { Studyroom } from './types/studyroom.type';
 import { ReservationResponse } from './types/reservationResponse.type';
-import { Prisma } from '@prisma/client';
-import * as _ from 'lodash';
-import { StudyroomReservation as PrismaStudyroomReservation } from '@prisma/client';
+import { Studyroom } from './types/studyroom.type';
 import { StudyroomReservationInfo } from './types/studyroomReservationInfo.type';
 import { StudyroomDateQuery } from './query/studyroomDateQuery.query';
 
