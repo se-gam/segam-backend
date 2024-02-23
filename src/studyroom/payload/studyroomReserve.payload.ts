@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsDate, IsNumber, IsString } from 'class-validator';
+import { IsDate, IsNumber, IsString, Max, Min } from 'class-validator';
 
 export class StudyroomReservePayload {
   @ApiProperty({
@@ -40,6 +40,8 @@ export class StudyroomReservePayload {
   })
   @Type(() => Number)
   @IsNumber()
+  @Min(1)
+  @Max(2)
   duration: number;
 
   @ApiProperty({
