@@ -1,17 +1,17 @@
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { Cron } from '@nestjs/schedule';
 import { AxiosService } from 'src/common/services/axios.service';
 import { PrismaService } from 'src/common/services/prisma.service';
-import { StudyroomQuery } from './query/studyroom.query';
-import { StudyroomDto, StudyroomListDto } from './dto/studyroom.dto';
-import { StudyroomRepository } from './studyroom.repository';
-import { StudyroomReservatoinListDto } from './dto/studyroomReservation.dto';
 import { UserInfoPayload } from 'src/user/payload/UserInfoPayload.payload';
-import { ReservationService } from './reservation.service';
+import { StudyroomDto, StudyroomListDto } from './dto/studyroom.dto';
+import { StudyroomReservatoinListDto } from './dto/studyroomReservation.dto';
 import { StudyroomCancelPayload } from './payload/studyroomCancel.payload';
 import { StudyroomReservePayload } from './payload/studyroomReserve.payload';
 import { StudyroomUserPayload } from './payload/studyroomUserPayload.payload';
-import { ConfigService } from '@nestjs/config';
+import { StudyroomQuery } from './query/studyroom.query';
+import { ReservationService } from './reservation.service';
+import { StudyroomRepository } from './studyroom.repository';
 
 @Injectable()
 export class StudyroomService {

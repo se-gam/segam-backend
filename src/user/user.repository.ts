@@ -1,8 +1,8 @@
-import { User } from '@prisma/client';
-import { RawUser } from 'src/studyroom/types/reservationResponse.type';
 import { BadRequestException, Injectable } from '@nestjs/common';
+import { User } from '@prisma/client';
 import { UserInfo } from 'src/auth/types/user-info.type';
 import { PrismaService } from 'src/common/services/prisma.service';
+import { RawUser } from 'src/studyroom/types/reservationResponse.type';
 
 @Injectable()
 export class UserRepository {

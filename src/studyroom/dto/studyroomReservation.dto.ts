@@ -1,7 +1,7 @@
-import { UserDto, UserInfoDto } from 'src/user/dto/user.dto';
-import { ApiProperty } from '@nestjs/swagger';
-import { StudyroomReservationInfo } from '../types/studyroomReservationInfo.type';
 import { ForbiddenException, NotFoundException } from '@nestjs/common';
+import { ApiProperty } from '@nestjs/swagger';
+import { UserInfoDto } from 'src/user/dto/user.dto';
+import { StudyroomReservationInfo } from '../types/studyroomReservationInfo.type';
 
 export class StudyroomReservationDto {
   @ApiProperty({

@@ -8,23 +8,23 @@ import {
   UseGuards,
   Version,
 } from '@nestjs/common';
-import { StudyroomService } from './studyroom.service';
-import { StudyroomQuery } from './query/studyroom.query';
-import { StudyroomDto, StudyroomListDto } from './dto/studyroom.dto';
-import { StudyroomReservatoinListDto } from './dto/studyroomReservation.dto';
-import { UserInfoPayload } from 'src/user/payload/UserInfoPayload.payload';
-import { StudyroomCancelPayload } from './payload/studyroomCancel.payload';
-import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
-import { CurrentUser } from 'src/auth/decorator/user.decorator';
-import { UserInfo } from 'src/auth/types/user-info.type';
 import {
   ApiBearerAuth,
   ApiOkResponse,
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
+import { CurrentUser } from 'src/auth/decorator/user.decorator';
+import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
+import { UserInfo } from 'src/auth/types/user-info.type';
+import { UserInfoPayload } from 'src/user/payload/UserInfoPayload.payload';
+import { StudyroomDto, StudyroomListDto } from './dto/studyroom.dto';
+import { StudyroomReservatoinListDto } from './dto/studyroomReservation.dto';
+import { StudyroomCancelPayload } from './payload/studyroomCancel.payload';
 import { StudyroomReservePayload } from './payload/studyroomReserve.payload';
 import { StudyroomUserPayload } from './payload/studyroomUserPayload.payload';
+import { StudyroomQuery } from './query/studyroom.query';
+import { StudyroomService } from './studyroom.service';
 
 @ApiTags('studyroom')
 @Controller('studyroom')
