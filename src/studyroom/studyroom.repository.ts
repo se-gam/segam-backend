@@ -140,10 +140,10 @@ export class StudyroomRepository {
 
   private async createReservations(
     userId: string,
-    reservations: ReservationResponse,
+    reservations: ReservationResponse[],
     tx: Prisma.TransactionClient,
   ) {
-    for (const reservation of reservations.result) {
+    for (const reservation of reservations) {
       const found = await tx.studyroomReservation.findUnique({
         where: { id: parseInt(reservation.booking_id) },
       });
@@ -182,7 +182,10 @@ export class StudyroomRepository {
     }
   }
 
-  async deleteReservations(userId: string, reservations: ReservationResponse) {
+  async deleteReservations(
+    userId: string,
+    reservations: ReservationResponse[],
+  ) {
     await this.prismaService.$transaction(async (tx) => {
       const myReservationIds = tx.userReservation.findMany({
         where: {
@@ -206,7 +209,7 @@ export class StudyroomRepository {
         },
       });
 
-      const deletedReservationIds = reservations.result
+      const deletedReservationIds = reservations
         .map((reservation) => {
           return parseInt(reservation.booking_id);
         })
@@ -263,7 +266,10 @@ export class StudyroomRepository {
     });
   }
 
-  async updateReservations(userId: string, reservations: ReservationResponse) {
+  async updateReservations(
+    userId: string,
+    reservations: ReservationResponse[],
+  ) {
     await this.prismaService.$transaction(
       async (tx: Prisma.TransactionClient) => [
         await this.createReservations(userId, reservations, tx),

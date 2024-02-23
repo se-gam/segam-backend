@@ -5,8 +5,6 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { StudyroomRepository } from './studyroom.repository';
-import axios from 'axios';
-import { ReservationResponse } from './types/reservationResponse.type';
 import { UserRepository } from 'src/user/user.repository';
 import * as _ from 'lodash';
 import { StudyroomCancelPayload } from './payload/studyroomCancel.payload';
@@ -32,24 +30,25 @@ export class ReservationService {
     if (!user)
       throw new NotFoundException('해당 학번의 학생이 존재하지 않습니다');
 
-    try {
-      const response = await axios.post<ReservationResponse>(
-        this.configService.get<string>('GET_USER_RESEVATIONS_URL'),
-        {
-          student_id: userId,
-          password: password,
-        },
-      );
+    const res = await this.axiosService.post(
+      this.configService.get<string>('GET_USER_RESEVATIONS_URL'),
+      JSON.stringify({ student_id: userId, password: password }),
+      { headers: { 'Content-Type': 'application/json' } },
+    );
 
-      await this.userRepository.createNewUsers(
-        _.flatMap(response.data.result, 'users'),
-      );
-
-      await this.studyroomRepository.updateReservations(userId, response.data);
-    } catch (error) {
-      console.log(error.response);
-      throw new HttpException(error.response.data, error.response.status);
+    const response = JSON.parse(res.data);
+    if (res.status >= 400) {
+      throw new HttpException(response, res.status);
     }
+
+    await this.userRepository.createNewUsers(
+      _.flatMap(response.result, 'users'),
+    );
+
+    return await this.studyroomRepository.updateReservations(
+      userId,
+      response.result,
+    );
   }
 
   async checkUserAvailablity(
@@ -62,7 +61,7 @@ export class ReservationService {
     if (!friend)
       throw new NotFoundException('해당 학번의 학생이 존재하지 않습니다');
 
-    const response = await this.axiosService.post(
+    const res = await this.axiosService.post(
       this.configService.get<string>('GET_USER_AVAILABILITY_URL'),
       JSON.stringify({
         id: userId,
@@ -80,12 +79,14 @@ export class ReservationService {
       },
     );
 
-    if (response.status >= 400) {
-      console.log(response);
-      throw new HttpException(response.data.error, response.status);
+    const response = JSON.parse(res.data);
+
+    if (res.status >= 400) {
+      console.log(res);
+      throw new HttpException(response.error, res.status);
     }
 
-    const friendPid = JSON.parse(response.data).ipid.toString();
+    const friendPid = response.ipid.toString();
 
     if (!friendPid)
       throw new InternalServerErrorException('추가할 수 없는 사용자입니다.');
@@ -94,7 +95,7 @@ export class ReservationService {
       await this.userRepository.updateUserPid(friend.studentId, friendPid);
     }
 
-    return response.data;
+    return response;
   }
 
   async createReservation(
@@ -139,7 +140,7 @@ export class ReservationService {
     if (res.status >= 400) {
       throw new HttpException(response.error, res.status);
     }
-    return res.data;
+    return response;
   }
 
   async cancelReservation(
@@ -152,7 +153,7 @@ export class ReservationService {
     if (!reservation)
       throw new NotFoundException('해당 id의 예약이 존재하지 않습니다');
 
-    const response = await this.axiosService.post(
+    const res = await this.axiosService.post(
       this.configService.get<string>('CANCEL_RESERVATION_URL'),
       JSON.stringify({
         id: userId,
@@ -168,13 +169,11 @@ export class ReservationService {
       },
     );
 
-    if (response.status >= 400) {
-      console.log(response.status, JSON.parse(response.data).result);
-      throw new HttpException(
-        JSON.parse(response.data).result,
-        response.status,
-      );
+    const response = JSON.parse(res.data);
+    if (res.status >= 400) {
+      console.log(res);
+      throw new HttpException(response.result, res.status);
     }
-    return response.data;
+    return response;
   }
 }

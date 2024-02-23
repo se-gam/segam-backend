@@ -19,7 +19,7 @@ export class StudyroomReservePayload {
   password!: string;
 
   @ApiProperty({
-    description: '날짜',
+    description: '날짜 (예: 2024-02-28 or 2024-02-28T10:13:09.004Z)',
     type: Date,
   })
   @Type(() => Date)
