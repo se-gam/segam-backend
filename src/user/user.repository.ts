@@ -6,6 +6,17 @@ import { PrismaService } from 'src/common/services/prisma.service';
 export class UserRepository {
   constructor(private readonly prismService: PrismaService) {}
 
+  async updatePushToken(pushToken: string, user: UserInfo): Promise<void> {
+    await this.prismService.user.update({
+      where: {
+        studentId: user.studentId,
+      },
+      data: {
+        pushToken,
+      },
+    });
+  }
+
   async getUserByStudentId(studentId: string): Promise<UserInfo> {
     return this.prismService.user.findUnique({
       where: {
