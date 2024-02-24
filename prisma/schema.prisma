@@ -47,7 +47,7 @@ model User {
   studentId       String            @id @map("student_id")
   name            String
   sejongPid       String            @map("sejong_pid")
-  departmentName  String?           @map("department_id")
+  departmentName  String?           @map("department_name")
   os              OS
   pushToken       String?           @map("push_token")
   createdAt       DateTime          @default(now()) @map("created_at")
@@ -153,7 +153,8 @@ model Studyroom {
   updatedAt       DateTime          @updatedAt @map("updated_at")
   deletedAt       DateTime?         @map("deleted_at")
 
-  slots   StudyroomSlot[]
+  slots           StudyroomSlot[]
+  reservations    StudyroomReservation[]
 
   @@map("studyroom")
 }
@@ -176,12 +177,16 @@ model StudyroomSlot {
 }
 
 model StudyroomReservation {
-  id              Int               @id @default(autoincrement())
+  id              Int               @id
+  pid             Int
+  studyroomId     Int               @map("studyroom_id")
   reserveReason   String
   cancelReason    String?
   createdAt       DateTime          @default(now()) @map("created_at")
   updatedAt       DateTime          @updatedAt @map("updated_at")
+  deletedAt       DateTime?          
 
+  studyroom       Studyroom         @relation(fields: [studyroomId], references: [id])
   slots           ReservationSlot[]
   users           UserReservation[]
 
