@@ -12,6 +12,13 @@ export class StudyroomUserPayload extends PasswordPayload {
   friendId!: string;
 
   @ApiProperty({
+    description: '조회할 user 이름',
+    type: String,
+  })
+  @IsString()
+  friendName!: string;
+
+  @ApiProperty({
     description: '예약 날짜 (예: 2024-02-28 or 2024-02-28T10:13:09.004Z)',
     type: Date,
   })

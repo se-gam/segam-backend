@@ -8,14 +8,6 @@ import { RawUser } from 'src/studyroom/types/reservationResponse.type';
 export class UserRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async getUserByStudentId2(id: string): Promise<User> {
-    return await this.prismaService.user.findUnique({
-      where: {
-        studentId: id,
-      },
-    });
-  }
-
   async updatePushToken(pushToken: string, user: UserInfo): Promise<void> {
     await this.prismaService.user.update({
       where: {
@@ -32,6 +24,32 @@ export class UserRepository {
       where: {
         studentId,
         deletedAt: null,
+      },
+      select: {
+        studentId: true,
+        sejongPid: true,
+        name: true,
+        departmentName: true,
+      },
+    });
+  }
+
+  async getOrCreateUser(studentId: string, name: string): Promise<UserInfo> {
+    const user = await this.prismaService.user.findUnique({
+      where: {
+        studentId,
+      },
+    });
+
+    if (user) {
+      return user;
+    }
+
+    return await this.prismaService.user.create({
+      data: {
+        studentId,
+        sejongPid: studentId,
+        name,
       },
       select: {
         studentId: true,
