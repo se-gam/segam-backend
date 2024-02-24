@@ -4,6 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { UserInfo } from 'src/auth/types/user-info.type';
+import { FriendListDto } from './dto/friend.dto';
 import { PushTokenPayload } from './payload/pushToken.payload';
 import { UserPayload } from './payload/user.payload';
 import { UserRepository } from './user.repository';
@@ -43,5 +44,11 @@ export class UserService {
     }
 
     await this.userRepository.deleteFriend(friend.studentId, user);
+  }
+
+  async getFriends(user: UserInfo): Promise<FriendListDto> {
+    return FriendListDto.from(
+      await this.userRepository.getFriendsByStudentId(user.studentId),
+    );
   }
 }
