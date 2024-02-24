@@ -16,6 +16,17 @@ export class UserRepository {
     });
   }
 
+  async updatePushToken(pushToken: string, user: UserInfo): Promise<void> {
+    await this.prismaService.user.update({
+      where: {
+        studentId: user.studentId,
+      },
+      data: {
+        pushToken,
+      },
+    });
+  }
+
   async getUserByStudentId(studentId: string): Promise<UserInfo> {
     return this.prismaService.user.findUnique({
       where: {
