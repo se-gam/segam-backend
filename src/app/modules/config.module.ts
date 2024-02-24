@@ -17,5 +17,9 @@ export const configModule = ConfigModule.forRoot({
     FIREBASE_PROJECT_ID: Joi.string().required(),
     FIREBASE_CLIENT_EMAIL: Joi.string().required(),
     FIREBASE_PRIVATE_KEY: Joi.string().required(),
+    GET_USER_RESEVATIONS_URL: Joi.string().required(),
+    CREATE_RESERVATION_URL: Joi.string().required(),
+    CANCEL_RESERVATION_URL: Joi.string().required(),
+    GET_USER_AVAILABILITY_URL: Joi.string().required(),
   }),
 });
