@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   HttpCode,
   Param,
   Post,
@@ -22,6 +23,7 @@ import {
 import { CurrentUser } from 'src/auth/decorator/user.decorator';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
 import { UserInfo } from 'src/auth/types/user-info.type';
+import { FriendListDto } from './dto/friend.dto';
 import { PushTokenPayload } from './payload/pushToken.payload';
 import { UserPayload } from './payload/user.payload';
 import { UserService } from './user.service';
@@ -98,5 +100,17 @@ export class UserController {
     @CurrentUser() user: UserInfo,
   ): Promise<void> {
     await this.userService.deleteFriend(friendId, user);
+  }
+
+  @Version('1')
+  @Get('friend')
+  @ApiOperation({
+    summary: '친구 목록 조회',
+    description: '친구 목록을 조회합니다.',
+  })
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  async getFriends(@CurrentUser() user: UserInfo): Promise<FriendListDto> {
+    return this.userService.getFriends(user);
   }
 }

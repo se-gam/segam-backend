@@ -155,4 +155,45 @@ export class UserRepository {
       });
     });
   }
+
+  async getFriendsByStudentId(studentId: string): Promise<UserInfo[]> {
+    return await this.prismaService.$transaction(async (tx) => {
+      const friends = await tx.friend.findMany({
+        where: {
+          OR: [
+            {
+              user1Id: studentId,
+            },
+            {
+              user2Id: studentId,
+            },
+          ],
+          deletedAt: null,
+        },
+        select: {
+          user1Id: true,
+          user2Id: true,
+        },
+      });
+
+      const friendIds = friends.map((friend) => {
+        return friend.user1Id === studentId ? friend.user2Id : friend.user1Id;
+      });
+
+      return tx.user.findMany({
+        where: {
+          studentId: {
+            in: friendIds,
+          },
+          deletedAt: null,
+        },
+        select: {
+          studentId: true,
+          sejongPid: true,
+          name: true,
+          departmentName: true,
+        },
+      });
+    });
+  }
 }
