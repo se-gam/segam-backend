@@ -38,7 +38,10 @@ export class AuthService {
     }
 
     const portalUserInfo = JSON.parse(res.data) as PortalUserInfo;
-    const user = await this.authRepository.getOrCreateUser(portalUserInfo);
+    const user = await this.authRepository.getOrCreateUser(
+      portalUserInfo,
+      payload,
+    );
 
     // 로그인 시 출석 정보 업데이트
     // await this.ecampusService.updateUserAttendance(user, payload);
