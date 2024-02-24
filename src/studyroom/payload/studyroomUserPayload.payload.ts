@@ -1,15 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsDate, IsString } from 'class-validator';
+import { PasswordPayload } from 'src/auth/payload/password.payload';
 
-export class StudyroomUserPayload {
-  @ApiProperty({
-    description: '비밀번호',
-    type: String,
-  })
-  @IsString()
-  password!: string;
-
+export class StudyroomUserPayload extends PasswordPayload {
   @ApiProperty({
     description: '조회할 user id',
     type: String,

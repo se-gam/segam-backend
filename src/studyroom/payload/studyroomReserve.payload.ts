@@ -1,8 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsDate, IsNumber, IsString, Max, Min } from 'class-validator';
+import { PasswordPayload } from 'src/auth/payload/password.payload';
 
-export class StudyroomReservePayload {
+export class StudyroomReservePayload extends PasswordPayload {
   @ApiProperty({
     description: '스터디룸 id',
     type: Number,
@@ -10,13 +11,6 @@ export class StudyroomReservePayload {
   @Type(() => Number)
   @IsNumber()
   studyroomId: number;
-
-  @ApiProperty({
-    description: '비밀번호',
-    type: String,
-  })
-  @IsString()
-  password!: string;
 
   @ApiProperty({
     description: '날짜 (예: 2024-02-28 or 2024-02-28T10:13:09.004Z)',

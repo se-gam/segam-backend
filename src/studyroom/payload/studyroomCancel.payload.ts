@@ -1,15 +1,9 @@
 import { Optional } from '@nestjs/common';
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 import { IsString } from 'class-validator';
+import { PasswordPayload } from 'src/auth/payload/password.payload';
 
-export class StudyroomCancelPayload {
-  @ApiProperty({
-    description: '비밀번호',
-    type: String,
-  })
-  @IsString()
-  password!: string;
-
+export class StudyroomCancelPayload extends PasswordPayload {
   @ApiPropertyOptional({
     description: '취소이유',
     type: String,
