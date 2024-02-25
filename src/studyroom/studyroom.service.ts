@@ -6,6 +6,7 @@ import { AxiosService } from 'src/common/services/axios.service';
 import { PrismaService } from 'src/common/services/prisma.service';
 import { StudyroomDto, StudyroomListDto } from './dto/studyroom.dto';
 import { StudyroomReservatoinListDto } from './dto/studyroomReservation.dto';
+import { UserPidDto } from './dto/userPid.dto';
 import { StudyroomCancelPayload } from './payload/studyroomCancel.payload';
 import { StudyroomReservePayload } from './payload/studyroomReserve.payload';
 import { StudyroomUserPayload } from './payload/studyroomUserPayload.payload';
@@ -99,8 +100,8 @@ export class StudyroomService {
   async checkUserAvailablity(
     userId: string,
     payload: StudyroomUserPayload,
-  ): Promise<void> {
-    await this.reservationService.checkUserAvailablity(userId, payload);
+  ): Promise<UserPidDto> {
+    return await this.reservationService.checkUserAvailablity(userId, payload);
   }
 
   async reserveStudyroom(

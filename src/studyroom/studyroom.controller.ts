@@ -25,6 +25,7 @@ import { PasswordValidationPipe } from 'src/auth/pipes/signup-validation.pipe';
 import { UserInfo } from 'src/auth/types/user-info.type';
 import { StudyroomDto, StudyroomListDto } from './dto/studyroom.dto';
 import { StudyroomReservatoinListDto } from './dto/studyroomReservation.dto';
+import { UserPidDto } from './dto/userPid.dto';
 import { StudyroomCancelPayload } from './payload/studyroomCancel.payload';
 import { StudyroomReservePayload } from './payload/studyroomReserve.payload';
 import { StudyroomUserPayload } from './payload/studyroomUserPayload.payload';
@@ -163,7 +164,7 @@ export class StudyroomController {
   async checkUserAvailablity(
     @CurrentUser() user: UserInfo,
     @Body(PasswordValidationPipe) payload: StudyroomUserPayload,
-  ): Promise<void> {
+  ): Promise<UserPidDto> {
     return this.studyroomService.checkUserAvailablity(user.studentId, payload);
   }
 }

@@ -9,12 +9,12 @@ import { ConfigService } from '@nestjs/config';
 import * as _ from 'lodash';
 import { AxiosService } from 'src/common/services/axios.service';
 import { UserRepository } from 'src/user/user.repository';
+import { UserPidDto } from './dto/userPid.dto';
 import { StudyroomCancelPayload } from './payload/studyroomCancel.payload';
 import { StudyroomReservePayload } from './payload/studyroomReserve.payload';
 import { StudyroomUserPayload } from './payload/studyroomUserPayload.payload';
 import { StudyroomRepository } from './studyroom.repository';
 import { ResultResponse } from './types/resultResponse.type';
-import { UserPidResponse } from './types/userPidResponse.type';
 
 @Injectable()
 export class ReservationService {
@@ -59,19 +59,14 @@ export class ReservationService {
   async checkUserAvailablity(
     userId: string,
     payload: StudyroomUserPayload,
-  ): Promise<UserPidResponse> {
-    const friend = await this.userRepository.getOrCreateUser(
-      payload.friendId,
-      payload.friendName,
-    );
-
+  ): Promise<UserPidDto> {
     const res = await this.axiosService.post(
       this.configService.get<string>('GET_USER_AVAILABILITY_URL'),
       JSON.stringify({
         id: userId,
         password: payload.password,
-        user_name: friend.name,
-        student_id: friend.studentId,
+        user_name: payload.friendName,
+        student_id: payload.friendId,
         year: payload.date.getFullYear(),
         month: String(payload.date.getMonth() + 1).padStart(2, '0'),
         day: String(payload.date.getDate()).padStart(2, '0'),
@@ -91,17 +86,20 @@ export class ReservationService {
     } else if (res.status >= 400) {
       throw new InternalServerErrorException('Internal Server Error');
     }
-
     const friendPid: string = response.ipid.toString();
-
     if (!friendPid)
       throw new InternalServerErrorException('추가할 수 없는 사용자입니다.');
+
+    const friend = await this.userRepository.getOrCreateUser(
+      payload.friendId,
+      payload.friendName,
+    );
 
     if (friend.sejongPid !== friendPid) {
       await this.userRepository.updateUserPid(friend.studentId, friendPid);
     }
 
-    return response;
+    return UserPidDto.from(friendPid);
   }
 
   async createReservation(
