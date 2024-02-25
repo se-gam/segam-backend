@@ -1,6 +1,5 @@
 import {
   BadRequestException,
-  HttpException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -61,11 +60,10 @@ export class ReservationService {
     userId: string,
     payload: StudyroomUserPayload,
   ): Promise<UserPidResponse> {
-    const friend = await this.userRepository.getUserByStudentId(
+    const friend = await this.userRepository.getOrCreateUser(
       payload.friendId,
+      payload.friendName,
     );
-    if (!friend)
-      throw new NotFoundException('해당 학번의 학생이 존재하지 않습니다');
 
     const res = await this.axiosService.post(
       this.configService.get<string>('GET_USER_AVAILABILITY_URL'),
@@ -94,7 +92,7 @@ export class ReservationService {
       throw new InternalServerErrorException('Internal Server Error');
     }
 
-    const friendPid = response.ipid.toString();
+    const friendPid: string = response.ipid.toString();
 
     if (!friendPid)
       throw new InternalServerErrorException('추가할 수 없는 사용자입니다.');

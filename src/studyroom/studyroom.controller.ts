@@ -20,15 +20,16 @@ import {
 } from '@nestjs/swagger';
 import { CurrentUser } from 'src/auth/decorator/user.decorator';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
+import { PasswordPayload } from 'src/auth/payload/password.payload';
+import { PasswordValidationPipe } from 'src/auth/pipes/signup-validation.pipe';
 import { UserInfo } from 'src/auth/types/user-info.type';
-import { UserInfoPayload } from 'src/user/payload/UserInfoPayload.payload';
 import { StudyroomDto, StudyroomListDto } from './dto/studyroom.dto';
 import { StudyroomReservatoinListDto } from './dto/studyroomReservation.dto';
 import { StudyroomCancelPayload } from './payload/studyroomCancel.payload';
 import { StudyroomReservePayload } from './payload/studyroomReserve.payload';
 import { StudyroomUserPayload } from './payload/studyroomUserPayload.payload';
-import { StudyroomDateQuery } from './query/studyroomDateQuery.query';
 import { StudyroomQuery } from './query/studyroom.query';
+import { StudyroomDateQuery } from './query/studyroomDateQuery.query';
 import { StudyroomService } from './studyroom.service';
 
 @ApiTags('스터디룸 API')
@@ -84,7 +85,7 @@ export class StudyroomController {
   @Post('reservation/me')
   async getStudyroomReservations(
     @CurrentUser() user: UserInfo,
-    @Body() payload: UserInfoPayload,
+    @Body(PasswordValidationPipe) payload: PasswordPayload,
   ): Promise<StudyroomReservatoinListDto> {
     return this.studyroomService.getStudyroomReservations(
       user.studentId,
@@ -109,7 +110,7 @@ export class StudyroomController {
   @Post('reservation')
   async reserveStudyroom(
     @CurrentUser() user: UserInfo,
-    @Body() payload: StudyroomReservePayload,
+    @Body(PasswordValidationPipe) payload: StudyroomReservePayload,
   ): Promise<void> {
     return this.studyroomService.reserveStudyroom(user.studentId, payload);
   }
@@ -135,7 +136,7 @@ export class StudyroomController {
   async cancelStudyroomReservation(
     @Param('id') id: number,
     @CurrentUser() user: UserInfo,
-    @Body() payload: StudyroomCancelPayload,
+    @Body(PasswordValidationPipe) payload: StudyroomCancelPayload,
   ): Promise<void> {
     return this.studyroomService.cancelStudyroomReservation(
       id,
@@ -161,7 +162,7 @@ export class StudyroomController {
   @Post('user')
   async checkUserAvailablity(
     @CurrentUser() user: UserInfo,
-    @Body() payload: StudyroomUserPayload,
+    @Body(PasswordValidationPipe) payload: StudyroomUserPayload,
   ): Promise<void> {
     return this.studyroomService.checkUserAvailablity(user.studentId, payload);
   }

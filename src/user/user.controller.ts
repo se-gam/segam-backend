@@ -2,9 +2,11 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   HttpCode,
   Param,
   Post,
+  Put,
   UseGuards,
   Version,
 } from '@nestjs/common';
@@ -14,12 +16,15 @@ import {
   ApiCreatedResponse,
   ApiNoContentResponse,
   ApiNotFoundResponse,
+  ApiOkResponse,
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
 import { CurrentUser } from 'src/auth/decorator/user.decorator';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
 import { UserInfo } from 'src/auth/types/user-info.type';
+import { FriendListDto } from './dto/friend.dto';
+import { PushTokenPayload } from './payload/pushToken.payload';
 import { UserPayload } from './payload/user.payload';
 import { UserService } from './user.service';
 
@@ -27,6 +32,24 @@ import { UserService } from './user.service';
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
+
+  @Version('1')
+  @Put('push-token')
+  @ApiOperation({
+    summary: '푸시 토큰 업데이트',
+    description: '사용자의 푸시 토큰을 업데이트합니다.',
+  })
+  @ApiOkResponse({
+    description: '푸시 토큰 업데이트 성공',
+  })
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  async updatePushToken(
+    @CurrentUser() user: UserInfo,
+    @Body() payload: PushTokenPayload,
+  ): Promise<void> {
+    await this.userService.updatePushToken(payload, user);
+  }
 
   @Version('1')
   @Post('friend')
@@ -77,5 +100,17 @@ export class UserController {
     @CurrentUser() user: UserInfo,
   ): Promise<void> {
     await this.userService.deleteFriend(friendId, user);
+  }
+
+  @Version('1')
+  @Get('friend')
+  @ApiOperation({
+    summary: '친구 목록 조회',
+    description: '친구 목록을 조회합니다.',
+  })
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  async getFriends(@CurrentUser() user: UserInfo): Promise<FriendListDto> {
+    return this.userService.getFriends(user);
   }
 }

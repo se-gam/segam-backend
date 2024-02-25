@@ -1,11 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString } from 'class-validator';
 
-export class UserInfoPayload {
+export class PushTokenPayload {
+  @IsString()
   @ApiProperty({
-    description: '비밀번호',
+    description: '푸시 토큰',
     type: String,
   })
-  @IsString()
-  password!: string;
+  pushToken!: string;
 }

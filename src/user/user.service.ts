@@ -4,12 +4,21 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { UserInfo } from 'src/auth/types/user-info.type';
+import { FriendListDto } from './dto/friend.dto';
+import { PushTokenPayload } from './payload/pushToken.payload';
 import { UserPayload } from './payload/user.payload';
 import { UserRepository } from './user.repository';
 
 @Injectable()
 export class UserService {
   constructor(private readonly userRepository: UserRepository) {}
+
+  async updatePushToken(
+    payload: PushTokenPayload,
+    user: UserInfo,
+  ): Promise<void> {
+    await this.userRepository.updatePushToken(payload.pushToken, user);
+  }
 
   async addUserAsFriend(payload: UserPayload, user: UserInfo): Promise<void> {
     const friend = await this.userRepository.getUserByStudentId(
@@ -35,5 +44,11 @@ export class UserService {
     }
 
     await this.userRepository.deleteFriend(friend.studentId, user);
+  }
+
+  async getFriends(user: UserInfo): Promise<FriendListDto> {
+    return FriendListDto.from(
+      await this.userRepository.getFriendsByStudentId(user.studentId),
+    );
   }
 }

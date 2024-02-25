@@ -1,11 +1,12 @@
 import { Body, Controller, Post, Version } from '@nestjs/common';
-import { ApiCreatedResponse, ApiOperation } from '@nestjs/swagger';
+import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { TokenDto } from './dto/token.dto';
 import { RefreshTokenPayload } from './payload/refresh-token.payload';
 import { SignUpPayload } from './payload/signup.payload';
 import { SignUpValidationPipe } from './pipes/password-validation.pipe';
 
+@ApiTags('인증 API')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}

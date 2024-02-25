@@ -8,10 +8,13 @@ import { RawUser } from 'src/studyroom/types/reservationResponse.type';
 export class UserRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async getUserByStudentId2(id: string): Promise<User> {
-    return await this.prismaService.user.findUnique({
+  async updatePushToken(pushToken: string, user: UserInfo): Promise<void> {
+    await this.prismaService.user.update({
       where: {
-        studentId: id,
+        studentId: user.studentId,
+      },
+      data: {
+        pushToken,
       },
     });
   }
@@ -21,6 +24,32 @@ export class UserRepository {
       where: {
         studentId,
         deletedAt: null,
+      },
+      select: {
+        studentId: true,
+        sejongPid: true,
+        name: true,
+        departmentName: true,
+      },
+    });
+  }
+
+  async getOrCreateUser(studentId: string, name: string): Promise<UserInfo> {
+    const user = await this.prismaService.user.findUnique({
+      where: {
+        studentId,
+      },
+    });
+
+    if (user) {
+      return user;
+    }
+
+    return await this.prismaService.user.create({
+      data: {
+        studentId,
+        sejongPid: studentId,
+        name,
       },
       select: {
         studentId: true,
@@ -140,6 +169,47 @@ export class UserRepository {
         },
         data: {
           deletedAt: new Date(),
+        },
+      });
+    });
+  }
+
+  async getFriendsByStudentId(studentId: string): Promise<UserInfo[]> {
+    return await this.prismaService.$transaction(async (tx) => {
+      const friends = await tx.friend.findMany({
+        where: {
+          OR: [
+            {
+              user1Id: studentId,
+            },
+            {
+              user2Id: studentId,
+            },
+          ],
+          deletedAt: null,
+        },
+        select: {
+          user1Id: true,
+          user2Id: true,
+        },
+      });
+
+      const friendIds = friends.map((friend) => {
+        return friend.user1Id === studentId ? friend.user2Id : friend.user1Id;
+      });
+
+      return tx.user.findMany({
+        where: {
+          studentId: {
+            in: friendIds,
+          },
+          deletedAt: null,
+        },
+        select: {
+          studentId: true,
+          sejongPid: true,
+          name: true,
+          departmentName: true,
         },
       });
     });

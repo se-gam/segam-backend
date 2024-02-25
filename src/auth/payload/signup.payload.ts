@@ -1,7 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString } from 'class-validator';
+import { OS } from '@prisma/client';
+import { IsEnum, IsOptional, IsString } from 'class-validator';
+import { PasswordPayload } from './password.payload';
 
-export class SignUpPayload {
+export class SignUpPayload extends PasswordPayload {
   @IsString()
   @ApiProperty({
     description: '학번',
@@ -10,10 +12,19 @@ export class SignUpPayload {
   })
   studentId!: string;
 
-  @IsString()
+  @IsEnum(OS)
+  @IsOptional()
   @ApiProperty({
-    description: '비밀번호',
+    description: '사용사 기기 OS',
+    enum: OS,
+  })
+  os?: OS;
+
+  @IsString()
+  @IsOptional()
+  @ApiProperty({
+    description: 'FCM푸쉬 토큰',
     type: String,
   })
-  password!: string;
+  pushToken?: string;
 }

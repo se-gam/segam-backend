@@ -1,16 +1,16 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Cron } from '@nestjs/schedule';
+import { PasswordPayload } from 'src/auth/payload/password.payload';
 import { AxiosService } from 'src/common/services/axios.service';
 import { PrismaService } from 'src/common/services/prisma.service';
-import { UserInfoPayload } from 'src/user/payload/UserInfoPayload.payload';
 import { StudyroomDto, StudyroomListDto } from './dto/studyroom.dto';
 import { StudyroomReservatoinListDto } from './dto/studyroomReservation.dto';
 import { StudyroomCancelPayload } from './payload/studyroomCancel.payload';
 import { StudyroomReservePayload } from './payload/studyroomReserve.payload';
 import { StudyroomUserPayload } from './payload/studyroomUserPayload.payload';
-import { StudyroomDateQuery } from './query/studyroomDateQuery.query';
 import { StudyroomQuery } from './query/studyroom.query';
+import { StudyroomDateQuery } from './query/studyroomDateQuery.query';
 import { ReservationService } from './reservation.service';
 import { StudyroomRepository } from './studyroom.repository';
 
@@ -86,7 +86,7 @@ export class StudyroomService {
 
   async getStudyroomReservations(
     userId: string,
-    payload: UserInfoPayload,
+    payload: PasswordPayload,
   ): Promise<StudyroomReservatoinListDto> {
     await this.reservationService.updateUserReservations(
       userId,
