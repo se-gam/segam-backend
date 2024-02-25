@@ -11,7 +11,7 @@ permissions:
 jobs:
   CD:
     runs-on: ubuntu-latest
-    environment: development
+    environment: production
 
     steps:
       - name: Checkout
