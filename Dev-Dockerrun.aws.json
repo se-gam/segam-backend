@@ -1,0 +1,13 @@
+{
+  "AWSEBDockerrunVersion": "1",
+  "Image": {
+    "Name": "992382712123.dkr.ecr.ap-northeast-2.amazonaws.com/segam-dev:latest",
+    "Update": "true"
+  },
+  "Ports": [
+    {
+      "ContainerPort": "3000",
+      "HostPort": "80"
+    }
+  ]
+}

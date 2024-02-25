@@ -1,0 +1,200 @@
+[
+  {
+    "id": 11,
+    "name": "01 스터디룸(4층)",
+    "location": "학술정보원 4층",
+    "operatingHours": "10:00~16:00",
+    "minUsers": 6,
+    "maxUsers": 12,
+    "isCinema": false
+  },
+  {
+    "id": 10,
+    "name": "02 스터디룸(4층)",
+    "location": "학술정보원 4층",
+    "operatingHours": "10:00~16:00",
+    "minUsers": 3,
+    "maxUsers": 6,
+    "isCinema": false
+  },
+  {
+    "id": 12,
+    "name": "03 스터디룸(4층)",
+    "location": "학술정보원 4층",
+    "operatingHours": "10:00~16:00",
+    "minUsers": 3,
+    "maxUsers": 6,
+    "isCinema": false
+  },
+  {
+    "id": 13,
+    "name": "04 스터디룸(4층)",
+    "location": "학술정보원 4층",
+    "operatingHours": "10:00~16:00",
+    "minUsers": 3,
+    "maxUsers": 6,
+    "isCinema": false
+  },
+  {
+    "id": 14,
+    "name": "05 스터디룸(4층)",
+    "location": "학술정보원 4층",
+    "operatingHours": "10:00~16:00",
+    "minUsers": 3,
+    "maxUsers": 6,
+    "isCinema": false
+  },
+  {
+    "id": 15,
+    "name": "06 스터디룸(4층)",
+    "location": "학술정보원 4층",
+    "operatingHours": "10:00~16:00",
+    "minUsers": 3,
+    "maxUsers": 6,
+    "isCinema": false
+  },
+  {
+    "id": 1,
+    "name": "07 스터디룸(4층)",
+    "location": "학술정보원 4층",
+    "operatingHours": "10:00~16:00",
+    "minUsers": 3,
+    "maxUsers": 6,
+    "isCinema": false
+  },
+  {
+    "id": 2,
+    "name": "08 스터디룸(4층)",
+    "location": "학술정보원 4층",
+    "operatingHours": "10:00~16:00",
+    "minUsers": 3,
+    "maxUsers": 6,
+    "isCinema": false
+  },
+  {
+    "id": 3,
+    "name": "09 스터디룸(4층)",
+    "location": "학술정보원 4층",
+    "operatingHours": "10:00~16:00",
+    "minUsers": 3,
+    "maxUsers": 6,
+    "isCinema": false
+  },
+  {
+    "id": 9,
+    "name": "10 스터디룸(4층)",
+    "location": "학술정보원 4층",
+    "operatingHours": "10:00~16:00",
+    "minUsers": 3,
+    "maxUsers": 6,
+    "isCinema": false
+  },
+  {
+    "id": 4,
+    "name": "11 스터디룸(4층)",
+    "location": "학술정보원 4층",
+    "operatingHours": "10:00~16:00",
+    "minUsers": 3,
+    "maxUsers": 6,
+    "isCinema": false
+  },
+  {
+    "id": 5,
+    "name": "12 스터디룸(4층)",
+    "location": "학술정보원 4층",
+    "operatingHours": "10:00~16:00",
+    "minUsers": 3,
+    "maxUsers": 6,
+    "isCinema": false
+  },
+  {
+    "id": 16,
+    "name": "13 스터디룸(4층)",
+    "location": "학술정보원 4층",
+    "operatingHours": "10:00~16:00",
+    "minUsers": 3,
+    "maxUsers": 6,
+    "isCinema": false
+  },
+  {
+    "id": 54,
+    "name": "시네마룸1",
+    "location": "학술정보원 4층",
+    "operatingHours": "10:00~16:00",
+    "minUsers": 2,
+    "maxUsers": 3,
+    "isCinema": true
+  },
+  {
+    "id": 55,
+    "name": "시네마룸2",
+    "location": "학술정보원 4층",
+    "operatingHours": "10:00~16:00",
+    "minUsers": 2,
+    "maxUsers": 3,
+    "isCinema": true
+  },
+  {
+    "id": 56,
+    "name": "시네마룸3",
+    "location": "학술정보원 4층",
+    "operatingHours": "10:00~16:00",
+    "minUsers": 2,
+    "maxUsers": 3,
+    "isCinema": true
+  },
+  {
+    "id": 57,
+    "name": "시네마룸4",
+    "location": "학술정보원 4층",
+    "operatingHours": "10:00~16:00",
+    "minUsers": 2,
+    "maxUsers": 3,
+    "isCinema": true
+  },
+  {
+    "id": 59,
+    "name": "시네마룸5",
+    "location": "학술정보원 4층",
+    "operatingHours": "10:00~16:00",
+    "minUsers": 2,
+    "maxUsers": 3,
+    "isCinema": true
+  },
+  {
+    "id": 60,
+    "name": "시네마룸6",
+    "location": "학술정보원 4층",
+    "operatingHours": "10:00~16:00",
+    "minUsers": 2,
+    "maxUsers": 3,
+    "isCinema": true
+  },
+  {
+    "id": 34,
+    "name": "진관홀 스터디룸1",
+    "location": "학술정보원 4층",
+    "operatingHours": "10:00~16:00",
+    "minUsers": 5,
+    "maxUsers": 16,
+    "isCinema": false
+  },
+  {
+    "id": 35,
+    "name": "진관홀 스터디룸2",
+    "location": "학술정보원 4층",
+    "operatingHours": "10:00~16:00",
+    "minUsers": 5,
+    "maxUsers": 16,
+    "isCinema": false
+  },
+  {
+    "id": 36,
+    "name": "진관홀 스터디룸3",
+    "location": "학술정보원 4층",
+    "operatingHours": "10:00~16:00",
+    "minUsers": 5,
+    "maxUsers": 16,
+    "isCinema": false
+  }
+]
