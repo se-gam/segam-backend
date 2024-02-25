@@ -32,7 +32,7 @@ export class ReservationService {
       throw new NotFoundException('해당 학번의 학생이 존재하지 않습니다');
 
     const res = await this.axiosService.post(
-      this.configService.get<string>('GET_USER_RESEVATIONS_URL'),
+      this.configService.get<string>('GET_USER_RESERVATIONS_URL'),
       JSON.stringify({ student_id: userId, password: password }),
       { headers: { 'Content-Type': 'application/json' } },
     );
