@@ -99,16 +99,8 @@ export class UserRepository {
     await this.prismaService.$transaction(async (tx) => {
       const isFriend = await tx.friend.findFirst({
         where: {
-          OR: [
-            {
-              user1Id: user.studentId,
-              user2Id: friendId,
-            },
-            {
-              user1Id: friendId,
-              user2Id: user.studentId,
-            },
-          ],
+          requestUserId: user.studentId,
+          receiveUserId: friendId,
         },
       });
 
@@ -126,8 +118,8 @@ export class UserRepository {
       } else {
         await tx.friend.create({
           data: {
-            user1Id: user.studentId,
-            user2Id: friendId,
+            requestUserId: user.studentId,
+            receiveUserId: friendId,
           },
         });
       }
