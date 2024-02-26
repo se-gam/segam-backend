@@ -130,16 +130,8 @@ export class UserRepository {
     await this.prismaService.$transaction(async (tx) => {
       const isFriend = await tx.friend.findFirst({
         where: {
-          OR: [
-            {
-              user1Id: user.studentId,
-              user2Id: friendId,
-            },
-            {
-              user1Id: friendId,
-              user2Id: user.studentId,
-            },
-          ],
+          requestUserId: user.studentId,
+          receiveUserId: friendId,
         },
       });
 
@@ -149,16 +141,7 @@ export class UserRepository {
 
       await tx.friend.updateMany({
         where: {
-          OR: [
-            {
-              user1Id: user.studentId,
-              user2Id: friendId,
-            },
-            {
-              user1Id: friendId,
-              user2Id: user.studentId,
-            },
-          ],
+          id: isFriend.id,
         },
         data: {
           deletedAt: new Date(),
