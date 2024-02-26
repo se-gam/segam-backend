@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Cron } from '@nestjs/schedule';
 import { PasswordPayload } from 'src/auth/payload/password.payload';
@@ -14,6 +18,8 @@ import { StudyroomQuery } from './query/studyroom.query';
 import { StudyroomDateQuery } from './query/studyroomDateQuery.query';
 import { ReservationService } from './reservation.service';
 import { StudyroomRepository } from './studyroom.repository';
+import { UserService } from 'src/user/user.service';
+import { UserRepository } from 'src/user/user.repository';
 
 @Injectable()
 export class StudyroomService {
@@ -23,6 +29,8 @@ export class StudyroomService {
     private readonly reservationService: ReservationService,
     private readonly axiosService: AxiosService,
     private readonly configService: ConfigService,
+    private readonly userService: UserService,
+    private readonly userRepository: UserRepository,
   ) {}
 
   private getSlotTime(time: string) {
@@ -101,7 +109,28 @@ export class StudyroomService {
     userId: string,
     payload: StudyroomUserPayload,
   ): Promise<UserPidDto> {
-    return await this.reservationService.checkUserAvailablity(userId, payload);
+    const friendPid = await this.userService.getUserPid(
+      {
+        friendId: payload.friendId,
+        friendName: payload.friendName,
+        password: payload.password,
+        date: payload.date,
+      },
+      userId,
+    );
+
+    if (userId === payload.friendId) {
+      throw new BadRequestException('자기 자신을 친구로 등록할 수 없습니다.');
+    }
+
+    try {
+      await this.userRepository.addUserAsFriend(payload.friendId, userId);
+    } catch (error) {
+      if (error.status === 400) {
+      }
+    }
+
+    return friendPid;
   }
 
   async reserveStudyroom(

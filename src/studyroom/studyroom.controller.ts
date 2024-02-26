@@ -153,7 +153,8 @@ export class StudyroomController {
   })
   @ApiCreatedResponse({ type: UserPidDto })
   @ApiBadRequestResponse({
-    description: '예약이 불가능합니다. (스터디원으로 추가 불가능)',
+    description:
+      '예약이 불가능합니다. (스터디원으로 추가 불가능) | 자기 자신을 친구로 등록할 수 없습니다.',
   })
   @ApiUnauthorizedResponse({
     description: '포털 로그인 실패',

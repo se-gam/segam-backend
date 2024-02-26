@@ -4,6 +4,7 @@ import {
   InternalServerErrorException,
   NotFoundException,
   UnauthorizedException,
+  UnsupportedMediaTypeException,
 } from '@nestjs/common';
 import { UserInfo } from 'src/auth/types/user-info.type';
 import { FriendListDto } from './dto/friend.dto';
@@ -12,6 +13,7 @@ import { UserPayload } from './payload/user.payload';
 import { UserRepository } from './user.repository';
 import { ReservationService } from 'src/studyroom/reservation.service';
 import { StudyroomUserPayload } from 'src/studyroom/payload/studyroomUserPayload.payload';
+import { UserPidDto } from 'src/studyroom/dto/userPid.dto';
 
 @Injectable()
 export class UserService {
@@ -29,33 +31,16 @@ export class UserService {
     await this.userRepository.updatePushToken(payload.pushToken, user);
   }
 
-  async createUser(
+  async getUserPid(
     payload: StudyroomUserPayload,
     userId: string,
-  ): Promise<void> {
-    try {
-      const friendPid = await this.reservationService.checkUserAvailablity(
-        userId,
-        payload,
-      );
+  ): Promise<UserPidDto> {
+    const friendPid = await this.reservationService.checkUserAvailablity(
+      userId,
+      payload,
+    );
 
-      await this.userRepository.createUser(
-        {
-          studentId: payload.friendId,
-          name: payload.friendName,
-          password: payload.password,
-        },
-        friendPid.sejongPid,
-      );
-    } catch (error) {
-      if (error.status === 400) {
-        throw new BadRequestException('해당 id의 학생을 찾을 수 없습니다.');
-      } else if (error.status === 401) {
-        throw new UnauthorizedException('포털 로그인에 실패했습니다.');
-      } else if (error.status >= 400) {
-        throw new InternalServerErrorException('Internal Server Error');
-      }
-    }
+    return UserPidDto.from(friendPid.sejongPid);
   }
 
   async addUserAsFriend(payload: UserPayload, user: UserInfo): Promise<void> {
@@ -64,15 +49,25 @@ export class UserService {
     );
 
     if (!friend) {
-      await this.createUser(
-        {
-          friendId: payload.studentId,
-          friendName: payload.name,
-          password: payload.password,
-          date: UserService.verificationDate,
-        },
-        user.studentId,
-      );
+      try {
+        await this.getUserPid(
+          {
+            friendId: payload.studentId,
+            friendName: payload.name,
+            password: payload.password,
+            date: UserService.verificationDate,
+          },
+          user.studentId,
+        );
+      } catch (error) {
+        if (error.status === 400) {
+          throw new BadRequestException('해당 id의 학생을 찾을 수 없습니다.');
+        } else if (error.status === 401) {
+          throw new UnauthorizedException('포털 로그인에 실패했습니다.');
+        } else if (error.status >= 400) {
+          throw new InternalServerErrorException('Internal Server Error');
+        }
+      }
     } else if (user.studentId === friend.studentId) {
       throw new BadRequestException('자기 자신을 친구로 등록할 수 없습니다.');
     }

@@ -36,16 +36,6 @@ export class UserRepository {
     });
   }
 
-  async createUser(payload: UserPayload, sejongPid: string) {
-    await this.prismaService.user.create({
-      data: {
-        studentId: payload.studentId,
-        name: payload.name,
-        sejongPid: sejongPid,
-      },
-    });
-  }
-
   async updateOrCreateUser(
     studentId: string,
     name: string,
