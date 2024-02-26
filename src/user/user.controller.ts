@@ -108,6 +108,7 @@ export class UserController {
     summary: '친구 목록 조회',
     description: '친구 목록을 조회합니다.',
   })
+  @ApiOkResponse({ type: FriendListDto })
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   async getFriends(@CurrentUser() user: UserInfo): Promise<FriendListDto> {

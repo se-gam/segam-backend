@@ -151,7 +151,7 @@ export class StudyroomController {
     summary: '스터디룸 인원 추가 확인 API',
     description: '추가 가능한 친구인지 확인합니다.',
   })
-  @ApiCreatedResponse()
+  @ApiCreatedResponse({ type: UserPidDto })
   @ApiBadRequestResponse({
     description: '예약이 불가능합니다. (스터디원으로 추가 불가능)',
   })
