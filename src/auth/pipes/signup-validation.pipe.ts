@@ -27,6 +27,7 @@ export class PasswordValidationPipe implements PipeTransform {
       throw new BadRequestException('비밀번호는 암호화된 문자열이어야 합니다.');
     }
     return {
+      ...value,
       password: this.passwordService.decryptPassword(value.password),
     };
   }
