@@ -3,6 +3,7 @@ import { User } from '@prisma/client';
 import { UserInfo } from 'src/auth/types/user-info.type';
 import { PrismaService } from 'src/common/services/prisma.service';
 import { RawUser } from 'src/studyroom/types/reservationResponse.type';
+import * as _ from 'lodash';
 
 @Injectable()
 export class UserRepository {
@@ -178,25 +179,15 @@ export class UserRepository {
     return await this.prismaService.$transaction(async (tx) => {
       const friends = await tx.friend.findMany({
         where: {
-          OR: [
-            {
-              user1Id: studentId,
-            },
-            {
-              user2Id: studentId,
-            },
-          ],
+          requestUserId: studentId,
           deletedAt: null,
         },
         select: {
-          user1Id: true,
-          user2Id: true,
+          receiveUserId: true,
         },
       });
 
-      const friendIds = friends.map((friend) => {
-        return friend.user1Id === studentId ? friend.user2Id : friend.user1Id;
-      });
+      const friendIds = _.flatMap(friends, 'receiveUserId');
 
       return tx.user.findMany({
         where: {
