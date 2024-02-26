@@ -35,28 +35,23 @@ export class UserRepository {
     });
   }
 
-  async getOrCreateUser(studentId: string, name: string): Promise<UserInfo> {
-    const user = await this.prismaService.user.findUnique({
+  async updateOrCreateUser(
+    studentId: string,
+    name: string,
+    sejongPid: string,
+  ): Promise<UserInfo> {
+    return await this.prismaService.user.upsert({
       where: {
-        studentId,
+        studentId: studentId,
       },
-    });
-
-    if (user) {
-      return user;
-    }
-
-    return await this.prismaService.user.create({
-      data: {
-        studentId,
-        sejongPid: studentId,
-        name,
+      update: {
+        sejongPid: sejongPid,
+        deletedAt: null,
       },
-      select: {
-        studentId: true,
-        sejongPid: true,
-        name: true,
-        departmentName: true,
+      create: {
+        studentId: studentId,
+        sejongPid: sejongPid,
+        name: name,
       },
     });
   }
@@ -67,17 +62,6 @@ export class UserRepository {
         studentId: {
           in: ids,
         },
-      },
-    });
-  }
-
-  async updateUserPid(studentId: string, pid: string) {
-    await this.prismaService.user.update({
-      where: {
-        studentId: studentId,
-      },
-      data: {
-        sejongPid: pid,
       },
     });
   }
