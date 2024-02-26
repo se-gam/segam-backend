@@ -34,6 +34,9 @@ export class StudyroomService {
 
   @Cron('*/10 * * * * *')
   async handleCron() {
+    if (this.configService.get<string>('NODE_ENV') !== 'dev') {
+      return;
+    }
     const res = await this.axiosService.get(
       this.configService.get<string>('CRAWLER_API_ROOT') + '/calendar',
     );
