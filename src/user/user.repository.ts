@@ -4,6 +4,7 @@ import { UserInfo } from 'src/auth/types/user-info.type';
 import { PrismaService } from 'src/common/services/prisma.service';
 import { RawUser } from 'src/studyroom/types/reservationResponse.type';
 import * as _ from 'lodash';
+import { UserPayload } from './payload/user.payload';
 
 @Injectable()
 export class UserRepository {
@@ -35,12 +36,22 @@ export class UserRepository {
     });
   }
 
+  async createUser(payload: UserPayload, sejongPid: string) {
+    await this.prismaService.user.create({
+      data: {
+        studentId: payload.studentId,
+        name: payload.name,
+        sejongPid: sejongPid,
+      },
+    });
+  }
+
   async updateOrCreateUser(
     studentId: string,
     name: string,
     sejongPid: string,
-  ): Promise<UserInfo> {
-    return await this.prismaService.user.upsert({
+  ): Promise<void> {
+    await this.prismaService.user.upsert({
       where: {
         studentId: studentId,
       },
@@ -79,11 +90,11 @@ export class UserRepository {
     });
   }
 
-  async addUserAsFriend(friendId: string, user: UserInfo): Promise<void> {
+  async addUserAsFriend(friendId: string, userId: string): Promise<void> {
     await this.prismaService.$transaction(async (tx) => {
       const isFriend = await tx.friend.findFirst({
         where: {
-          requestUserId: user.studentId,
+          requestUserId: userId,
           receiveUserId: friendId,
         },
       });
@@ -102,7 +113,7 @@ export class UserRepository {
       } else {
         await tx.friend.create({
           data: {
-            requestUserId: user.studentId,
+            requestUserId: userId,
             receiveUserId: friendId,
           },
         });

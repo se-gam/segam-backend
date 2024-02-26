@@ -1,17 +1,26 @@
 import {
   BadRequestException,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { UserInfo } from 'src/auth/types/user-info.type';
 import { FriendListDto } from './dto/friend.dto';
 import { PushTokenPayload } from './payload/pushToken.payload';
 import { UserPayload } from './payload/user.payload';
 import { UserRepository } from './user.repository';
+import { ReservationService } from 'src/studyroom/reservation.service';
+import { StudyroomUserPayload } from 'src/studyroom/payload/studyroomUserPayload.payload';
 
 @Injectable()
 export class UserService {
-  constructor(private readonly userRepository: UserRepository) {}
+  constructor(
+    private readonly userRepository: UserRepository,
+    private readonly reservationService: ReservationService,
+  ) {}
+
+  private static verificationDate = new Date('2023-02-30');
 
   async updatePushToken(
     payload: PushTokenPayload,
@@ -20,18 +29,58 @@ export class UserService {
     await this.userRepository.updatePushToken(payload.pushToken, user);
   }
 
+  async createUser(
+    payload: StudyroomUserPayload,
+    userId: string,
+  ): Promise<void> {
+    try {
+      const friendPid = await this.reservationService.checkUserAvailablity(
+        userId,
+        payload,
+      );
+
+      await this.userRepository.createUser(
+        {
+          studentId: payload.friendId,
+          name: payload.friendName,
+          password: payload.password,
+        },
+        friendPid.sejongPid,
+      );
+    } catch (error) {
+      if (error.status === 400) {
+        throw new BadRequestException('해당 id의 학생을 찾을 수 없습니다.');
+      } else if (error.status === 401) {
+        throw new UnauthorizedException('포털 로그인에 실패했습니다.');
+      } else if (error.status >= 400) {
+        throw new InternalServerErrorException('Internal Server Error');
+      }
+    }
+  }
+
   async addUserAsFriend(payload: UserPayload, user: UserInfo): Promise<void> {
     const friend = await this.userRepository.getUserByStudentId(
       payload.studentId,
     );
+
     if (!friend) {
-      throw new NotFoundException('존재하지 않는 사용자입니다.');
-    }
-    if (user.studentId === friend.studentId) {
+      await this.createUser(
+        {
+          friendId: payload.studentId,
+          friendName: payload.name,
+          password: payload.password,
+          date: UserService.verificationDate,
+        },
+        user.studentId,
+      );
+    } else if (user.studentId === friend.studentId) {
       throw new BadRequestException('자기 자신을 친구로 등록할 수 없습니다.');
     }
 
-    await this.userRepository.addUserAsFriend(friend.studentId, user);
+    await this.userRepository.addUserAsFriend(
+      payload.studentId,
+      user.studentId,
+    );
   }
 
   async deleteFriend(friendId: string, user: UserInfo): Promise<void> {
