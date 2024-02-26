@@ -112,10 +112,12 @@ export class UserRepository {
 
   async deleteFriend(friendId: string, user: UserInfo): Promise<void> {
     await this.prismaService.$transaction(async (tx) => {
-      const isFriend = await tx.friend.findFirst({
+      const isFriend = await tx.friend.findUnique({
         where: {
-          requestUserId: user.studentId,
-          receiveUserId: friendId,
+          requestUserId_receiveUserId: {
+            requestUserId: user.studentId,
+            receiveUserId: friendId,
+          },
         },
       });
 

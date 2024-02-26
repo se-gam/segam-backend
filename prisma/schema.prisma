@@ -231,5 +231,6 @@ model Friend {
   requestUser     User              @relation(name: "user1", fields: [requestUserId], references: [studentId])
   receiveUser     User              @relation(name: "user2", fields: [receiveUserId], references: [studentId])
   
+  @@unique([requestUserId,receiveUserId])
   @@map("friend")
 }
