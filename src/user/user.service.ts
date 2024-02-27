@@ -72,7 +72,17 @@ export class UserService {
       throw new BadRequestException('자기 자신을 친구로 등록할 수 없습니다.');
     }
 
+    const relation = await this.userRepository.getFriendRelation(
+      payload.studentId,
+      user.studentId,
+    );
+
+    if (relation && !relation.deletedAt) {
+      throw new BadRequestException('이미 친구로 등록된 사용자입니다.');
+    }
+
     await this.userRepository.addUserAsFriend(
+      relation,
       payload.studentId,
       user.studentId,
     );

@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { User } from '@prisma/client';
+import { Friend, User } from '@prisma/client';
 import { UserInfo } from 'src/auth/types/user-info.type';
 import { PrismaService } from 'src/common/services/prisma.service';
 import { RawUser } from 'src/studyroom/types/reservationResponse.type';
@@ -80,35 +80,41 @@ export class UserRepository {
     });
   }
 
-  async addUserAsFriend(friendId: string, userId: string): Promise<void> {
-    await this.prismaService.$transaction(async (tx) => {
-      const isFriend = await tx.friend.findFirst({
-        where: {
+  async getFriendRelation(friendId: string, userId: string): Promise<Friend> {
+    const friend = await this.prismaService.friend.findUnique({
+      where: {
+        requestUserId_receiveUserId: {
+          receiveUserId: friendId,
+          requestUserId: userId,
+        },
+      },
+    });
+
+    return friend;
+  }
+
+  async addUserAsFriend(
+    relation: Friend | null,
+    friendId: string,
+    userId: string,
+  ): Promise<void> {
+    if (!relation) {
+      await this.prismaService.friend.create({
+        data: {
           requestUserId: userId,
           receiveUserId: friendId,
         },
       });
-
-      if (isFriend && !isFriend.deletedAt) {
-        throw new BadRequestException('이미 친구로 등록된 사용자입니다.');
-      } else if (isFriend && isFriend.deletedAt) {
-        await tx.friend.update({
-          where: {
-            id: isFriend.id,
-          },
-          data: {
-            deletedAt: null,
-          },
-        });
-      } else {
-        await tx.friend.create({
-          data: {
-            requestUserId: userId,
-            receiveUserId: friendId,
-          },
-        });
-      }
-    });
+    } else if (relation.deletedAt) {
+      await this.prismaService.friend.update({
+        where: {
+          id: relation.id,
+        },
+        data: {
+          deletedAt: null,
+        },
+      });
+    }
   }
 
   async deleteFriend(friendId: string, user: UserInfo): Promise<void> {

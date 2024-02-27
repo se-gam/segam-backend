@@ -123,11 +123,17 @@ export class StudyroomService {
       throw new BadRequestException('자기 자신을 친구로 등록할 수 없습니다.');
     }
 
-    try {
-      await this.userRepository.addUserAsFriend(payload.friendId, userId);
-    } catch (error) {
-      if (error.status === 400) {
-      }
+    const relation = await this.userRepository.getFriendRelation(
+      payload.friendId,
+      userId,
+    );
+
+    if (!relation || relation.deletedAt) {
+      await this.userRepository.addUserAsFriend(
+        relation,
+        payload.friendId,
+        userId,
+      );
     }
 
     return friendPid;
