@@ -59,6 +59,7 @@ export class AuthRepository {
           data: {
             os: payload.os,
             pushToken: payload.pushToken,
+            deletedAt: null,
           },
         });
       }
