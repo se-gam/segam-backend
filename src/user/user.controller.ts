@@ -114,4 +114,19 @@ export class UserController {
   async getFriends(@CurrentUser() user: UserInfo): Promise<FriendListDto> {
     return this.userService.getFriends(user);
   }
+
+  @Version('1')
+  @Delete('')
+  @ApiOperation({
+    summary: '탈퇴',
+    description: '사용자를 탈퇴입니다. (Soft Delete)',
+  })
+  @ApiNoContentResponse({
+    description: '탈퇴 성공',
+  })
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  async deleteUser(@CurrentUser() user: UserInfo): Promise<void> {
+    await this.userService.deleteUser(user);
+  }
 }
