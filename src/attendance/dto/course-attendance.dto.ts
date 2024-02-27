@@ -108,6 +108,13 @@ export class CourseAttendanceDto {
         (job: AssignmentData | LectureData) =>
           !job.users[0].isDone && job.endsAt > today,
       )
+      .filter((job: AssignmentData | LectureData) => {
+        if ('startsAt' in job) {
+          return job.startsAt < today && !job.users[0].isDone;
+        } else {
+          return true;
+        }
+      })
       .map((job: AssignmentData | LectureData) => job.endsAt)
       .min()
       .value();
