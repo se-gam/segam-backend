@@ -222,15 +222,15 @@ model UserReservation {
 
 model Friend {
   id              Int               @id @default(autoincrement())
-  user1Id         String            @map("user1_id")
-  user2Id         String            @map("user2_id")
+  requestUserId   String            @map("request_user_id")
+  receiveUserId   String            @map("receive_user_id")
   createdAt       DateTime          @default(now()) @map("created_at")
   updatedAt       DateTime          @updatedAt @map("updated_at")
   deletedAt       DateTime?         @map("deleted_at")
 
-  user1           User              @relation(name: "user1", fields: [user1Id], references: [studentId])
-  user2           User              @relation(name: "user2", fields: [user2Id], references: [studentId])
-
-  @@unique([user1Id, user2Id])
+  requestUser     User              @relation(name: "user1", fields: [requestUserId], references: [studentId])
+  receiveUser     User              @relation(name: "user2", fields: [receiveUserId], references: [studentId])
+  
+  @@unique([requestUserId,receiveUserId])
   @@map("friend")
 }

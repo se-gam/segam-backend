@@ -5,6 +5,7 @@ import { ReservationService } from './reservation.service';
 import { StudyroomController } from './studyroom.controller';
 import { StudyroomRepository } from './studyroom.repository';
 import { StudyroomService } from './studyroom.service';
+import { UserService } from 'src/user/user.service';
 
 @Module({
   imports: [ScheduleModule.forRoot()],
@@ -14,6 +15,7 @@ import { StudyroomService } from './studyroom.service';
     StudyroomRepository,
     ReservationService,
     UserRepository,
+    UserService,
   ],
 })
 export class StudyroomModule {}

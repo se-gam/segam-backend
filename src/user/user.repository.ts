@@ -1,8 +1,10 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { User } from '@prisma/client';
+import { Friend, User } from '@prisma/client';
 import { UserInfo } from 'src/auth/types/user-info.type';
 import { PrismaService } from 'src/common/services/prisma.service';
 import { RawUser } from 'src/studyroom/types/reservationResponse.type';
+import * as _ from 'lodash';
+import { UserPayload } from './payload/user.payload';
 
 @Injectable()
 export class UserRepository {
@@ -34,28 +36,23 @@ export class UserRepository {
     });
   }
 
-  async getOrCreateUser(studentId: string, name: string): Promise<UserInfo> {
-    const user = await this.prismaService.user.findUnique({
+  async updateOrCreateUser(
+    studentId: string,
+    name: string,
+    sejongPid: string,
+  ): Promise<void> {
+    await this.prismaService.user.upsert({
       where: {
-        studentId,
+        studentId: studentId,
       },
-    });
-
-    if (user) {
-      return user;
-    }
-
-    return await this.prismaService.user.create({
-      data: {
-        studentId,
-        sejongPid: studentId,
-        name,
+      update: {
+        sejongPid: sejongPid,
+        deletedAt: null,
       },
-      select: {
-        studentId: true,
-        sejongPid: true,
-        name: true,
-        departmentName: true,
+      create: {
+        studentId: studentId,
+        sejongPid: sejongPid,
+        name: name,
       },
     });
   }
@@ -66,17 +63,6 @@ export class UserRepository {
         studentId: {
           in: ids,
         },
-      },
-    });
-  }
-
-  async updateUserPid(studentId: string, pid: string) {
-    await this.prismaService.user.update({
-      where: {
-        studentId: studentId,
-      },
-      data: {
-        sejongPid: pid,
       },
     });
   }
@@ -94,59 +80,51 @@ export class UserRepository {
     });
   }
 
-  async addUserAsFriend(friendId: string, user: UserInfo): Promise<void> {
-    await this.prismaService.$transaction(async (tx) => {
-      const isFriend = await tx.friend.findFirst({
-        where: {
-          OR: [
-            {
-              user1Id: user.studentId,
-              user2Id: friendId,
-            },
-            {
-              user1Id: friendId,
-              user2Id: user.studentId,
-            },
-          ],
+  async getFriendRelation(friendId: string, userId: string): Promise<Friend> {
+    const friend = await this.prismaService.friend.findUnique({
+      where: {
+        requestUserId_receiveUserId: {
+          receiveUserId: friendId,
+          requestUserId: userId,
+        },
+      },
+    });
+
+    return friend;
+  }
+
+  async addUserAsFriend(
+    relation: Friend | null,
+    friendId: string,
+    userId: string,
+  ): Promise<void> {
+    if (!relation) {
+      await this.prismaService.friend.create({
+        data: {
+          requestUserId: userId,
+          receiveUserId: friendId,
         },
       });
-
-      if (isFriend && !isFriend.deletedAt) {
-        throw new BadRequestException('이미 친구로 등록된 사용자입니다.');
-      } else if (isFriend && isFriend.deletedAt) {
-        await tx.friend.update({
-          where: {
-            id: isFriend.id,
-          },
-          data: {
-            deletedAt: null,
-          },
-        });
-      } else {
-        await tx.friend.create({
-          data: {
-            user1Id: user.studentId,
-            user2Id: friendId,
-          },
-        });
-      }
-    });
+    } else if (relation.deletedAt) {
+      await this.prismaService.friend.update({
+        where: {
+          id: relation.id,
+        },
+        data: {
+          deletedAt: null,
+        },
+      });
+    }
   }
 
   async deleteFriend(friendId: string, user: UserInfo): Promise<void> {
     await this.prismaService.$transaction(async (tx) => {
-      const isFriend = await tx.friend.findFirst({
+      const isFriend = await tx.friend.findUnique({
         where: {
-          OR: [
-            {
-              user1Id: user.studentId,
-              user2Id: friendId,
-            },
-            {
-              user1Id: friendId,
-              user2Id: user.studentId,
-            },
-          ],
+          requestUserId_receiveUserId: {
+            requestUserId: user.studentId,
+            receiveUserId: friendId,
+          },
         },
       });
 
@@ -156,16 +134,7 @@ export class UserRepository {
 
       await tx.friend.updateMany({
         where: {
-          OR: [
-            {
-              user1Id: user.studentId,
-              user2Id: friendId,
-            },
-            {
-              user1Id: friendId,
-              user2Id: user.studentId,
-            },
-          ],
+          id: isFriend.id,
         },
         data: {
           deletedAt: new Date(),
@@ -178,25 +147,15 @@ export class UserRepository {
     return await this.prismaService.$transaction(async (tx) => {
       const friends = await tx.friend.findMany({
         where: {
-          OR: [
-            {
-              user1Id: studentId,
-            },
-            {
-              user2Id: studentId,
-            },
-          ],
+          requestUserId: studentId,
           deletedAt: null,
         },
         select: {
-          user1Id: true,
-          user2Id: true,
+          receiveUserId: true,
         },
       });
 
-      const friendIds = friends.map((friend) => {
-        return friend.user1Id === studentId ? friend.user2Id : friend.user1Id;
-      });
+      const friendIds = _.flatMap(friends, 'receiveUserId');
 
       return tx.user.findMany({
         where: {

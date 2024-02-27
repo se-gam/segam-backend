@@ -90,14 +90,11 @@ export class ReservationService {
     if (!friendPid)
       throw new InternalServerErrorException('추가할 수 없는 사용자입니다.');
 
-    const friend = await this.userRepository.getOrCreateUser(
+    await this.userRepository.updateOrCreateUser(
       payload.friendId,
       payload.friendName,
+      friendPid,
     );
-
-    if (friend.sejongPid !== friendPid) {
-      await this.userRepository.updateUserPid(friend.studentId, friendPid);
-    }
 
     return UserPidDto.from(friendPid);
   }

@@ -65,7 +65,7 @@ export class UserController {
   })
   @ApiBadRequestResponse({
     description:
-      '이미 친구로 등록된 사용자입니다. | 자기 자신을 친구로 등록할 수 없습니다.',
+      '이미 친구로 등록된 사용자입니다. | 자기 자신을 친구로 등록할 수 없습니다. | 해당 id의 학생을 찾을 수 없습니다. (학번 - 이름 서버에서 불일치시)',
   })
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
@@ -108,6 +108,7 @@ export class UserController {
     summary: '친구 목록 조회',
     description: '친구 목록을 조회합니다.',
   })
+  @ApiOkResponse({ type: FriendListDto })
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   async getFriends(@CurrentUser() user: UserInfo): Promise<FriendListDto> {
