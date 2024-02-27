@@ -4,16 +4,15 @@ import {
   InternalServerErrorException,
   NotFoundException,
   UnauthorizedException,
-  UnsupportedMediaTypeException,
 } from '@nestjs/common';
 import { UserInfo } from 'src/auth/types/user-info.type';
+import { UserPidDto } from 'src/studyroom/dto/userPid.dto';
+import { StudyroomUserPayload } from 'src/studyroom/payload/studyroomUserPayload.payload';
+import { ReservationService } from 'src/studyroom/reservation.service';
 import { FriendListDto } from './dto/friend.dto';
 import { PushTokenPayload } from './payload/pushToken.payload';
 import { UserPayload } from './payload/user.payload';
 import { UserRepository } from './user.repository';
-import { ReservationService } from 'src/studyroom/reservation.service';
-import { StudyroomUserPayload } from 'src/studyroom/payload/studyroomUserPayload.payload';
-import { UserPidDto } from 'src/studyroom/dto/userPid.dto';
 
 @Injectable()
 export class UserService {
@@ -104,5 +103,9 @@ export class UserService {
     return FriendListDto.from(
       await this.userRepository.getFriendsByStudentId(user.studentId),
     );
+  }
+
+  async deleteUser(user: UserInfo): Promise<void> {
+    await this.userRepository.deleteUser(user);
   }
 }

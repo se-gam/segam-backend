@@ -1,10 +1,9 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { Friend, User } from '@prisma/client';
+import * as _ from 'lodash';
 import { UserInfo } from 'src/auth/types/user-info.type';
 import { PrismaService } from 'src/common/services/prisma.service';
 import { RawUser } from 'src/studyroom/types/reservationResponse.type';
-import * as _ from 'lodash';
-import { UserPayload } from './payload/user.payload';
 
 @Injectable()
 export class UserRepository {
@@ -171,6 +170,17 @@ export class UserRepository {
           departmentName: true,
         },
       });
+    });
+  }
+
+  async deleteUser(user: UserInfo): Promise<void> {
+    await this.prismaService.user.update({
+      where: {
+        studentId: user.studentId,
+      },
+      data: {
+        deletedAt: new Date(),
+      },
     });
   }
 }
