@@ -1,0 +1,2434 @@
+[
+  {
+    "name": "가츠시 건대점",
+    "cuisineType": "일식",
+    "address": "서울 광진구 화양동 498-1",
+    "roadAddress": "서울 광진구 광나루로 418",
+    "number": "02-444-2355",
+    "businessHours": "매일 11:00 ~ 21:30"
+  },
+  {
+    "name": "래빗홀버거컴퍼니",
+    "cuisineType": "양식",
+    "address": "서울 광진구 화양동 490-2",
+    "roadAddress": "서울 광진구 광나루로 424",
+    "number": "02-446-0424",
+    "businessHours": "월~토 11:00 ~ 21:00"
+  },
+  {
+    "name": "미스터피자 어린이대공원점",
+    "cuisineType": "피자",
+    "address": "서울 광진구 화양동 499-1",
+    "roadAddress": "서울 광진구 광나루로 416",
+    "number": "02-456-6503",
+    "businessHours": "매일 11:00 ~ 22:30"
+  },
+  {
+    "name": "개미집",
+    "cuisineType": "한식",
+    "address": "서울 광진구 화양동 495-16",
+    "roadAddress": "서울 광진구 광나루로24길 12",
+    "number": "02-444-2167",
+    "businessHours": "매일 11:00 ~ 23:00"
+  },
+  {
+    "name": "통큰감자탕",
+    "cuisineType": "한식",
+    "address": "서울 광진구 화양동 507-3",
+    "roadAddress": "서울 광진구 광나루로26길 16",
+    "number": "02-456-8279",
+    "businessHours": "목요일"
+  },
+  {
+    "name": "밀플랜비 서울건국대점",
+    "cuisineType": "양식",
+    "address": "서울 광진구 화양동 507-6",
+    "roadAddress": "서울 광진구 광나루로24길 15",
+    "number": "070-7785-8992",
+    "businessHours": "월,화,수,목,금,일 10:30 ~ 21:30"
+  },
+  {
+    "name": "춘천골닭갈비",
+    "cuisineType": "한식",
+    "address": "서울 광진구 화양동 507-3",
+    "roadAddress": "서울 광진구 광나루로26길 16",
+    "number": "0507-1376-7396",
+    "businessHours": "월~토 11:00 ~ 22:00"
+  },
+  {
+    "name": "불난떡볶이 건대점",
+    "cuisineType": "분식",
+    "address": "서울 광진구 화양동 504-2",
+    "roadAddress": "서울 광진구 능동로16길 51",
+    "number": "02-444-4343",
+    "businessHours": "매일 11:00 ~ 01:00"
+  },
+  {
+    "name": "주먹구구",
+    "cuisineType": "한식",
+    "address": "서울 광진구 화양동 111-72",
+    "roadAddress": "서울 광진구 광나루로 404",
+    "number": "02-446-2244",
+    "businessHours": "매일 16:00 ~ 01:00"
+  },
+  {
+    "name": "원갈비",
+    "cuisineType": "한식",
+    "address": "서울 광진구 화양동 527",
+    "roadAddress": "서울 광진구 광나루로 410",
+    "number": "02-456-8914",
+    "businessHours": "매일 10:30 ~ 22:30"
+  },
+  {
+    "name": "진성가야지",
+    "cuisineType": "한식",
+    "address": "서울 광진구 화양동 516-2",
+    "roadAddress": "서울 광진구 능동로16길 46",
+    "number": "02-444-9668",
+    "businessHours": null
+  },
+  {
+    "name": "왕십리정곱창",
+    "cuisineType": "한식",
+    "address": "서울 광진구 화양동 111-127",
+    "roadAddress": "서울 광진구 능동로19길 5",
+    "number": "02-497-9610",
+    "businessHours": "월~토 16:00 ~ 02:00"
+  },
+  {
+    "name": "미식일가",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 373-9",
+    "roadAddress": "서울 광진구 광나루로19길 9",
+    "number": "010-5603-9282",
+    "businessHours": "월~금 15:00 ~ 00:00"
+  },
+  {
+    "name": "우동연가 화양점",
+    "cuisineType": "일식",
+    "address": "서울 광진구 화양동 111-36",
+    "roadAddress": "서울 광진구 능동로19길 27",
+    "number": "02-461-6978",
+    "businessHours": "매일 00:00 ~ 24:00"
+  },
+  {
+    "name": "고을칼국수",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 371-4",
+    "roadAddress": "서울 광진구 광나루로17길 14-5",
+    "number": null,
+    "businessHours": "일요일"
+  },
+  {
+    "name": "육회이야기 화양점",
+    "cuisineType": "한식",
+    "address": "서울 광진구 화양동 186",
+    "roadAddress": "서울 광진구 광나루로 380",
+    "number": "02-469-6555",
+    "businessHours": null
+  },
+  {
+    "name": "고기굽는방앗간 어린이대공원역점",
+    "cuisineType": "한식",
+    "address": "서울 광진구 화양동 18-25",
+    "roadAddress": "서울 광진구 동일로30길 49",
+    "number": "02-498-7405",
+    "businessHours": "매일 16:00 ~ 02:00"
+  },
+  {
+    "name": "세종원 군자본점",
+    "cuisineType": "중식",
+    "address": "서울 광진구 군자동 361-32",
+    "roadAddress": "서울 광진구 광나루로 373",
+    "number": "02-499-1800",
+    "businessHours": "매일 10:30 ~ 21:00"
+  },
+  {
+    "name": "육회공작소 세종대점",
+    "cuisineType": "한식",
+    "address": "서울 광진구 화양동 119-5",
+    "roadAddress": "서울 광진구 군자로 50",
+    "number": "02-461-9335",
+    "businessHours": null
+  },
+  {
+    "name": "인정국물떡볶이 건대점",
+    "cuisineType": "분식",
+    "address": "서울 광진구 화양동 16-90",
+    "roadAddress": "서울 광진구 군자로 31-1",
+    "number": "0507-982-6727",
+    "businessHours": "매일 11:00 ~ 02:00"
+  },
+  {
+    "name": "짱돌",
+    "cuisineType": "한식",
+    "address": "서울 광진구 화양동 132-49",
+    "roadAddress": "서울 광진구 군자로 32-1",
+    "number": "02-461-2934",
+    "businessHours": null
+  },
+  {
+    "name": "만복국수집 세종대점",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 358-9",
+    "roadAddress": "서울 광진구 광나루로 361",
+    "number": "02-498-1548",
+    "businessHours": "월~금 17:00 ~ 03:00"
+  },
+  {
+    "name": "또봉이통닭 화양점",
+    "cuisineType": "치킨",
+    "address": "서울 광진구 화양동 18-26",
+    "roadAddress": "서울 광진구 동일로30길 51",
+    "number": "02-499-2029",
+    "businessHours": "매일 18:00 ~ 07:00"
+  },
+  {
+    "name": "헬로우낙곱새 군자점",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 358-9",
+    "roadAddress": "서울 광진구 광나루로 361",
+    "number": "070-4420-3907",
+    "businessHours": null
+  },
+  {
+    "name": "아람보리밥국수",
+    "cuisineType": "한식",
+    "address": "서울 광진구 화양동 18-21",
+    "roadAddress": "서울 광진구 동일로30길 41",
+    "number": "02-467-1110",
+    "businessHours": null
+  },
+  {
+    "name": "본죽 화양사거리점",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 355-10",
+    "roadAddress": "서울 광진구 광나루로 341",
+    "number": "02-464-6282",
+    "businessHours": "월~토 09:00 ~ 21:00"
+  },
+  {
+    "name": "본토고기구이",
+    "cuisineType": "한식",
+    "address": "서울 성동구 송정동 79-5",
+    "roadAddress": "서울 성동구 동일로 185",
+    "number": "02-466-9253",
+    "businessHours": null
+  },
+  {
+    "name": "스시노칸도 어린이대공원역점",
+    "cuisineType": "일식",
+    "address": "서울 광진구 군자동 503",
+    "roadAddress": "서울 광진구 광나루로 369",
+    "number": null,
+    "businessHours": "매일 11:30 ~ 22:00"
+  },
+  {
+    "name": "철순이네김치찌개 군자점",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 360-20",
+    "roadAddress": "서울 광진구 광나루로 361",
+    "number": "02-466-9066",
+    "businessHours": "매일 00:00 ~ 24:00"
+  },
+  {
+    "name": "1982떡볶이&컵밥",
+    "cuisineType": "분식",
+    "address": "서울 광진구 군자동 346-21",
+    "roadAddress": "서울 광진구 군자로 71",
+    "number": null,
+    "businessHours": null
+  },
+  {
+    "name": "행복한그릇",
+    "cuisineType": "일식",
+    "address": "서울 광진구 군자동 372-6",
+    "roadAddress": "서울 광진구 광나루로17길 24-8",
+    "number": "02-468-7880",
+    "businessHours": "월~금 11:30 ~ 20:30"
+  },
+  {
+    "name": "미스사이공 세종대점",
+    "cuisineType": "아시아음식",
+    "address": "서울 광진구 군자동 98",
+    "roadAddress": "서울 광진구 능동로 209",
+    "number": "02-466-6976",
+    "businessHours": "매일 10:00 ~ 20:00"
+  },
+  {
+    "name": "수돈재감자탕 화양점",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 363-14",
+    "roadAddress": "서울 광진구 군자로 76",
+    "number": null,
+    "businessHours": "월~토 11:00 ~ 22:00"
+  },
+  {
+    "name": "마가을고기",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 364-3",
+    "roadAddress": "서울 광진구 군자로 94-1",
+    "number": null,
+    "businessHours": null
+  },
+  {
+    "name": "더바스켓치킨&떡볶이 세종대점",
+    "cuisineType": "치킨",
+    "address": "서울 광진구 군자동 363-13",
+    "roadAddress": "서울 광진구 군자로 76",
+    "number": "02-499-1548",
+    "businessHours": "매일 11:00 ~ 24:00"
+  },
+  {
+    "name": "아랫목식당",
+    "cuisineType": "한식",
+    "address": "서울 성동구 송정동 73-600",
+    "roadAddress": "서울 성동구 송정14길 14-1",
+    "number": "02-498-3217",
+    "businessHours": null
+  },
+  {
+    "name": "송미당",
+    "cuisineType": "한식",
+    "address": "서울 성동구 송정동 73-911",
+    "roadAddress": "서울 성동구 광나루로11길 46",
+    "number": "010-5186-0911",
+    "businessHours": "수~일 18:00 ~ 02:00"
+  },
+  {
+    "name": "삼삼불닭발",
+    "cuisineType": "한식",
+    "address": "서울 성동구 송정동 73-967",
+    "roadAddress": "서울 성동구 광나루로11길 50",
+    "number": "02-6402-8733",
+    "businessHours": "매일 16:00 ~ 02:00"
+  },
+  {
+    "name": "춘선만두",
+    "cuisineType": "중식",
+    "address": "서울 광진구 군자동 102-13",
+    "roadAddress": "서울 광진구 군자로 101",
+    "number": "02-466-4398",
+    "businessHours": "매일 09:30 ~ 22:30"
+  },
+  {
+    "name": "석기시대짜장마을",
+    "cuisineType": "중식",
+    "address": "서울 광진구 군자동 130-52",
+    "roadAddress": "서울 광진구 군자로 111",
+    "number": "02-467-7123",
+    "businessHours": "일요일"
+  },
+  {
+    "name": "꼬꼬누리 세종대점",
+    "cuisineType": "치킨",
+    "address": "서울 광진구 군자동 364-1",
+    "roadAddress": "서울 광진구 군자로 96",
+    "number": null,
+    "businessHours": null
+  },
+  {
+    "name": "디델리 세종대점",
+    "cuisineType": "분식",
+    "address": "서울 광진구 군자동 149-12",
+    "roadAddress": "서울 광진구 군자로 128",
+    "number": "02-498-1194",
+    "businessHours": "첫째,둘째,셋째 일요일"
+  },
+  {
+    "name": "마라강호마라탕",
+    "cuisineType": "중식",
+    "address": "서울 광진구 군자동 150-22",
+    "roadAddress": "서울 광진구 군자로 129-1",
+    "number": "010-8691-7666",
+    "businessHours": "월~토 10:00 ~ 21:00"
+  },
+  {
+    "name": "썬더치킨 세종대점",
+    "cuisineType": "치킨",
+    "address": "서울 광진구 군자동 149-6",
+    "roadAddress": "서울 광진구 군자로 127",
+    "number": "02-499-2247",
+    "businessHours": null
+  },
+  {
+    "name": "미건테이블",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 130-8",
+    "roadAddress": "서울 광진구 동일로 260",
+    "number": null,
+    "businessHours": "월~토 10:00 ~ 22:00"
+  },
+  {
+    "name": "하이난",
+    "cuisineType": "중식",
+    "address": "서울 광진구 군자동 228",
+    "roadAddress": "서울 광진구 능동로 243-1",
+    "number": "02-466-0832",
+    "businessHours": "월~토 11:30 ~ 22:00"
+  },
+  {
+    "name": "도미노피자 군자점",
+    "cuisineType": "피자",
+    "address": "서울 광진구 군자동 243",
+    "roadAddress": "서울 광진구 능동로 253",
+    "number": "02-464-9119",
+    "businessHours": "매일 11:00 ~ 21:30"
+  },
+  {
+    "name": "이이요",
+    "cuisineType": "일식",
+    "address": "서울 광진구 능동 225-1",
+    "roadAddress": "서울 광진구 능동로32길 6",
+    "number": "02-3437-2225",
+    "businessHours": "월~토 11:50 ~ 22:00"
+  },
+  {
+    "name": "피자컴퍼니 군자점",
+    "cuisineType": "피자",
+    "address": "서울 광진구 능동 320-37",
+    "roadAddress": "서울 광진구 능동로32길 12",
+    "number": "02-454-2496",
+    "businessHours": "매일 12:00 ~ 24:00"
+  },
+  {
+    "name": "능라도분식",
+    "cuisineType": "분식",
+    "address": "서울 광진구 능동 225-30",
+    "roadAddress": "서울 광진구 천호대로110길 50",
+    "number": "02-455-0322",
+    "businessHours": null
+  },
+  {
+    "name": "순애식당",
+    "cuisineType": "한식",
+    "address": "서울 광진구 능동 224-29",
+    "roadAddress": "서울 광진구 천호대로112길 36",
+    "number": "02-461-9723",
+    "businessHours": null
+  },
+  {
+    "name": "둥이분식",
+    "cuisineType": "분식",
+    "address": "서울 광진구 능동 234-19",
+    "roadAddress": "서울 광진구 천호대로112길 37",
+    "number": null,
+    "businessHours": null
+  },
+  {
+    "name": "잉글사이드 군자본점",
+    "cuisineType": "양식",
+    "address": "서울 광진구 능동 282-2",
+    "roadAddress": "서울 광진구 능동로 282",
+    "number": "02-455-7893",
+    "businessHours": "화~금 11:30 ~ 22:00"
+  },
+  {
+    "name": "군자돈까스",
+    "cuisineType": "일식",
+    "address": "서울 광진구 능동 282-6",
+    "roadAddress": "서울 광진구 능동로 276",
+    "number": "02-6402-0010",
+    "businessHours": "월~토 11:30 ~ 21:00"
+  },
+  {
+    "name": "서울뼈칼국수",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 1-1",
+    "roadAddress": "서울 광진구 능동로 285",
+    "number": null,
+    "businessHours": "월~토 11:00 ~ 21:00"
+  },
+  {
+    "name": "대명소곱창",
+    "cuisineType": "한식",
+    "address": "서울 광진구 능동 279-2",
+    "roadAddress": "서울 광진구 능동로 298",
+    "number": null,
+    "businessHours": "매일 15:00 ~ 22:00"
+  },
+  {
+    "name": "천미천훠궈",
+    "cuisineType": "중식",
+    "address": "서울 광진구 능동 220-2",
+    "roadAddress": "서울 광진구 천호대로110길 8-10",
+    "number": "02-429-3826",
+    "businessHours": "매일 11:00 ~ 23:00"
+  },
+  {
+    "name": "이차돌 군자역점",
+    "cuisineType": "한식",
+    "address": "서울 광진구 능동 279-4",
+    "roadAddress": "서울 광진구 능동로 294",
+    "number": "0507-1339-0319",
+    "businessHours": "월,화,수,목,일 11:30 ~ 22:00"
+  },
+  {
+    "name": "찜마을",
+    "cuisineType": "한식",
+    "address": "서울 광진구 능동 220-9",
+    "roadAddress": "서울 광진구 능동로36길 7",
+    "number": "02-444-7774",
+    "businessHours": null
+  },
+  {
+    "name": "푸른바다",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 476-1",
+    "roadAddress": "서울 광진구 군자로 182",
+    "number": "070-4127-8423",
+    "businessHours": null
+  },
+  {
+    "name": "굽네치킨 군자점",
+    "cuisineType": "치킨",
+    "address": "서울 광진구 군자동 45-35",
+    "roadAddress": "서울 광진구 군자로 168",
+    "number": "02-466-9492",
+    "businessHours": "매일 12:00 ~ 24:00"
+  },
+  {
+    "name": "버릴게없소",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 45-35",
+    "roadAddress": "서울 광진구 군자로 168",
+    "number": "02-466-3087",
+    "businessHours": "화~일 16:00 ~ 24:00"
+  },
+  {
+    "name": "장안참나무 숯불갈비전문점",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 53-10",
+    "roadAddress": "서울 광진구 군자로 149-1",
+    "number": "02-467-2796",
+    "businessHours": null
+  },
+  {
+    "name": "꼬밥",
+    "cuisineType": "분식",
+    "address": "서울 광진구 군자동 48-45",
+    "roadAddress": "서울 광진구 면목로 17-1",
+    "number": null,
+    "businessHours": "월~토 11:00 ~ 20:00"
+  },
+  {
+    "name": "플라잉꼬꼬 군자점",
+    "cuisineType": "치킨",
+    "address": "서울 광진구 군자동 45-30",
+    "roadAddress": "서울 광진구 군자로 160",
+    "number": "02-499-8950",
+    "businessHours": null
+  },
+  {
+    "name": "물고기",
+    "cuisineType": "일식",
+    "address": "서울 광진구 군자동 48-59",
+    "roadAddress": "서울 광진구 면목로 1",
+    "number": "02-466-2221",
+    "businessHours": null
+  },
+  {
+    "name": "백쉐프초밥가게",
+    "cuisineType": "일식",
+    "address": "서울 광진구 화양동 527",
+    "roadAddress": "서울 광진구 광나루로 410",
+    "number": "02-456-1463",
+    "businessHours": "월,수,목,금,토,일 11:00 ~ 21:00"
+  },
+  {
+    "name": "돈조은날",
+    "cuisineType": "한식",
+    "address": "서울 광진구 화양동 496-10",
+    "roadAddress": "서울 광진구 광나루로24길 6",
+    "number": "02-458-6463",
+    "businessHours": "월~금 12:00 ~ 24:00"
+  },
+  {
+    "name": "타이인플레이트 건대점",
+    "cuisineType": "아시아음식",
+    "address": "서울 광진구 화양동 507-6",
+    "roadAddress": "서울 광진구 광나루로24길 15",
+    "number": "02-456-0086",
+    "businessHours": "매일 10:30 ~ 22:00"
+  },
+  {
+    "name": "위락밥집",
+    "cuisineType": "한식",
+    "address": "서울 광진구 화양동 514",
+    "roadAddress": "서울 광진구 능동로16길 50",
+    "number": null,
+    "businessHours": null
+  },
+  {
+    "name": "샘터골 건대본점",
+    "cuisineType": "한식",
+    "address": "서울 광진구 화양동 499-34",
+    "roadAddress": "서울 광진구 능동로16길 55",
+    "number": "02-453-9095",
+    "businessHours": "월~금 10:00 ~ 22:00"
+  },
+  {
+    "name": "개미집투",
+    "cuisineType": "한식",
+    "address": "서울 광진구 화양동 495-25",
+    "roadAddress": "서울 광진구 능동로16길 60",
+    "number": "02-452-4015",
+    "businessHours": "매일 10:00 ~ 23:30"
+  },
+  {
+    "name": "길이식당 건대본점",
+    "cuisineType": "중식",
+    "address": "서울 광진구 화양동 495-18",
+    "roadAddress": "서울 광진구 광나루로24길 18",
+    "number": "02-3436-8816",
+    "businessHours": null
+  },
+  {
+    "name": "동궁찜닭 건대점",
+    "cuisineType": "한식",
+    "address": "서울 광진구 화양동 527",
+    "roadAddress": "서울 광진구 광나루로 410",
+    "number": "02-455-6661",
+    "businessHours": "매일 10:30 ~ 22:30"
+  },
+  {
+    "name": "또또떡복이",
+    "cuisineType": "분식",
+    "address": "서울 광진구 화양동 111-124",
+    "roadAddress": "서울 광진구 능동로 183",
+    "number": "02-467-3009",
+    "businessHours": null
+  },
+  {
+    "name": "마늘은약이다보쌈족발 건대점",
+    "cuisineType": "한식",
+    "address": "서울 광진구 화양동 499-38",
+    "roadAddress": "서울 광진구 광나루로22길 7",
+    "number": "0507-1360-3019",
+    "businessHours": null
+  },
+  {
+    "name": "마당족발",
+    "cuisineType": "한식",
+    "address": "서울 광진구 화양동 111-119",
+    "roadAddress": "서울 광진구 능동로 173",
+    "number": "02-468-3030",
+    "businessHours": "매일 11:20 ~ 23:30"
+  },
+  {
+    "name": "혼다라멘 어린이대공원점",
+    "cuisineType": "일식",
+    "address": "서울 광진구 군자동 361-23",
+    "roadAddress": "서울 광진구 광나루로 385",
+    "number": null,
+    "businessHours": "매일 11:00 ~ 22:00"
+  },
+  {
+    "name": "미친피자",
+    "cuisineType": "피자",
+    "address": "서울 광진구 군자동 373-9",
+    "roadAddress": "서울 광진구 광나루로19길 9",
+    "number": null,
+    "businessHours": "매일 10:30 ~ 23:55"
+  },
+  {
+    "name": "우화등선",
+    "cuisineType": "한식",
+    "address": "서울 광진구 화양동 17-1",
+    "roadAddress": "서울 광진구 동일로30길 52",
+    "number": "02-499-2016",
+    "businessHours": "월~금 17:30 ~ 23:00"
+  },
+  {
+    "name": "세종김밥떡볶이",
+    "cuisineType": "분식",
+    "address": "서울 광진구 군자동 361-28",
+    "roadAddress": "서울 광진구 광나루로 375-1",
+    "number": null,
+    "businessHours": "일요일"
+  },
+  {
+    "name": "내담 세종대점",
+    "cuisineType": "한식",
+    "address": "서울 광진구 화양동 113-1",
+    "roadAddress": "서울 광진구 능동로19길 35",
+    "number": "02-2205-2535",
+    "businessHours": null
+  },
+  {
+    "name": "부침개가사람잡네",
+    "cuisineType": "한식",
+    "address": "서울 광진구 화양동 18-24",
+    "roadAddress": "서울 광진구 동일로30길 47",
+    "number": null,
+    "businessHours": "매일 14:00 ~ 02:00"
+  },
+  {
+    "name": "혜화동돈까스극장 서울화양점",
+    "cuisineType": "일식",
+    "address": "서울 광진구 화양동 16-1",
+    "roadAddress": "서울 광진구 군자로 35",
+    "number": "02-467-4377",
+    "businessHours": null
+  },
+  {
+    "name": "호식이두마리치킨 화양점",
+    "cuisineType": "치킨",
+    "address": "서울 광진구 화양동 16-84",
+    "roadAddress": "서울 광진구 군자로7길 3",
+    "number": "02-499-9295",
+    "businessHours": null
+  },
+  {
+    "name": "네네치킨 화양건대점",
+    "cuisineType": "치킨",
+    "address": "서울 광진구 화양동 131-3",
+    "roadAddress": "서울 광진구 군자로 30",
+    "number": null,
+    "businessHours": null
+  },
+  {
+    "name": "동대문엽기떡볶이 군자점",
+    "cuisineType": "분식",
+    "address": "서울 광진구 군자동 358-9",
+    "roadAddress": "서울 광진구 광나루로 361",
+    "number": "02-466-8591",
+    "businessHours": "매일 11:10 ~ 22:50 (홀 주문마감 시간: 21:00)"
+  },
+  {
+    "name": "녹원양꼬치",
+    "cuisineType": "중식",
+    "address": "서울 광진구 화양동 18-16",
+    "roadAddress": "서울 광진구 동일로30길 39",
+    "number": "02-464-3203",
+    "businessHours": "매일 14:00 ~ 01:00"
+  },
+  {
+    "name": "이든한끼",
+    "cuisineType": "한식",
+    "address": "서울 광진구 화양동 20-1",
+    "roadAddress": "서울 광진구 동일로30길 26",
+    "number": "02-463-3498",
+    "businessHours": "일요일"
+  },
+  {
+    "name": "버텍스 건대점",
+    "cuisineType": "퓨전요리",
+    "address": "서울 광진구 군자동 358-9",
+    "roadAddress": "서울 광진구 광나루로 361",
+    "number": "02-469-9992",
+    "businessHours": "매일 11:00 ~ 21:00"
+  },
+  {
+    "name": "하이카오산 군자점",
+    "cuisineType": "아시아음식",
+    "address": "서울 광진구 군자동 358-9",
+    "roadAddress": "서울 광진구 광나루로 361",
+    "number": null,
+    "businessHours": null
+  },
+  {
+    "name": "모다미육",
+    "cuisineType": "한식",
+    "address": "서울 광진구 화양동 21-20",
+    "roadAddress": "서울 광진구 동일로 178",
+    "number": "010-8571-7970",
+    "businessHours": "월~토 17:00 ~ 22:00"
+  },
+  {
+    "name": "화양리정육식당",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 360-24",
+    "roadAddress": "서울 광진구 군자로 65",
+    "number": null,
+    "businessHours": "화~금 16:00 ~ 23:00"
+  },
+  {
+    "name": "일품양평해장국 군자점",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 362-1",
+    "roadAddress": "서울 광진구 군자로 70",
+    "number": "02-499-9613",
+    "businessHours": "매일 07:00 ~ 21:00"
+  },
+  {
+    "name": "성민식당",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 346-20",
+    "roadAddress": "서울 광진구 동일로34길 31",
+    "number": "02-2088-5576",
+    "businessHours": "월~금 11:00 ~ 21:00"
+  },
+  {
+    "name": "파스타집이야 건대점",
+    "cuisineType": "양식",
+    "address": "서울 광진구 군자동 503",
+    "roadAddress": "서울 광진구 광나루로 369",
+    "number": "0503-6213-1313",
+    "businessHours": null
+  },
+  {
+    "name": "백순대본가새맛 군자점",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 358-9",
+    "roadAddress": "서울 광진구 광나루로 361",
+    "number": null,
+    "businessHours": null
+  },
+  {
+    "name": "스시붐",
+    "cuisineType": "일식",
+    "address": "서울 광진구 군자동 371-4",
+    "roadAddress": "서울 광진구 광나루로17길 14-5",
+    "number": "02-466-6077",
+    "businessHours": "월~금 11:30 ~ 20:00"
+  },
+  {
+    "name": "씨즐레스토랑",
+    "cuisineType": "양식",
+    "address": "서울 광진구 군자동 361-24",
+    "roadAddress": "서울 광진구 광나루로 383",
+    "number": "070-4820-0843",
+    "businessHours": "화~일 17:30 ~ 23:30"
+  },
+  {
+    "name": "빅베어8",
+    "cuisineType": "양식",
+    "address": "서울 광진구 군자동 98",
+    "roadAddress": "서울 광진구 능동로 209",
+    "number": "02-462-8802",
+    "businessHours": "월~금 11:30 ~ 21:30"
+  },
+  {
+    "name": "리얼후라이 세종대점",
+    "cuisineType": "치킨",
+    "address": "서울 광진구 군자동 98",
+    "roadAddress": "서울 광진구 능동로 209",
+    "number": null,
+    "businessHours": "매일 10:00 ~ 23:00"
+  },
+  {
+    "name": "석관동떡볶이 세종대점",
+    "cuisineType": "분식",
+    "address": "서울 광진구 군자동 98",
+    "roadAddress": "서울 광진구 능동로 209",
+    "number": "02-469-8281",
+    "businessHours": "매일 11:00 ~ 22:00"
+  },
+  {
+    "name": "얌샘김밥 세종대점",
+    "cuisineType": "분식",
+    "address": "서울 광진구 군자동 98",
+    "roadAddress": "서울 광진구 능동로 209",
+    "number": "02-462-3378",
+    "businessHours": null
+  },
+  {
+    "name": "피자스쿨 세종대점",
+    "cuisineType": "피자",
+    "address": "서울 광진구 군자동 363-6",
+    "roadAddress": "서울 광진구 군자로 82",
+    "number": "02-467-0038",
+    "businessHours": null
+  },
+  {
+    "name": "장수왕족발",
+    "cuisineType": "한식",
+    "address": "서울 성동구 송정동 73-598",
+    "roadAddress": "서울 성동구 광나루로11길 31-1",
+    "number": "02-463-4489",
+    "businessHours": "매일 14:00 ~ 01:00"
+  },
+  {
+    "name": "언택트파스타 광진점",
+    "cuisineType": "양식",
+    "address": "서울 성동구 송정동 73-918",
+    "roadAddress": "서울 성동구 광나루로11길 42",
+    "number": null,
+    "businessHours": null
+  },
+  {
+    "name": "맛이차이나",
+    "cuisineType": "중식",
+    "address": "서울 광진구 군자동 341-47",
+    "roadAddress": "서울 광진구 동일로 224",
+    "number": "02-462-3688",
+    "businessHours": "월~토 11:00 ~ 21:00"
+  },
+  {
+    "name": "무한정수제돈까스 군자점",
+    "cuisineType": "일식",
+    "address": "서울 광진구 군자동 102-37",
+    "roadAddress": "서울 광진구 군자로 102",
+    "number": "02-469-3122",
+    "businessHours": null
+  },
+  {
+    "name": "BBQ 군자점",
+    "cuisineType": "치킨",
+    "address": "서울 광진구 군자동 364",
+    "roadAddress": "서울 광진구 군자로 98",
+    "number": "02-498-7883",
+    "businessHours": "매일 12:00 ~ 24:00"
+  },
+  {
+    "name": "호세야오리바베큐 군자점",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 117-23",
+    "roadAddress": "서울 광진구 동일로52길 15",
+    "number": "02-466-5293",
+    "businessHours": null
+  },
+  {
+    "name": "카레당",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 244",
+    "roadAddress": "서울 광진구 능동로 251",
+    "number": "02-464-4022",
+    "businessHours": "월,화,수,목,금,일 11:00 ~ 20:30"
+  },
+  {
+    "name": "파파존스 광진점",
+    "cuisineType": "피자",
+    "address": "서울 광진구 능동 283-17",
+    "roadAddress": "서울 광진구 능동로 266",
+    "number": "02-455-8081",
+    "businessHours": "매일 11:00 ~ 22:00"
+  },
+  {
+    "name": "사사로운",
+    "cuisineType": "양식",
+    "address": "서울 광진구 능동 208-1",
+    "roadAddress": "서울 광진구 천호대로112길 48-4",
+    "number": "010-6216-1062",
+    "businessHours": "수~일 11:30 ~ 22:00"
+  },
+  {
+    "name": "능동타코집",
+    "cuisineType": "양식",
+    "address": "서울 광진구 능동 221-5",
+    "roadAddress": "서울 광진구 능동로32길 5",
+    "number": "010-8485-1069",
+    "businessHours": "화~일 11:00 ~ 22:00"
+  },
+  {
+    "name": "어머이밥상",
+    "cuisineType": "한식",
+    "address": "서울 광진구 능동 224-15",
+    "roadAddress": "서울 광진구 천호대로112길 28",
+    "number": "02-456-5881",
+    "businessHours": "매일 11:00 ~ 21:00"
+  },
+  {
+    "name": "맵당 군자점",
+    "cuisineType": "한식",
+    "address": "서울 광진구 능동 223-9",
+    "roadAddress": "서울 광진구 능동로34길 27",
+    "number": "02-455-7427",
+    "businessHours": "매일 12:00 ~ 23:50"
+  },
+  {
+    "name": "참맛옛날통닭",
+    "cuisineType": "치킨",
+    "address": "서울 광진구 능동 224-15",
+    "roadAddress": "서울 광진구 천호대로112길 28",
+    "number": "010-7426-5654",
+    "businessHours": "월~금 16:00 ~ 00:00"
+  },
+  {
+    "name": "이화만두",
+    "cuisineType": "분식",
+    "address": "서울 광진구 능동 282-3",
+    "roadAddress": "서울 광진구 능동로 278-1",
+    "number": "02-455-3486",
+    "businessHours": "기타 (오전 11시 ~ 재료소진시까지 (브레이크타임 14:00~17:00))"
+  },
+  {
+    "name": "하오츠",
+    "cuisineType": "중식",
+    "address": "서울 광진구 군자동 1-11",
+    "roadAddress": "서울 광진구 능동로 275",
+    "number": "02-461-8887",
+    "businessHours": "매일 11:00 ~ 22:00"
+  },
+  {
+    "name": "신의주순대와쭈꾸미 군자점",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 2-1",
+    "roadAddress": "서울 광진구 능동로 271-1",
+    "number": "02-464-7775",
+    "businessHours": "매일 00:00 ~ 24:00"
+  },
+  {
+    "name": "고봉민김밥인 서울군자점",
+    "cuisineType": "분식",
+    "address": "서울 광진구 군자동 2-2",
+    "roadAddress": "서울 광진구 능동로 271",
+    "number": "02-462-4871",
+    "businessHours": "월~금 08:00 ~ 21:00 (오후 8시 이후는 김밥포장만 가능)"
+  },
+  {
+    "name": "송정각",
+    "cuisineType": "중식",
+    "address": "서울 광진구 군자동 477-11",
+    "roadAddress": "서울 광진구 능동로31길 8",
+    "number": "02-6339-7765",
+    "businessHours": "월~토 11:30 ~ 21:00"
+  },
+  {
+    "name": "더피자보이즈 광진군자점",
+    "cuisineType": "피자",
+    "address": "서울 광진구 군자동 1-10",
+    "roadAddress": "서울 광진구 능동로 275-1",
+    "number": "070-4259-2333",
+    "businessHours": "매일 12:00 ~ 22:00"
+  },
+  {
+    "name": "행운식당",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 45-16",
+    "roadAddress": "서울 광진구 군자로 160-1",
+    "number": null,
+    "businessHours": "월~금 11:30 ~ 21:00"
+  },
+  {
+    "name": "파쏘",
+    "cuisineType": "양식",
+    "address": "서울 광진구 군자동 476-7",
+    "roadAddress": "서울 광진구 군자로 174",
+    "number": "070-7807-1200",
+    "businessHours": "월~토 17:00 ~ 24:00"
+  },
+  {
+    "name": "하남돼지집 군자역점",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 478-2",
+    "roadAddress": "서울 광진구 군자로 186",
+    "number": "02-499-8798",
+    "businessHours": "매일 17:00 ~ 24:00"
+  },
+  {
+    "name": "해미보쌈순대국",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 476-7",
+    "roadAddress": "서울 광진구 군자로 174",
+    "number": "02-464-3922",
+    "businessHours": null
+  },
+  {
+    "name": "마왕족발 군자역점",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 476-9",
+    "roadAddress": "서울 광진구 능동로31길 16",
+    "number": "02-3409-9292",
+    "businessHours": "매일 11:00 ~ 22:00"
+  },
+  {
+    "name": "마리모",
+    "cuisineType": "일식",
+    "address": "서울 광진구 군자동 49-26",
+    "roadAddress": "서울 광진구 면목로 22-1",
+    "number": "02-462-4186",
+    "businessHours": "월~토 11:00 ~ 23:00"
+  },
+  {
+    "name": "장원참숯민물장어",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 470-5",
+    "roadAddress": "서울 광진구 면목로 30",
+    "number": "02-497-8074",
+    "businessHours": "월~토 15:00 ~ 22:00"
+  },
+  {
+    "name": "군자교",
+    "cuisineType": "중식",
+    "address": "서울 광진구 군자동 65-3",
+    "roadAddress": "서울 광진구 군자로 140",
+    "number": "02-497-0544",
+    "businessHours": null
+  },
+  {
+    "name": "아너무좋아닭발",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 64-6",
+    "roadAddress": "서울 광진구 군자로 132",
+    "number": "02-465-5017",
+    "businessHours": null
+  },
+  {
+    "name": "수비드김치찜",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 150-9",
+    "roadAddress": "서울 광진구 군자로 135",
+    "number": null,
+    "businessHours": null
+  },
+  {
+    "name": "옥돌바베큐",
+    "cuisineType": "치킨",
+    "address": "서울 광진구 군자동 64-9",
+    "roadAddress": "서울 광진구 군자로 138",
+    "number": null,
+    "businessHours": "매일 15:00 ~ 24:00"
+  },
+  {
+    "name": "신봉닭발",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 66-3",
+    "roadAddress": "서울 광진구 군자로 146",
+    "number": null,
+    "businessHours": null
+  },
+  {
+    "name": "천호용궁알탕 광진점",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 194-10",
+    "roadAddress": "서울 광진구 천호대로102길 70",
+    "number": null,
+    "businessHours": null
+  },
+  {
+    "name": "써브웨이 세종대점",
+    "cuisineType": "양식",
+    "address": "서울 광진구 화양동 206",
+    "roadAddress": "서울 광진구 광나루로 390",
+    "number": "02-465-3285",
+    "businessHours": "매일 08:00 ~ 22:00"
+  },
+  {
+    "name": "KFC 세종대점",
+    "cuisineType": "양식",
+    "address": "서울 광진구 화양동 225",
+    "roadAddress": "서울 광진구 광나루로 396",
+    "number": "02-461-3635",
+    "businessHours": "매일 11:00 ~ 24:00"
+  },
+  {
+    "name": "버거킹 군자능동점",
+    "cuisineType": "양식",
+    "address": "서울 광진구 군자동 235",
+    "roadAddress": "서울 광진구 능동로 245",
+    "number": "070-7462-6703",
+    "businessHours": "매일 09:00 ~ 24:00"
+  },
+  {
+    "name": "샐러디 군자역점",
+    "cuisineType": "양식",
+    "address": "서울 광진구 군자동 1-6",
+    "roadAddress": "서울 광진구 능동로 279",
+    "number": "070-8809-9284",
+    "businessHours": "매일 08:00 ~ 22:00"
+  },
+  {
+    "name": "양분식 건대점",
+    "cuisineType": "분식",
+    "address": "서울 광진구 화양동 499-23",
+    "roadAddress": "서울 광진구 광나루로 416",
+    "number": "02-963-2107",
+    "businessHours": null
+  },
+  {
+    "name": "한해",
+    "cuisineType": "한식",
+    "address": "서울 광진구 화양동 499-1",
+    "roadAddress": "서울 광진구 광나루로 416",
+    "number": "010-7799-9785",
+    "businessHours": "매일 11:00 ~ 24:00"
+  },
+  {
+    "name": "화원식당",
+    "cuisineType": "중식",
+    "address": "서울 광진구 화양동 513-1",
+    "roadAddress": "서울 광진구 능동로16길 56-6",
+    "number": "02-454-1888",
+    "businessHours": "매일 10:00 ~ 21:00"
+  },
+  {
+    "name": "미가",
+    "cuisineType": "한식",
+    "address": "서울 광진구 화양동 495-28",
+    "roadAddress": "서울 광진구 광나루로24길 23",
+    "number": "02-458-6828",
+    "businessHours": null
+  },
+  {
+    "name": "소문난 닭칼국수닭곰탕",
+    "cuisineType": "한식",
+    "address": "서울 광진구 화양동 515",
+    "roadAddress": "서울 광진구 능동로16길 48",
+    "number": "02-453-3392",
+    "businessHours": null
+  },
+  {
+    "name": "부리또피아 건국대점",
+    "cuisineType": "양식",
+    "address": "서울 광진구 화양동 504-2",
+    "roadAddress": "서울 광진구 능동로16길 51",
+    "number": "02-447-0018",
+    "businessHours": "월~금 10:00 ~ 23:00"
+  },
+  {
+    "name": "김밥대학라면학과",
+    "cuisineType": "분식",
+    "address": "서울 광진구 화양동 495-10",
+    "roadAddress": "서울 광진구 광나루로24길 8",
+    "number": null,
+    "businessHours": "월~토 08:00 ~ 21:00"
+  },
+  {
+    "name": "왕소구이",
+    "cuisineType": "한식",
+    "address": "서울 광진구 화양동 508-2",
+    "roadAddress": "서울 광진구 광나루로24길 25-4",
+    "number": null,
+    "businessHours": null
+  },
+  {
+    "name": "신통치킨 건대점",
+    "cuisineType": "치킨",
+    "address": "서울 광진구 화양동 516-5",
+    "roadAddress": "서울 광진구 능동로16길 42",
+    "number": "02-444-3850",
+    "businessHours": "매일 14:00 ~ 24:00"
+  },
+  {
+    "name": "건우식당",
+    "cuisineType": "한식",
+    "address": "서울 광진구 화양동 489",
+    "roadAddress": "서울 광진구 광나루로 428",
+    "number": "02-454-6841",
+    "businessHours": null
+  },
+  {
+    "name": "수내닭꼬치",
+    "cuisineType": "한식",
+    "address": "서울 광진구 화양동 111-204",
+    "roadAddress": "서울 광진구 능동로 181",
+    "number": null,
+    "businessHours": "일요일"
+  },
+  {
+    "name": "쌍둥이네칼국수",
+    "cuisineType": "한식",
+    "address": "서울 광진구 화양동 500-3",
+    "roadAddress": "서울 광진구 능동로16길 35",
+    "number": null,
+    "businessHours": null
+  },
+  {
+    "name": "행컵 건대점",
+    "cuisineType": "한식",
+    "address": "서울 광진구 화양동 513",
+    "roadAddress": "서울 광진구 능동로16길 54",
+    "number": "02-454-5751",
+    "businessHours": "매일 10:00 ~ 21:00"
+  },
+  {
+    "name": "은혜즉석떡볶이",
+    "cuisineType": "분식",
+    "address": "서울 광진구 군자동 361-25",
+    "roadAddress": "서울 광진구 광나루로 381-1",
+    "number": "02-468-7401",
+    "businessHours": "매일 10:30 ~ 22:00"
+  },
+  {
+    "name": "알고",
+    "cuisineType": "양식",
+    "address": "서울 광진구 군자동 373-8",
+    "roadAddress": "서울 광진구 광나루로17길 10",
+    "number": "02-3409-2645",
+    "businessHours": "월~토 12:00 ~ 23:00"
+  },
+  {
+    "name": "하남돼지집 세종대점",
+    "cuisineType": "한식",
+    "address": "서울 광진구 화양동 111-27",
+    "roadAddress": "서울 광진구 능동로19길 21-2",
+    "number": "02-498-2780",
+    "businessHours": "월~금 17:00 ~ 24:00"
+  },
+  {
+    "name": "쭈꾸미신",
+    "cuisineType": "한식",
+    "address": "서울 광진구 화양동 213",
+    "roadAddress": "서울 광진구 능동로19길 12",
+    "number": "02-461-0775",
+    "businessHours": "매일 12:00 ~ 24:00"
+  },
+  {
+    "name": "맛닭꼬 어린이대공원역점",
+    "cuisineType": "치킨",
+    "address": "서울 광진구 화양동 111-5",
+    "roadAddress": "서울 광진구 광나루로 380",
+    "number": "02-469-5592",
+    "businessHours": "매일 15:00 ~ 03:00"
+  },
+  {
+    "name": "206숯불구이",
+    "cuisineType": "한식",
+    "address": "서울 광진구 화양동 206",
+    "roadAddress": "서울 광진구 광나루로 390",
+    "number": null,
+    "businessHours": null
+  },
+  {
+    "name": "화양식당",
+    "cuisineType": "한식",
+    "address": "서울 광진구 화양동 228",
+    "roadAddress": "서울 광진구 능동로 185",
+    "number": null,
+    "businessHours": null
+  },
+  {
+    "name": "청춘물고기",
+    "cuisineType": "한식",
+    "address": "서울 광진구 화양동 17-16",
+    "roadAddress": "서울 광진구 군자로 43",
+    "number": null,
+    "businessHours": "화,수,목,일 17:00 ~ 01:00"
+  },
+  {
+    "name": "청년치킨 건대점",
+    "cuisineType": "치킨",
+    "address": "서울 광진구 화양동 17-34",
+    "roadAddress": "서울 광진구 군자로 39",
+    "number": "02-467-9567",
+    "businessHours": null
+  },
+  {
+    "name": "시멘트서울",
+    "cuisineType": "양식",
+    "address": "서울 광진구 화양동 132-6",
+    "roadAddress": "서울 광진구 능동로19길 57",
+    "number": null,
+    "businessHours": "매일 17:30 ~ 05:00"
+  },
+  {
+    "name": "화양돈",
+    "cuisineType": "한식",
+    "address": "서울 광진구 화양동 17-5",
+    "roadAddress": "서울 광진구 동일로30길 50",
+    "number": "02-462-6664",
+    "businessHours": null
+  },
+  {
+    "name": "봉쉐프참치포차",
+    "cuisineType": "일식",
+    "address": "서울 광진구 군자동 360-20",
+    "roadAddress": "서울 광진구 광나루로 361",
+    "number": "02-461-0685",
+    "businessHours": "매일 16:30 ~ 01:30"
+  },
+  {
+    "name": "청진동해장국 화양동점",
+    "cuisineType": "한식",
+    "address": "서울 광진구 화양동 21-49",
+    "roadAddress": "서울 광진구 광나루로 344",
+    "number": null,
+    "businessHours": "매일 00:00 ~ 24:00"
+  },
+  {
+    "name": "초월식당",
+    "cuisineType": "일식",
+    "address": "서울 광진구 화양동 18-16",
+    "roadAddress": "서울 광진구 동일로30길 39",
+    "number": "070-8287-0278",
+    "businessHours": "화~일 11:00 ~ 21:00"
+  },
+  {
+    "name": "본래순대 화양점",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 360-23",
+    "roadAddress": "서울 광진구 군자로 63",
+    "number": "02-466-8373",
+    "businessHours": "매일 09:00 ~ 22:00"
+  },
+  {
+    "name": "굴업도막회",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 362-1",
+    "roadAddress": "서울 광진구 군자로 70",
+    "number": "010-3472-8801",
+    "businessHours": "화~일 17:00 ~ 01:00"
+  },
+  {
+    "name": "달문식당",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 362-1",
+    "roadAddress": "서울 광진구 군자로 70",
+    "number": "02-498-0804",
+    "businessHours": "월~금 11:30 ~ 24:00"
+  },
+  {
+    "name": "지랄닭발 광진점",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 360-20",
+    "roadAddress": "서울 광진구 광나루로 361",
+    "number": "02-453-0625",
+    "businessHours": "매일 17:00 ~ 02:00"
+  },
+  {
+    "name": "세끼락 건대점",
+    "cuisineType": "분식",
+    "address": "서울 광진구 군자동 362-17",
+    "roadAddress": "서울 광진구 군자로10길 29",
+    "number": "02-462-5956",
+    "businessHours": "월,화,수,목,금,일 10:30 ~ 23:00"
+  },
+  {
+    "name": "도로시파스타 연정건대점",
+    "cuisineType": "양식",
+    "address": "서울 광진구 군자동 503",
+    "roadAddress": "서울 광진구 광나루로 369",
+    "number": null,
+    "businessHours": null
+  },
+  {
+    "name": "수숯불직화꼬치 세종대점",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 342-20",
+    "roadAddress": "서울 광진구 군자로 93",
+    "number": "02-462-1017",
+    "businessHours": null
+  },
+  {
+    "name": "찬스불고기부리또 군자점",
+    "cuisineType": "양식",
+    "address": "서울 광진구 군자동 363-13",
+    "roadAddress": "서울 광진구 군자로 76",
+    "number": null,
+    "businessHours": null
+  },
+  {
+    "name": "밀라노떡볶이 광진점",
+    "cuisineType": "분식",
+    "address": "서울 광진구 군자동 346-37",
+    "roadAddress": "서울 광진구 군자로 83",
+    "number": null,
+    "businessHours": null
+  },
+  {
+    "name": "연이네식당",
+    "cuisineType": "한식",
+    "address": "서울 성동구 송정동 73-881",
+    "roadAddress": "서울 성동구 광나루로11길 41",
+    "number": "02-465-5340",
+    "businessHours": null
+  },
+  {
+    "name": "준이네닭발싸군통닭 건대점",
+    "cuisineType": "한식",
+    "address": "서울 성동구 송정동 73-920",
+    "roadAddress": "서울 성동구 광나루로11길 40",
+    "number": "02-468-1337",
+    "businessHours": "월,수,목,금,토,일 17:00 ~ 05:00"
+  },
+  {
+    "name": "탱탱보울",
+    "cuisineType": "양식",
+    "address": "서울 성동구 송정동 73-479",
+    "roadAddress": "서울 성동구 송정14길 12",
+    "number": "0507-1380-6970",
+    "businessHours": "수~일 11:30 ~ 23:00"
+  },
+  {
+    "name": "곱창골",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 344-5",
+    "roadAddress": "서울 광진구 동일로38길 13",
+    "number": "02-3409-5930",
+    "businessHours": null
+  },
+  {
+    "name": "뉴욕떡볶이",
+    "cuisineType": "분식",
+    "address": "서울 광진구 군자동 102-3",
+    "roadAddress": "서울 광진구 군자로 105-2",
+    "number": "02-6071-8088",
+    "businessHours": "월,화,수,목,금,일 11:00 ~ 21:00"
+  },
+  {
+    "name": "밀크밥버거 세종대점",
+    "cuisineType": "분식",
+    "address": "서울 광진구 군자동 102-2",
+    "roadAddress": "서울 광진구 군자로 107",
+    "number": "02-464-7390",
+    "businessHours": null
+  },
+  {
+    "name": "손수제치킨",
+    "cuisineType": "치킨",
+    "address": "서울 광진구 군자동 150-14",
+    "roadAddress": "서울 광진구 군자로 129",
+    "number": "02-465-0366",
+    "businessHours": "월,화,수,목,금,일 16:00 ~ 02:00"
+  },
+  {
+    "name": "곱창하우스",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 149-3",
+    "roadAddress": "서울 광진구 군자로15길 2",
+    "number": "02-469-9726",
+    "businessHours": "월~토 15:00 ~ 24:00"
+  },
+  {
+    "name": "미스코다리 미스터황태 어린이대공원점",
+    "cuisineType": "한식",
+    "address": "서울 광진구 능동 315-9",
+    "roadAddress": "서울 광진구 능동로 246",
+    "number": "02-447-5850",
+    "businessHours": null
+  },
+  {
+    "name": "소사면옥",
+    "cuisineType": "한식",
+    "address": "서울 광진구 능동 283-7",
+    "roadAddress": "서울 광진구 능동로 270",
+    "number": "02-447-0904",
+    "businessHours": "월,수,목,금,토,일 11:00 ~ 21:30"
+  },
+  {
+    "name": "보승회관",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 2-51",
+    "roadAddress": "서울 광진구 능동로 267",
+    "number": "070-5030-5424",
+    "businessHours": "매일 10:00 ~ 22:00"
+  },
+  {
+    "name": "진한방삼계탕 군자점",
+    "cuisineType": "한식",
+    "address": "서울 광진구 능동 315-3",
+    "roadAddress": "서울 광진구 능동로 254",
+    "number": "02-455-6020",
+    "businessHours": "매일 10:30 ~ 22:00"
+  },
+  {
+    "name": "정원",
+    "cuisineType": "한식",
+    "address": "서울 광진구 능동 224-17",
+    "roadAddress": "서울 광진구 천호대로112길 34",
+    "number": "02-444-1600",
+    "businessHours": null
+  },
+  {
+    "name": "중앙식당",
+    "cuisineType": "한식",
+    "address": "서울 광진구 능동 282-6",
+    "roadAddress": "서울 광진구 능동로 276",
+    "number": "02-444-8818",
+    "businessHours": "매일 11:30 ~ 24:00"
+  },
+  {
+    "name": "용식당",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 477-11",
+    "roadAddress": "서울 광진구 능동로31길 8",
+    "number": "02-6953-0556",
+    "businessHours": "매일 16:00 ~ 24:00"
+  },
+  {
+    "name": "삼대나주곰탕",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 1-1",
+    "roadAddress": "서울 광진구 능동로 285",
+    "number": null,
+    "businessHours": null
+  },
+  {
+    "name": "돈수작 능동본점",
+    "cuisineType": "한식",
+    "address": "서울 광진구 능동 220-12",
+    "roadAddress": "서울 광진구 능동로36길 13",
+    "number": "02-455-4535",
+    "businessHours": "매일 13:00 ~ 03:00"
+  },
+  {
+    "name": "세광양대창 군자점",
+    "cuisineType": "한식",
+    "address": "서울 광진구 능동 223-2",
+    "roadAddress": "서울 광진구 능동로36길 16",
+    "number": "02-444-3372",
+    "businessHours": "매일 16:00 ~ 03:00"
+  },
+  {
+    "name": "영미오리탕 군자점",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 467-16",
+    "roadAddress": "서울 광진구 동일로60길 53",
+    "number": "02-463-5222",
+    "businessHours": "화~일 11:00 ~ 21:40"
+  },
+  {
+    "name": "능동국시",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 474-2",
+    "roadAddress": "서울 광진구 능동로35길 23",
+    "number": "02-464-8877",
+    "businessHours": "월,화,수,목,금,일 10:00 ~ 22:00"
+  },
+  {
+    "name": "재천이네가마솥순대국",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 48-9",
+    "roadAddress": "서울 광진구 면목로 21",
+    "number": "02-497-7478",
+    "businessHours": "일요일"
+  },
+  {
+    "name": "하나참치 군자",
+    "cuisineType": "일식",
+    "address": "서울 광진구 군자동 473-10",
+    "roadAddress": "서울 광진구 능동로35길 28",
+    "number": "02-498-3733",
+    "businessHours": "월~토 16:30 ~ 23:30"
+  },
+  {
+    "name": "대돈1975",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 49-7",
+    "roadAddress": "서울 광진구 면목로 22",
+    "number": "02-462-6588",
+    "businessHours": "매일 15:00 ~ 02:00"
+  },
+  {
+    "name": "미친곱창",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 471-12",
+    "roadAddress": "서울 광진구 군자로17길 41",
+    "number": "02-454-1273",
+    "businessHours": "매일 16:00 ~ 02:00"
+  },
+  {
+    "name": "유미마라탕",
+    "cuisineType": "중식",
+    "address": "서울 광진구 군자동 471-13",
+    "roadAddress": "서울 광진구 능동로35길 35",
+    "number": null,
+    "businessHours": "월~금 11:30 ~ 21:30"
+  },
+  {
+    "name": "자매찜나라",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 472-5",
+    "roadAddress": "서울 광진구 능동로35길 36",
+    "number": "02-466-0062",
+    "businessHours": "매일 16:00 ~ 02:00"
+  },
+  {
+    "name": "막내막창",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 474-36",
+    "roadAddress": "서울 광진구 군자로 175",
+    "number": "02-461-0052",
+    "businessHours": null
+  },
+  {
+    "name": "굴마을낙지촌 군자점",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 467-13",
+    "roadAddress": "서울 광진구 동일로60길 49",
+    "number": "02-466-9988",
+    "businessHours": "매일 11:30 ~ 22:30"
+  },
+  {
+    "name": "세종하늘마루",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 53-14",
+    "roadAddress": "서울 광진구 군자로 153",
+    "number": "02-497-5540",
+    "businessHours": null
+  },
+  {
+    "name": "무조건생고기삼겹살",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 469-17",
+    "roadAddress": "서울 광진구 면목로 31-1",
+    "number": "02-467-4072",
+    "businessHours": "매일 15:00 ~ 22:00"
+  },
+  {
+    "name": "전통춘천닭갈비",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 475-8",
+    "roadAddress": "서울 광진구 능동로31길 21",
+    "number": "02-462-2005",
+    "businessHours": "화~일 11:00 ~ 22:00"
+  },
+  {
+    "name": "돈토",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 472-4",
+    "roadAddress": "서울 광진구 능동로35길 38",
+    "number": "02-461-9644",
+    "businessHours": "월~금 16:00 ~ 22:00"
+  },
+  {
+    "name": "본전주먹구이",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 472-7",
+    "roadAddress": "서울 광진구 능동로35길 32",
+    "number": "02-461-0687",
+    "businessHours": "월~토 15:00 ~ 24:00"
+  },
+  {
+    "name": "새우공장",
+    "cuisineType": "양식",
+    "address": "서울 광진구 군자동 471-13",
+    "roadAddress": "서울 광진구 능동로35길 35",
+    "number": "02-466-8899",
+    "businessHours": "월~토 17:30 ~ 01:00"
+  },
+  {
+    "name": "마포구이",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 467-16",
+    "roadAddress": "서울 광진구 동일로60길 53",
+    "number": "02-499-4932",
+    "businessHours": null
+  },
+  {
+    "name": "순이네맷돌빈대떡",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 474-1",
+    "roadAddress": "서울 광진구 군자로17길 42",
+    "number": "02-497-5297",
+    "businessHours": null
+  },
+  {
+    "name": "호재래양꼬치",
+    "cuisineType": "중식",
+    "address": "서울 광진구 군자동 473-10",
+    "roadAddress": "서울 광진구 능동로35길 28",
+    "number": null,
+    "businessHours": null
+  },
+  {
+    "name": "한아름분식",
+    "cuisineType": "분식",
+    "address": "서울 광진구 군자동 51-24",
+    "roadAddress": "서울 광진구 군자로 159",
+    "number": "02-469-2535",
+    "businessHours": null
+  },
+  {
+    "name": "장원칼국수",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 64-1",
+    "roadAddress": "서울 광진구 군자로 137",
+    "number": "02-467-5322",
+    "businessHours": "월~금 11:00 ~ 19:30"
+  },
+  {
+    "name": "푸라닭치킨 군자점",
+    "cuisineType": "치킨",
+    "address": "서울 광진구 군자동 65-3",
+    "roadAddress": "서울 광진구 군자로 140",
+    "number": "02-466-9206",
+    "businessHours": null
+  },
+  {
+    "name": "맥도날드 어린이대공원점",
+    "cuisineType": "양식",
+    "address": "서울 광진구 화양동 212",
+    "roadAddress": "서울 광진구 광나루로 392",
+    "number": "070-7017-2452",
+    "businessHours": "매일 08:00 ~ 02:00"
+  },
+  {
+    "name": "써브웨이 군자역점",
+    "cuisineType": "양식",
+    "address": "서울 광진구 능동 279-5",
+    "roadAddress": "서울 광진구 능동로 290",
+    "number": "02-456-6444",
+    "businessHours": "매일 07:30 ~ 22:30"
+  },
+  {
+    "name": "알촌 건국대점",
+    "cuisineType": "한식",
+    "address": "서울 광진구 화양동 515",
+    "roadAddress": "서울 광진구 능동로16길 48",
+    "number": "02-456-1205",
+    "businessHours": "월,화,수,목,금,일 09:00 ~ 21:00"
+  },
+  {
+    "name": "the개미 건대본점",
+    "cuisineType": "한식",
+    "address": "서울 광진구 화양동 495-25",
+    "roadAddress": "서울 광진구 능동로16길 60",
+    "number": "02-452-4015",
+    "businessHours": "매일 10:00 ~ 23:30"
+  },
+  {
+    "name": "홍콩정통중국요리",
+    "cuisineType": "중식",
+    "address": "서울 광진구 화양동 428-1",
+    "roadAddress": "서울 광진구 광나루로24길 29",
+    "number": "02-457-6509",
+    "businessHours": "매일 09:30 ~ 21:30"
+  },
+  {
+    "name": "건국갈비",
+    "cuisineType": "한식",
+    "address": "서울 광진구 화양동 496-4",
+    "roadAddress": "서울 광진구 광나루로22가길 18",
+    "number": "02-2201-0018",
+    "businessHours": null
+  },
+  {
+    "name": "가람성",
+    "cuisineType": "중식",
+    "address": "서울 광진구 화양동 495-26",
+    "roadAddress": "서울 광진구 광나루로24길 22",
+    "number": null,
+    "businessHours": null
+  },
+  {
+    "name": "원스테이크",
+    "cuisineType": "양식",
+    "address": "서울 광진구 화양동 507-6",
+    "roadAddress": "서울 광진구 광나루로24길 15",
+    "number": "070-7576-2754",
+    "businessHours": "매일 10:30 ~ 21:30"
+  },
+  {
+    "name": "아미고프란고 건대점",
+    "cuisineType": "치킨",
+    "address": "서울 광진구 화양동 111-100",
+    "roadAddress": "서울 광진구 광나루로20길 36-6",
+    "number": "02-452-0999",
+    "businessHours": "월,수,목,금,토,일 14:00 ~ 02:00"
+  },
+  {
+    "name": "하루 건대후문점",
+    "cuisineType": "일식",
+    "address": "서울 광진구 화양동 495-25",
+    "roadAddress": "서울 광진구 능동로16길 60",
+    "number": null,
+    "businessHours": null
+  },
+  {
+    "name": "양수리냉면 건대본점",
+    "cuisineType": "한식",
+    "address": "서울 광진구 화양동 514",
+    "roadAddress": "서울 광진구 능동로16길 50",
+    "number": null,
+    "businessHours": null
+  },
+  {
+    "name": "시홍쓰",
+    "cuisineType": "아시아음식",
+    "address": "서울 광진구 화양동 94-1",
+    "roadAddress": "서울 광진구 능동로17길 5",
+    "number": null,
+    "businessHours": "월~금 11:30 ~ 21:00"
+  },
+  {
+    "name": "비엣포",
+    "cuisineType": "아시아음식",
+    "address": "서울 광진구 화양동 111-119",
+    "roadAddress": "서울 광진구 능동로 175",
+    "number": null,
+    "businessHours": null
+  },
+  {
+    "name": "고향산천 원조숯불닭갈비",
+    "cuisineType": "한식",
+    "address": "서울 광진구 화양동 112-12",
+    "roadAddress": "서울 광진구 능동로19길 11",
+    "number": "02-462-8247",
+    "businessHours": "화~일 11:30 ~ 24:00"
+  },
+  {
+    "name": "왕돈까스왕냉면 세종대점",
+    "cuisineType": "일식",
+    "address": "서울 광진구 화양동 202",
+    "roadAddress": "서울 광진구 광나루로 388",
+    "number": "02-462-2080",
+    "businessHours": "매일 10:00 ~ 24:00"
+  },
+  {
+    "name": "옛날종로빈대떡",
+    "cuisineType": "한식",
+    "address": "서울 광진구 화양동 217",
+    "roadAddress": "서울 광진구 능동로19길 10",
+    "number": "02-498-3004",
+    "businessHours": "월~토 16:00 ~ 02:00"
+  },
+  {
+    "name": "본가왕뼈감자탕",
+    "cuisineType": "한식",
+    "address": "서울 광진구 화양동 226",
+    "roadAddress": "서울 광진구 능동로19길 8",
+    "number": "02-462-1813",
+    "businessHours": null
+  },
+  {
+    "name": "빠오즈푸",
+    "cuisineType": "중식",
+    "address": "서울 광진구 군자동 361-32",
+    "roadAddress": "서울 광진구 광나루로 373",
+    "number": "02-462-9256",
+    "businessHours": "매일 11:30 ~ 20:30"
+  },
+  {
+    "name": "깍뚝",
+    "cuisineType": "한식",
+    "address": "서울 광진구 화양동 111-161",
+    "roadAddress": "서울 광진구 능동로19길 36",
+    "number": "02-466-0106",
+    "businessHours": "매일 16:00 ~ 00:00"
+  },
+  {
+    "name": "바다생각",
+    "cuisineType": "한식",
+    "address": "서울 광진구 화양동 132-66",
+    "roadAddress": "서울 광진구 군자로 38",
+    "number": "02-465-5955",
+    "businessHours": null
+  },
+  {
+    "name": "치킨처럼 화양점",
+    "cuisineType": "치킨",
+    "address": "서울 광진구 화양동 18-2",
+    "roadAddress": "서울 광진구 광나루로 364",
+    "number": "02-463-9595",
+    "businessHours": null
+  },
+  {
+    "name": "이항아",
+    "cuisineType": "한식",
+    "address": "서울 광진구 화양동 119-5",
+    "roadAddress": "서울 광진구 군자로 50",
+    "number": "02-468-1146",
+    "businessHours": null
+  },
+  {
+    "name": "굽네치킨 화양점",
+    "cuisineType": "치킨",
+    "address": "서울 광진구 화양동 132-7",
+    "roadAddress": "서울 광진구 능동로19길 53",
+    "number": "02-461-9993",
+    "businessHours": "매일 12:00 ~ 24:00"
+  },
+  {
+    "name": "싸다김밥 어린이대공원역점",
+    "cuisineType": "분식",
+    "address": "서울 광진구 군자동 503",
+    "roadAddress": "서울 광진구 광나루로 369",
+    "number": "02-467-2919",
+    "businessHours": "월~토 00:00 ~ 24:00"
+  },
+  {
+    "name": "동경규동 세종대점",
+    "cuisineType": "일식",
+    "address": "서울 광진구 군자동 361-32",
+    "roadAddress": "서울 광진구 광나루로 373",
+    "number": "02-466-3780",
+    "businessHours": "매일 11:00 ~ 22:00"
+  },
+  {
+    "name": "화양순대국감자탕",
+    "cuisineType": "한식",
+    "address": "서울 광진구 화양동 17-34",
+    "roadAddress": "서울 광진구 군자로 39",
+    "number": null,
+    "businessHours": "일요일"
+  },
+  {
+    "name": "순샐러드",
+    "cuisineType": "양식",
+    "address": "서울 광진구 화양동 66-5",
+    "roadAddress": "서울 광진구 군자로 26",
+    "number": "02-466-4534",
+    "businessHours": "화~토 11:00 ~ 21:00"
+  },
+  {
+    "name": "가네초밥",
+    "cuisineType": "일식",
+    "address": "서울 광진구 화양동 21-1",
+    "roadAddress": "서울 광진구 광나루로 352",
+    "number": "02-6448-5775",
+    "businessHours": null
+  },
+  {
+    "name": "망향비빔국수 화양점",
+    "cuisineType": "한식",
+    "address": "서울 광진구 화양동 21-1",
+    "roadAddress": "서울 광진구 광나루로 352",
+    "number": "02-498-6379",
+    "businessHours": "매일 11:00 ~ 21:00"
+  },
+  {
+    "name": "아라치 군자점",
+    "cuisineType": "치킨",
+    "address": "서울 광진구 군자동 358-9",
+    "roadAddress": "서울 광진구 광나루로 361",
+    "number": "070-4420-3217",
+    "businessHours": null
+  },
+  {
+    "name": "마수리마라탕 군자동점",
+    "cuisineType": "중식",
+    "address": "서울 광진구 군자동 358-9",
+    "roadAddress": "서울 광진구 광나루로 361",
+    "number": null,
+    "businessHours": null
+  },
+  {
+    "name": "섬진강민물장어",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 355-5",
+    "roadAddress": "서울 광진구 동일로 190",
+    "number": "02-469-6700",
+    "businessHours": "매일 11:00 ~ 22:00"
+  },
+  {
+    "name": "미식반점",
+    "cuisineType": "중식",
+    "address": "서울 광진구 군자동 362-1",
+    "roadAddress": "서울 광진구 군자로 70",
+    "number": "02-466-2020",
+    "businessHours": "매일 11:30 ~ 22:00"
+  },
+  {
+    "name": "새벽집 군자점",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 503",
+    "roadAddress": "서울 광진구 광나루로 369",
+    "number": "02-466-8301",
+    "businessHours": "매일 11:00 ~ 22:00"
+  },
+  {
+    "name": "홍콩식당 건대점",
+    "cuisineType": "중식",
+    "address": "서울 광진구 군자동 358-9",
+    "roadAddress": "서울 광진구 광나루로 361",
+    "number": null,
+    "businessHours": "매일 10:30 ~ 21:00"
+  },
+  {
+    "name": "인생족발 건대점",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 360-20",
+    "roadAddress": "서울 광진구 광나루로 361",
+    "number": "02-462-3338",
+    "businessHours": "화~일 11:00 ~ 24:00"
+  },
+  {
+    "name": "오태식해바라기치킨 세종대점",
+    "cuisineType": "치킨",
+    "address": "서울 광진구 군자동 361-27",
+    "roadAddress": "서울 광진구 광나루로 379",
+    "number": "02-466-0134",
+    "businessHours": "매일 12:00 ~ 05:00"
+  },
+  {
+    "name": "구름계란덮밥 건대점",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 503",
+    "roadAddress": "서울 광진구 광나루로 369",
+    "number": null,
+    "businessHours": "매일 10:30 ~ 22:00"
+  },
+  {
+    "name": "사대분식",
+    "cuisineType": "분식",
+    "address": "서울 광진구 군자동 98-8",
+    "roadAddress": "서울 광진구 능동로 197-1",
+    "number": "02-466-5130",
+    "businessHours": "매일 10:00 ~ 21:00"
+  },
+  {
+    "name": "계절밥상",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 98",
+    "roadAddress": "서울 광진구 능동로 209",
+    "number": null,
+    "businessHours": "월~금 09:00 ~ 19:30"
+  },
+  {
+    "name": "할매순대국&양선지뼈해장국 세종대점",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 363-2",
+    "roadAddress": "서울 광진구 군자로 86",
+    "number": "02-465-8769",
+    "businessHours": null
+  },
+  {
+    "name": "도새기집",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 363-2",
+    "roadAddress": "서울 광진구 군자로 86",
+    "number": null,
+    "businessHours": null
+  },
+  {
+    "name": "송정국수",
+    "cuisineType": "한식",
+    "address": "서울 성동구 송정동 73-645",
+    "roadAddress": "서울 성동구 광나루로11길 32",
+    "number": "02-469-6239",
+    "businessHours": "월~토 11:30 ~ 16:00"
+  },
+  {
+    "name": "감천식당",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 341-44",
+    "roadAddress": "서울 광진구 동일로 226",
+    "number": "02-497-4785",
+    "businessHours": null
+  },
+  {
+    "name": "또래끼리",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 102-11",
+    "roadAddress": "서울 광진구 군자로 103",
+    "number": "02-469-6684",
+    "businessHours": "월,화,수,목,금,일 10:00 ~ 21:00"
+  },
+  {
+    "name": "장수마을정육식당",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 100-105",
+    "roadAddress": "서울 광진구 군자로 100",
+    "number": "02-466-6005",
+    "businessHours": "매일 11:00 ~ 22:00"
+  },
+  {
+    "name": "베트남쌀국수",
+    "cuisineType": "아시아음식",
+    "address": "서울 광진구 군자동 102-37",
+    "roadAddress": "서울 광진구 군자로 102",
+    "number": "010-9936-3979",
+    "businessHours": "월~금 10:00 ~ 22:00"
+  },
+  {
+    "name": "채움솥뚜껑생삼겹살",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 102-32",
+    "roadAddress": "서울 광진구 군자로 104-1",
+    "number": "02-462-8859",
+    "businessHours": null
+  },
+  {
+    "name": "네네치킨 군자송정점",
+    "cuisineType": "치킨",
+    "address": "서울 광진구 군자동 117-23",
+    "roadAddress": "서울 광진구 동일로52길 15",
+    "number": "02-499-4479",
+    "businessHours": "매일 11:00 ~ 00:40"
+  },
+  {
+    "name": "싱싱 생고기",
+    "cuisineType": "한식",
+    "address": "서울 성동구 송정동 90-7",
+    "roadAddress": "서울 성동구 동일로 265",
+    "number": null,
+    "businessHours": null
+  },
+  {
+    "name": "천미향",
+    "cuisineType": "중식",
+    "address": "서울 광진구 군자동 250",
+    "roadAddress": "서울 광진구 능동로 237",
+    "number": "02-464-8088",
+    "businessHours": "매일 11:00 ~ 22:00"
+  },
+  {
+    "name": "라뮤즈",
+    "cuisineType": "퓨전요리",
+    "address": "서울 광진구 군자동 250",
+    "roadAddress": "서울 광진구 능동로 237",
+    "number": "02-457-6740",
+    "businessHours": "월~토 11:30 ~ 23:00"
+  },
+  {
+    "name": "한촌설렁탕 군자점",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 242",
+    "roadAddress": "서울 광진구 능동로 255",
+    "number": "02-468-4200",
+    "businessHours": "매일 10:00 ~ 22:00"
+  },
+  {
+    "name": "돈카와치 어린이대공원점",
+    "cuisineType": "일식",
+    "address": "서울 광진구 군자동 27-3",
+    "roadAddress": "서울 광진구 능동로 259",
+    "number": "02-499-4333",
+    "businessHours": "매일 11:00 ~ 21:30"
+  },
+  {
+    "name": "콩심 어린이대공원점",
+    "cuisineType": "한식",
+    "address": "서울 광진구 능동 315-2",
+    "roadAddress": "서울 광진구 능동로 256",
+    "number": "02-458-0687",
+    "businessHours": "매일 00:00 ~ 24:00"
+  },
+  {
+    "name": "짬뽕에빠지다",
+    "cuisineType": "중식",
+    "address": "서울 광진구 능동 223-9",
+    "roadAddress": "서울 광진구 능동로34길 27",
+    "number": "02-457-4010",
+    "businessHours": null
+  },
+  {
+    "name": "국대떡볶이 군자역점",
+    "cuisineType": "분식",
+    "address": "서울 광진구 능동 279-8",
+    "roadAddress": "서울 광진구 능동로 288",
+    "number": "02-446-3111",
+    "businessHours": "매일 12:00 ~ 24:00"
+  },
+  {
+    "name": "본죽 군자역점",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 1-1",
+    "roadAddress": "서울 광진구 능동로 285",
+    "number": "02-468-5454",
+    "businessHours": "매일 10:00 ~ 21:00"
+  },
+  {
+    "name": "군자대한곱창 본점",
+    "cuisineType": "한식",
+    "address": "서울 광진구 능동 221-2",
+    "roadAddress": "서울 광진구 능동로36길 10",
+    "number": "02-456-5207",
+    "businessHours": "월~금 11:30 ~ 02:00"
+  },
+  {
+    "name": "광나루유황오리주물럭",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 476-2",
+    "roadAddress": "서울 광진구 군자로 180",
+    "number": "02-469-5171",
+    "businessHours": "매일 10:30 ~ 22:30"
+  },
+  {
+    "name": "용두동할매쭈꾸미",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 474-41",
+    "roadAddress": "서울 광진구 군자로 179-1",
+    "number": "02-463-0505",
+    "businessHours": "월요일"
+  },
+  {
+    "name": "LAB41",
+    "cuisineType": "양식",
+    "address": "서울 광진구 능동 276-4",
+    "roadAddress": "서울 광진구 능동로 300",
+    "number": "070-4086-0703",
+    "businessHours": "매일 11:00 ~ 22:00"
+  },
+  {
+    "name": "피슈마라홍탕 군자역점",
+    "cuisineType": "중식",
+    "address": "서울 광진구 능동 276-3",
+    "roadAddress": "서울 광진구 능동로 302",
+    "number": "02-6489-5988",
+    "businessHours": "매일 11:00 ~ 23:00"
+  },
+  {
+    "name": "주돈",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 45-35",
+    "roadAddress": "서울 광진구 군자로 168",
+    "number": "010-3186-0282",
+    "businessHours": "화~금 17:00 ~ 00:00"
+  },
+  {
+    "name": "태평양수산회세꼬시",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 473-17",
+    "roadAddress": "서울 광진구 군자로 183",
+    "number": "02-499-9192",
+    "businessHours": "매일 11:30 ~ 24:00"
+  },
+  {
+    "name": "가미정",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 476-1",
+    "roadAddress": "서울 광진구 군자로 182",
+    "number": "02-463-8306",
+    "businessHours": "매일 11:00 ~ 22:30"
+  },
+  {
+    "name": "고메",
+    "cuisineType": "일식",
+    "address": "서울 광진구 능동 223-33",
+    "roadAddress": "서울 광진구 능동로36길 18",
+    "number": "0507-1344-1553",
+    "businessHours": "월~목 11:30 ~ 02:00"
+  },
+  {
+    "name": "퍼사이공 군자점",
+    "cuisineType": "아시아음식",
+    "address": "서울 광진구 군자동 48-49",
+    "roadAddress": "서울 광진구 면목로 25",
+    "number": "070-8830-9512",
+    "businessHours": "화~일 10:30 ~ 22:00"
+  },
+  {
+    "name": "국수사랑채",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 64-9",
+    "roadAddress": "서울 광진구 군자로 138",
+    "number": "02-499-5489",
+    "businessHours": "월~토 10:00 ~ 23:00"
+  },
+  {
+    "name": "60계 서울군자점",
+    "cuisineType": "치킨",
+    "address": "서울 광진구 군자동 48-59",
+    "roadAddress": "서울 광진구 면목로 1",
+    "number": "02-462-6082",
+    "businessHours": "월~금 15:00 ~ 02:00"
+  },
+  {
+    "name": "금성김밥",
+    "cuisineType": "분식",
+    "address": "서울 광진구 군자동 66-3",
+    "roadAddress": "서울 광진구 군자로 146",
+    "number": "02-468-8120",
+    "businessHours": null
+  },
+  {
+    "name": "이가네바지락칼국수",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 65-3",
+    "roadAddress": "서울 광진구 군자로 140",
+    "number": "02-463-0077",
+    "businessHours": null
+  },
+  {
+    "name": "삼거리닭발",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 65-3",
+    "roadAddress": "서울 광진구 군자로 140",
+    "number": null,
+    "businessHours": "화~토 16:00 ~ 02:50"
+  },
+  {
+    "name": "열봉이 군자점",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 66-3",
+    "roadAddress": "서울 광진구 군자로 146",
+    "number": "02-469-9285",
+    "businessHours": "화~토 17:00 ~ 03:00"
+  },
+  {
+    "name": "평창냉면 군자점",
+    "cuisineType": "한식",
+    "address": "서울 성동구 송정동 97-27",
+    "roadAddress": "서울 성동구 동일로59길 3",
+    "number": "02-497-9026",
+    "businessHours": null
+  },
+  {
+    "name": "스시교센",
+    "cuisineType": "일식",
+    "address": "서울 광진구 군자동 476-18",
+    "roadAddress": "서울 광진구 능동로35길 9",
+    "number": "02-498-0920",
+    "businessHours": "화~일 11:30 ~ 21:30"
+  },
+  {
+    "name": "기와집 본점",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 470-1",
+    "roadAddress": "서울 광진구 면목로 32",
+    "number": "02-2242-4145",
+    "businessHours": "매일 10:30 ~ 23:00"
+  },
+  {
+    "name": "북해도",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 469-23",
+    "roadAddress": "서울 광진구 동일로60길 54",
+    "number": null,
+    "businessHours": "매일 17:00 ~ 00:00"
+  },
+  {
+    "name": "라운지앤",
+    "cuisineType": "양식",
+    "address": "서울 광진구 군자동 472-8",
+    "roadAddress": "서울 광진구 능동로35길 28-1",
+    "number": "02-497-4647",
+    "businessHours": "월~금 11:30 ~ 21:00"
+  },
+  {
+    "name": "차이나유",
+    "cuisineType": "중식",
+    "address": "서울 광진구 군자동 471",
+    "roadAddress": "서울 광진구 면목로 34",
+    "number": null,
+    "businessHours": "매일 11:30 ~ 22:30"
+  },
+  {
+    "name": "e참치세상 군자점",
+    "cuisineType": "일식",
+    "address": "서울 광진구 군자동 474-1",
+    "roadAddress": "서울 광진구 군자로17길 42",
+    "number": "02-461-7503",
+    "businessHours": "매일 16:00 ~ 01:00"
+  },
+  {
+    "name": "복성장",
+    "cuisineType": "중식",
+    "address": "서울 광진구 군자동 469-22",
+    "roadAddress": "서울 광진구 면목로 37",
+    "number": "02-461-4333",
+    "businessHours": null
+  },
+  {
+    "name": "회세꼬시마을",
+    "cuisineType": "일식",
+    "address": "서울 광진구 군자동 472-1",
+    "roadAddress": "서울 광진구 면목로 38",
+    "number": "02-462-4242",
+    "businessHours": null
+  },
+  {
+    "name": "온미",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 49-17",
+    "roadAddress": "서울 광진구 면목로 12",
+    "number": null,
+    "businessHours": "매일 11:30 ~ 20:30"
+  },
+  {
+    "name": "미로네분식",
+    "cuisineType": "분식",
+    "address": "서울 광진구 군자동 49-53",
+    "roadAddress": "서울 광진구 면목로 8",
+    "number": null,
+    "businessHours": "일요일"
+  },
+  {
+    "name": "마포참숯불갈비",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 53-11",
+    "roadAddress": "서울 광진구 군자로 149",
+    "number": "02-499-9286",
+    "businessHours": null
+  },
+  {
+    "name": "공주식당",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 64-1",
+    "roadAddress": "서울 광진구 군자로 137",
+    "number": "02-461-2507",
+    "businessHours": null
+  },
+  {
+    "name": "광주식당",
+    "cuisineType": "한식",
+    "address": "서울 광진구 군자동 184",
+    "roadAddress": "서울 광진구 동일로 278",
+    "number": "02-467-3132",
+    "businessHours": "월~토 09:00 ~ 19:00"
+  }
+]
