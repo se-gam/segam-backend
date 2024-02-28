@@ -8,6 +8,7 @@ import { UserModule } from 'src/user/user.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { configModule } from './modules/config.module';
+import { RestaurantModule } from 'src/restaurant/restaurant.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { configModule } from './modules/config.module';
     AuthModule,
     AttendanceModule,
     UserModule,
+    RestaurantModule,
   ],
   controllers: [AppController],
   providers: [AppService],
