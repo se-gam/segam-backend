@@ -25,7 +25,8 @@
     "deploy:prod": "dotenv -e .prod.env -- node dist/src/main.js",
     "seed:studyroom:local": "dotenv -e .local.env -- npx ts-node ./prisma/seeds/insert-studyrooms.ts",
     "seed:studyroom:dev": "dotenv -e .dev.env -- npx ts-node ./prisma/seeds/insert-studyrooms.ts",
-    "seed:course:local": "dotenv -e .local.env -- npx ts-node ./prisma/seeds/insert-courses.ts"
+    "seed:course:local": "dotenv -e .local.env -- npx ts-node ./prisma/seeds/insert-courses.ts",
+    "seed:restaurant:local": "dotenv -e .local.env -- npx ts-node ./prisma/seeds/insert-restaurants.ts"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
