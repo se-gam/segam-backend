@@ -234,3 +234,10 @@ model Friend {
   @@unique([requestUserId,receiveUserId])
   @@map("friend")
 }
+
+  model Restaurant {
+    id            Int               @id @default(autoincrement())
+    name          String
+
+    @@map("restaurant")
+  }
