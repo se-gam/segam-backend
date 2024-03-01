@@ -22,7 +22,9 @@ export class PasswordValidationPipe implements PipeTransform {
       return value;
     }
 
-    const pattern = /^[0-9a-fA-F]{32}:[0-9a-fA-F]{32}$/;
+    const pattern =
+      /^[0-9a-fA-F]{32}:(?:[0-9a-fA-F]{32}|[0-9a-fA-F]{64}|[0-9a-fA-F]{96})$/;
+
     if (!pattern.test(value.password)) {
       throw new BadRequestException('비밀번호는 암호화된 문자열이어야 합니다.');
     }
