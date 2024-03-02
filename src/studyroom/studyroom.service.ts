@@ -10,7 +10,7 @@ import { PrismaService } from 'src/common/services/prisma.service';
 import { UserRepository } from 'src/user/user.repository';
 import { UserService } from 'src/user/user.service';
 import { StudyroomDto, StudyroomListDto } from './dto/studyroom.dto';
-import { StudyroomReservatoinListDto } from './dto/studyroomReservation.dto';
+import { StudyroomReservationListDto } from './dto/studyroomReservation.dto';
 import { UserPidDto } from './dto/userPid.dto';
 import { StudyroomCancelPayload } from './payload/studyroomCancel.payload';
 import { StudyroomReservePayload } from './payload/studyroomReserve.payload';
@@ -98,13 +98,13 @@ export class StudyroomService {
   async getStudyroomReservations(
     userId: string,
     payload: PasswordPayload,
-  ): Promise<StudyroomReservatoinListDto> {
+  ): Promise<StudyroomReservationListDto> {
     await this.reservationService.updateUserReservations(
       userId,
       payload.password,
     );
     const reservations = await this.studyroomRepository.getReservations(userId);
-    return StudyroomReservatoinListDto.from(userId, reservations);
+    return StudyroomReservationListDto.from(userId, reservations);
   }
 
   async checkUserAvailablity(

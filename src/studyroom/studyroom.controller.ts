@@ -24,7 +24,7 @@ import { PasswordPayload } from 'src/auth/payload/password.payload';
 import { PasswordValidationPipe } from 'src/auth/pipes/signup-validation.pipe';
 import { UserInfo } from 'src/auth/types/user-info.type';
 import { StudyroomDto, StudyroomListDto } from './dto/studyroom.dto';
-import { StudyroomReservatoinListDto } from './dto/studyroomReservation.dto';
+import { StudyroomReservationListDto } from './dto/studyroomReservation.dto';
 import { UserPidDto } from './dto/userPid.dto';
 import { StudyroomCancelPayload } from './payload/studyroomCancel.payload';
 import { StudyroomReservePayload } from './payload/studyroomReserve.payload';
@@ -75,7 +75,7 @@ export class StudyroomController {
     description: '내가 예약한 스터디룸 목록을 가져옵니다.',
   })
   @ApiCreatedResponse({
-    type: StudyroomReservatoinListDto,
+    type: StudyroomReservationListDto,
     description: '예약 목록 조회 성공',
   })
   @ApiUnauthorizedResponse({
@@ -87,7 +87,7 @@ export class StudyroomController {
   async getStudyroomReservations(
     @CurrentUser() user: UserInfo,
     @Body(PasswordValidationPipe) payload: PasswordPayload,
-  ): Promise<StudyroomReservatoinListDto> {
+  ): Promise<StudyroomReservationListDto> {
     return this.studyroomService.getStudyroomReservations(
       user.studentId,
       payload,
