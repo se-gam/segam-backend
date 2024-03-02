@@ -4,8 +4,10 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { Cron } from '@nestjs/schedule';
 import { PasswordPayload } from 'src/auth/payload/password.payload';
 import { AxiosService } from 'src/common/services/axios.service';
+import { DiscordService } from 'src/common/services/discord.service';
 import { PrismaService } from 'src/common/services/prisma.service';
 import { UserRepository } from 'src/user/user.repository';
 import { UserService } from 'src/user/user.service';
@@ -30,6 +32,7 @@ export class StudyroomService {
     private readonly configService: ConfigService,
     private readonly userService: UserService,
     private readonly userRepository: UserRepository,
+    private readonly discordService: DiscordService,
   ) {}
 
   private getSlotTime(time: string) {
@@ -39,7 +42,7 @@ export class StudyroomService {
     return parseInt(time.split(':')[0]);
   }
 
-  // @Cron('*/10 * * * * *')
+  @Cron('* */1 * * * *')
   async handleCron() {
     if (this.configService.get<string>('NODE_ENV') !== 'dev') {
       return;
@@ -77,6 +80,7 @@ export class StudyroomService {
   }
 
   async getAllStudyrooms(query: StudyroomQuery): Promise<StudyroomListDto> {
+    await this.discordService.sendDiscordMessage('이진이진형 똥 그만 싸');
     const studyrooms = await this.studyroomRepository.getAllStudyrooms(query);
     return StudyroomListDto.from(studyrooms);
   }
@@ -111,6 +115,10 @@ export class StudyroomService {
     userId: string,
     payload: StudyroomUserPayload,
   ): Promise<UserPidDto> {
+    if (userId === payload.friendId) {
+      throw new BadRequestException('자기 자신을 친구로 등록할 수 없습니다.');
+    }
+
     const friendPid = await this.userService.getUserPid(
       {
         friendId: payload.friendId,
@@ -120,10 +128,6 @@ export class StudyroomService {
       },
       userId,
     );
-
-    if (userId === payload.friendId) {
-      throw new BadRequestException('자기 자신을 친구로 등록할 수 없습니다.');
-    }
 
     const relation = await this.userRepository.getFriendRelation(
       payload.friendId,
