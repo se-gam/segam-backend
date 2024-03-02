@@ -1,8 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import {
-  Prisma,
-  StudyroomReservation as PrismaStudyroomReservation,
-} from '@prisma/client';
+import { StudyroomReservation as PrismaStudyroomReservation } from '@prisma/client';
 import * as _ from 'lodash';
 import { PrismaService } from 'src/common/services/prisma.service';
 import { StudyroomQuery } from './query/studyroom.query';
@@ -14,6 +11,12 @@ import { StudyroomReservationInfo } from './types/studyroomReservationInfo.type'
 @Injectable()
 export class StudyroomRepository {
   constructor(private readonly prismaService: PrismaService) {}
+
+  private getSlotTime(time: string, idx: number): string {
+    const hour = parseInt(time.split(':')[0]) + idx;
+    return hour + ':00';
+  }
+
   async getAllStudyrooms(query: StudyroomQuery): Promise<Studyroom[]> {
     const studyrooms = await this.prismaService.studyroom.findMany({
       where: {
@@ -139,55 +142,6 @@ export class StudyroomRepository {
     return reservations;
   }
 
-  private getSlotTime(time: string, idx: number): string {
-    const hour = parseInt(time.split(':')[0]) + idx;
-    return hour + ':00';
-  }
-
-  private async createReservations(
-    userId: string,
-    reservations: ReservationResponse[],
-    tx: Prisma.TransactionClient,
-  ) {
-    for (const reservation of reservations) {
-      const found = await tx.studyroomReservation.findUnique({
-        where: { id: parseInt(reservation.booking_id) },
-      });
-
-      if (!found) {
-        await tx.studyroomReservation.create({
-          data: {
-            id: parseInt(reservation.booking_id),
-            pid: parseInt(reservation.ipid),
-            studyroomId: parseInt(reservation.room_id),
-            reserveReason: reservation.purpose,
-            slots: {
-              createMany: {
-                data: Array.from(
-                  { length: parseInt(reservation.duration) },
-                  (_, index) => index,
-                ).map((idx) => ({
-                  slotId: `${reservation.room_id}_${reservation.date}_${this.getSlotTime(reservation.starts_at, idx)}`,
-                })),
-              },
-            },
-            users: {
-              createMany: {
-                data: [
-                  ...reservation.users.map((user) => user.student_id),
-                  userId,
-                ].map((id) => ({
-                  studentId: id,
-                  isLeader: id === userId,
-                })),
-              },
-            },
-          },
-        });
-      }
-    }
-  }
-
   async deleteReservations(
     userId: string,
     reservations: ReservationResponse[],
@@ -277,14 +231,110 @@ export class StudyroomRepository {
 
   async updateReservations(
     userId: string,
-    reservations: ReservationResponse[],
-  ): Promise<void> {
-    await this.prismaService.$transaction(
-      async (tx: Prisma.TransactionClient) => [
-        await this.createReservations(userId, reservations, tx),
-      ],
-    );
+    newReservations: ReservationResponse[],
+  ) {
+    // 서버에서 받아온 정보와 DB에 저장된 정보를 비교해서 새로운 예약이 있으면 추가하고, 삭제된 예약이 있으면 삭제합니다
+    await this.prismaService.$transaction(async (tx) => {
+      const prevReservations = await tx.studyroomReservation.findMany({
+        where: {
+          deletedAt: null,
+          users: {
+            some: {
+              studentId: userId,
+              deletedAt: null,
+            },
+          },
+          slots: {
+            some: {
+              studyroomSlot: {
+                date: {
+                  gte: new Date(),
+                },
+              },
+            },
+          },
+        },
+      });
+      const prevIds = prevReservations.map((reservation) => reservation.id);
+      const newIds = newReservations.map((reservation) =>
+        parseInt(reservation.booking_id),
+      );
 
-    await this.deleteReservations(userId, reservations);
+      const deletedIds = _.difference(prevIds, newIds);
+      const createdIds = _.difference(newIds, prevIds);
+
+      const createdReservations = newReservations.filter((reservation) =>
+        createdIds.includes(parseInt(reservation.booking_id)),
+      );
+
+      await tx.studyroomReservation.updateMany({
+        where: {
+          id: {
+            in: deletedIds,
+          },
+        },
+        data: {
+          deletedAt: new Date(),
+        },
+      });
+
+      await tx.userReservation.updateMany({
+        where: {
+          reservationId: {
+            in: deletedIds,
+          },
+        },
+        data: {
+          deletedAt: new Date(),
+        },
+      });
+
+      await tx.studyroomSlot.updateMany({
+        where: {
+          reservations: {
+            some: {
+              reservationId: {
+                in: deletedIds,
+              },
+            },
+          },
+        },
+        data: {
+          isReserved: false,
+        },
+      });
+
+      for (const reservation of createdReservations) {
+        await tx.studyroomReservation.create({
+          data: {
+            id: parseInt(reservation.booking_id),
+            pid: parseInt(reservation.ipid),
+            studyroomId: parseInt(reservation.room_id),
+            reserveReason: reservation.purpose,
+            slots: {
+              createMany: {
+                data: Array.from(
+                  { length: parseInt(reservation.duration) },
+                  (_, index) => index,
+                ).map((idx) => ({
+                  slotId: `${reservation.room_id}_${reservation.date}_${this.getSlotTime(reservation.starts_at, idx)}`,
+                })),
+              },
+            },
+            users: {
+              createMany: {
+                data: [
+                  ...reservation.users.map((user) => user.student_id),
+                  userId,
+                ].map((id) => ({
+                  studentId: id,
+                  isLeader: id === userId,
+                })),
+              },
+            },
+          },
+        });
+      }
+    });
   }
 }
