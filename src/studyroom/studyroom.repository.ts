@@ -26,10 +26,6 @@ export class StudyroomRepository {
         slots: {
           where: {
             date: query.date,
-            startsAt: {
-              gte: query.timeGte,
-              lt: query.timeLt,
-            },
           },
           select: {
             id: true,
