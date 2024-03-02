@@ -30,13 +30,4 @@ export class StudyroomQuery {
   @IsInt()
   @Optional()
   timeLt?: number = 22;
-
-  @ApiPropertyOptional({
-    type: Number,
-    description: '인원수(default: 3)',
-  })
-  @Type(() => Number)
-  @IsInt()
-  @Optional()
-  userCount?: number = 3;
 }

@@ -6,10 +6,10 @@ import {
 import * as _ from 'lodash';
 import { PrismaService } from 'src/common/services/prisma.service';
 import { StudyroomQuery } from './query/studyroom.query';
+import { StudyroomDateQuery } from './query/studyroomDateQuery.query';
 import { ReservationResponse } from './types/reservationResponse.type';
 import { Studyroom } from './types/studyroom.type';
 import { StudyroomReservationInfo } from './types/studyroomReservationInfo.type';
-import { StudyroomDateQuery } from './query/studyroomDateQuery.query';
 
 @Injectable()
 export class StudyroomRepository {
@@ -17,12 +17,6 @@ export class StudyroomRepository {
   async getAllStudyrooms(query: StudyroomQuery): Promise<Studyroom[]> {
     const studyrooms = await this.prismaService.studyroom.findMany({
       where: {
-        minUsers: {
-          lte: query.userCount,
-        },
-        maxUsers: {
-          gte: query.userCount,
-        },
         deletedAt: null,
       },
       include: {
