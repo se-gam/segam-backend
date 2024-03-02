@@ -74,8 +74,14 @@ export class StudyroomListDto {
   studyrooms: StudyroomDto[];
 
   static from(studyrooms: Studyroom[]): StudyroomListDto {
+    const availableStudyrooms = studyrooms.filter((studyroom) => {
+      return studyroom.slots.every((slot) => {
+        return !slot.isReserved && !slot.isClosed;
+      });
+    });
+
     return {
-      studyrooms: studyrooms.map((studyroom) => {
+      studyrooms: availableStudyrooms.map((studyroom) => {
         return StudyroomDto.from(studyroom);
       }),
     };
