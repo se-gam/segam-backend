@@ -166,8 +166,8 @@ export class ReservationService {
       JSON.stringify({
         id: userId,
         password: payload.password,
-        booking_id: reservation.id,
-        room_id: reservation.studyroomId,
+        booking_id: reservation.id.toString(),
+        room_id: reservation.studyroomId.toString(),
         cancel_msg: payload.cancelReason,
       }),
       {
@@ -185,6 +185,7 @@ export class ReservationService {
     } else if (res.status === 404) {
       throw new NotFoundException(response.result);
     } else if (res.status >= 400) {
+      console.error(response);
       throw new InternalServerErrorException('Internal Server Error');
     }
 
