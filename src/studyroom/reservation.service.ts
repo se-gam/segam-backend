@@ -38,6 +38,7 @@ export class ReservationService {
     );
 
     const response = JSON.parse(res.data);
+
     if (res.status === 404) {
       return await this.studyroomRepository.updateReservations(userId, []);
     } else if (res.status === 401) {
@@ -150,11 +151,12 @@ export class ReservationService {
   }
 
   async cancelReservation(
-    id: number,
+    bookingId: number,
     userId: string,
     payload: StudyroomCancelPayload,
   ): Promise<ResultResponse> {
-    const reservation = await this.studyroomRepository.getReservationById(id);
+    const reservation =
+      await this.studyroomRepository.getReservationById(bookingId);
 
     if (!reservation)
       throw new NotFoundException('해당 id의 예약이 존재하지 않습니다');
@@ -164,8 +166,8 @@ export class ReservationService {
       JSON.stringify({
         id: userId,
         password: payload.password,
-        booking_id: '318314',
-        room_id: '54',
+        booking_id: reservation.id,
+        room_id: reservation.studyroomId,
         cancel_msg: payload.cancelReason,
       }),
       {
