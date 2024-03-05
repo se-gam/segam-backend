@@ -479,15 +479,6 @@ export class AttendanceRepository {
           existingLectureIds,
         );
 
-        console.log(
-          'existingLectureIds',
-          existingLectureIds,
-          'deletedLectureIds',
-          deletedLectureIds,
-          'createdLectureIds',
-          createdLectureIds,
-        );
-
         const createdLectures = course.lectures.filter((lecture) =>
           createdLectureIds.includes(lecture.id),
         );
@@ -534,18 +525,32 @@ export class AttendanceRepository {
         }
 
         // 새로운 강의들 추가
-        await tx.lecture.createMany({
-          data: createdLectures.map((lecture) => {
-            return {
+        for (const lecture of createdLectures) {
+          await tx.lecture.upsert({
+            where: {
+              id: lecture.id,
+            },
+            update: {
+              name: lecture.name,
+              week: lecture.week,
+              startsAt: lecture.startsAt,
+              endsAt: lecture.endsAt,
+            },
+            create: {
               id: lecture.id,
               name: lecture.name,
               week: lecture.week,
               startsAt: lecture.startsAt,
               endsAt: lecture.endsAt,
-              courseId: course.id,
-            };
-          }),
-        });
+              course: {
+                connect: {
+                  id: course.id,
+                },
+              },
+            },
+          });
+        }
+
         await tx.userLecture.createMany({
           data: createdLectures.map((lecture) => {
             return {
@@ -636,17 +641,29 @@ export class AttendanceRepository {
         }
 
         // 새로운 과제들 추가
-        await tx.assignment.createMany({
-          data: createdAssignments.map((assignment) => {
-            return {
+        for (const assignment of createdAssignments) {
+          await tx.assignment.upsert({
+            where: {
+              id: assignment.id,
+            },
+            update: {
+              name: assignment.name,
+              week: assignment.week,
+              endsAt: assignment.endsAt,
+            },
+            create: {
               id: assignment.id,
               name: assignment.name,
               week: assignment.week,
               endsAt: assignment.endsAt,
-              courseId: course.id,
-            };
-          }),
-        });
+              course: {
+                connect: {
+                  id: course.id,
+                },
+              },
+            },
+          });
+        }
         await tx.userAssignment.createMany({
           data: createdAssignments.map((assignment) => {
             return {
