@@ -59,6 +59,8 @@ export class AllExceptionsFilter implements ExceptionFilter {
       message: 'Internal Server Error',
     };
 
+    console.error(exception);
+
     httpAdapter.reply(ctx.getResponse(), responseBody, httpStatus);
   }
 }

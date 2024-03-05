@@ -4,18 +4,23 @@ import * as _ from 'lodash';
 import { UserInfo } from 'src/auth/types/user-info.type';
 import { PrismaService } from 'src/common/services/prisma.service';
 import { RawUser } from 'src/studyroom/types/reservationResponse.type';
+import { PushTokenPayload } from './payload/pushToken.payload';
 
 @Injectable()
 export class UserRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async updatePushToken(pushToken: string, user: UserInfo): Promise<void> {
+  async updatePushToken(
+    payload: PushTokenPayload,
+    user: UserInfo,
+  ): Promise<void> {
     await this.prismaService.user.update({
       where: {
         studentId: user.studentId,
       },
       data: {
-        pushToken,
+        pushToken: payload.pushToken,
+        os: payload.os,
       },
     });
   }
