@@ -60,6 +60,9 @@ export class AuthRepository {
         const userCount = await tx.user.count({
           where: {
             deletedAt: null,
+            department: {
+              isNot: null,
+            },
           },
         });
         this.discordService.sendNewUserLog(
@@ -86,6 +89,9 @@ export class AuthRepository {
         const userCount = await tx.user.count({
           where: {
             deletedAt: null,
+            department: {
+              isNot: null,
+            },
           },
         });
         this.discordService.sendNewUserLog(
