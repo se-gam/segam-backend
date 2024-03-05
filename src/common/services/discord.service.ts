@@ -17,6 +17,8 @@ export class DiscordService {
   }
 
   async sendNewUserLog(message: string) {
+    if (this.configService.get('NODE_ENV') === 'local') return;
+
     const embed = new MessageBuilder()
       .setTitle('가입알림')
       .setColor(parseInt('0x626FE5', 16))
@@ -27,6 +29,7 @@ export class DiscordService {
   }
 
   async sendErrorLog(err: Error, request: Request) {
+    if (this.configService.get('NODE_ENV') === 'local') return;
     const embed = new MessageBuilder()
       .setTitle('🔥🔥🔥🔥🔥500 에러발생🔥🔥🔥🔥🔥')
       .setColor(parseInt('0xDA4237', 16))
