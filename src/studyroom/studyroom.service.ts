@@ -80,7 +80,6 @@ export class StudyroomService {
   }
 
   async getAllStudyrooms(query: StudyroomQuery): Promise<StudyroomListDto> {
-    await this.discordService.sendDiscordMessage('이진이진형 똥 그만 싸');
     const studyrooms = await this.studyroomRepository.getAllStudyrooms(query);
     return StudyroomListDto.from(studyrooms);
   }
