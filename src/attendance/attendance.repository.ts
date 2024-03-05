@@ -462,7 +462,9 @@ export class AttendanceRepository {
           },
         });
         const prevLectureIds = prevLectures.map((lecture) => lecture.id);
-        const newLectureIds = course.lectures.map((lecture) => lecture.id);
+        const newLectureIds = course.lectures.map((lecture) =>
+          parseInt(lecture.id),
+        );
 
         const existingLectureIds = _.intersection(
           prevLectureIds,
@@ -563,8 +565,8 @@ export class AttendanceRepository {
         const prevAssignmentIds = prevAssignments.map(
           (assignment) => assignment.id,
         );
-        const newAssignmentIds = course.assignments.map(
-          (assignment) => assignment.id,
+        const newAssignmentIds = course.assignments.map((assignment) =>
+          parseInt(assignment.id),
         );
 
         const existingAssignmentIds = _.intersection(

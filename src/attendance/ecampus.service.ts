@@ -12,6 +12,8 @@ import { RawAssignment } from './types/raw-assignment';
 import { RawCourse } from './types/raw-course';
 import { RawLecture } from './types/raw-lecture';
 
+import * as _ from 'lodash';
+
 @Injectable()
 export class EcampusService {
   private loginUrl: string;
@@ -192,7 +194,6 @@ export class EcampusService {
         ),
       );
 
-      // TODO: Lodash로 바꾸기
       assignments = assignments.map((assignment) => {
         const endTime = assignmentEndTimes.find(
           (assignmentEndTime) => assignmentEndTime.id === assignment.id,
@@ -203,12 +204,13 @@ export class EcampusService {
           endsAt: endTime.endsAt,
         };
       });
+
       return {
-        id,
-        name,
+        id: id.trim(),
+        name: name.trim(),
         ecampusId,
-        lectures,
-        assignments,
+        lectures: _.uniqBy(lectures, 'id'),
+        assignments: _.uniqBy(assignments, 'id'),
       };
     } catch (error) {
       throw new BadRequestException(
