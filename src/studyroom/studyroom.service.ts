@@ -49,6 +49,7 @@ export class StudyroomService {
     const res = await this.axiosService.get(
       this.configService.get<string>('CRAWLER_API_ROOT') + '/calendar',
     );
+    console.log('crawler end @', new Date());
     const rawStudyrooms = JSON.parse(res.data);
     const studyrooms = rawStudyrooms.flatMap((studyroom) =>
       studyroom.slots.map((slot) => ({ room_id: studyroom.room_id, slot })),

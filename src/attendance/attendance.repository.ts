@@ -479,6 +479,15 @@ export class AttendanceRepository {
           existingLectureIds,
         );
 
+        console.log(
+          'existingLectureIds',
+          existingLectureIds,
+          'deletedLectureIds',
+          deletedLectureIds,
+          'createdLectureIds',
+          createdLectureIds,
+        );
+
         const createdLectures = course.lectures.filter((lecture) =>
           createdLectureIds.includes(lecture.id),
         );
