@@ -185,6 +185,7 @@ export class UserRepository {
       },
       data: {
         deletedAt: new Date(),
+        pushToken: null,
       },
     });
   }
