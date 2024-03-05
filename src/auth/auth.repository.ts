@@ -13,7 +13,11 @@ export class AuthRepository {
     private readonly discordService: DiscordService,
   ) {}
 
-  private async sendNewUserLog(studentId: string, name: string) {
+  private async sendNewUserLog(
+    studentId: string,
+    name: string,
+    rejoined = false,
+  ) {
     const userCount = await this.prismaService.user.count({
       where: {
         deletedAt: null,
@@ -23,7 +27,7 @@ export class AuthRepository {
       },
     });
     this.discordService.sendNewUserLog(
-      `🎉*회원가입 알림*🎉\n${studentId} ${name}님이 가입하셨습니다!!\n\n🔥전체 유저 수: ${number2emoji(userCount)}명 돌파!!🔥`,
+      `🎉*회원가입 알림*🎉\n${studentId} ${name}님이 ${rejoined && '재'}가입하셨습니다!!\n\n🔥전체 유저 수: ${number2emoji(userCount)}명 돌파!!🔥`,
     );
   }
 
@@ -97,7 +101,7 @@ export class AuthRepository {
         });
 
         this.sendNewUserLog(user.studentId, user.name);
-      } else if (!user.deletedAt) {
+      } else if (user.deletedAt !== null) {
         // 탈퇴했던 유저가 되돌아온 경우
         const rejoinedUser = await tx.user.update({
           where: {
@@ -114,7 +118,7 @@ export class AuthRepository {
           },
         });
 
-        this.sendNewUserLog(rejoinedUser.studentId, rejoinedUser.name);
+        this.sendNewUserLog(rejoinedUser.studentId, rejoinedUser.name, true);
       }
 
       return user;
