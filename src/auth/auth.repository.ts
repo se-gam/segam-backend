@@ -44,29 +44,6 @@ export class AuthRepository {
         },
       });
 
-      if (!user.departmentName) {
-        await tx.user.update({
-          where: {
-            studentId: portalUserInfo.studentId,
-          },
-          data: {
-            department: {
-              connectOrCreate: {
-                where: {
-                  name: portalUserInfo.department,
-                },
-                create: {
-                  name: portalUserInfo.department,
-                },
-              },
-            },
-          },
-        });
-
-        this.sendNewUserLog(user.studentId, user.name);
-        return user;
-      }
-
       if (!user) {
         const newUser = await tx.user.create({
           data: {
@@ -97,6 +74,27 @@ export class AuthRepository {
         this.sendNewUserLog(newUser.studentId, newUser.name);
 
         return newUser;
+      } else if (!user.departmentName) {
+        await tx.user.update({
+          where: {
+            studentId: portalUserInfo.studentId,
+          },
+          data: {
+            department: {
+              connectOrCreate: {
+                where: {
+                  name: portalUserInfo.department,
+                },
+                create: {
+                  name: portalUserInfo.department,
+                },
+              },
+            },
+          },
+        });
+
+        this.sendNewUserLog(user.studentId, user.name);
+        return user;
       } else {
         const rejoinedUser = await tx.user.update({
           where: {
