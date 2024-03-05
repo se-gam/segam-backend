@@ -237,7 +237,7 @@ export class StudyroomRepository {
 
     const deletedReservations = prevReservations
       .filter((reservation) => deletedIds.includes(reservation.id))
-      .map((reservation) => {
+      .filter((reservation) => {
         return reservation.users.find((user) => user.studentId === userId)
           .isLeader;
       });
