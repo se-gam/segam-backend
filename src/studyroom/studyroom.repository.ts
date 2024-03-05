@@ -210,6 +210,17 @@ export class StudyroomRepository {
             },
           },
         },
+        include: {
+          users: {
+            where: {
+              deletedAt: null,
+            },
+            select: {
+              studentId: true,
+              isLeader: true,
+            },
+          },
+        },
       });
     const prevIds = prevReservations.map((reservation) => reservation.id);
     const newIds = newReservations.map((reservation) =>
@@ -224,11 +235,18 @@ export class StudyroomRepository {
       createdIds.includes(parseInt(reservation.booking_id)),
     );
 
+    const deletedReservations = prevReservations
+      .filter((reservation) => deletedIds.includes(reservation.id))
+      .map((reservation) => {
+        return reservation.users.find((user) => user.studentId === userId)
+          .isLeader;
+      });
+
     // 사라진 예약들 삭제
     await this.prismaService.studyroomReservation.updateMany({
       where: {
         id: {
-          in: deletedIds,
+          in: _.flatMap(deletedReservations, 'id'),
         },
       },
       data: {
@@ -238,7 +256,7 @@ export class StudyroomRepository {
     await this.prismaService.userReservation.updateMany({
       where: {
         reservationId: {
-          in: deletedIds,
+          in: _.flatMap(deletedReservations, 'id'),
         },
       },
       data: {
@@ -252,7 +270,7 @@ export class StudyroomRepository {
         reservations: {
           some: {
             reservationId: {
-              in: deletedIds,
+              in: _.flatMap(deletedReservations, 'id'),
             },
           },
         },
