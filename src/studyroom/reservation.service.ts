@@ -161,6 +161,14 @@ export class ReservationService {
     if (!reservation)
       throw new NotFoundException('해당 id의 예약이 존재하지 않습니다');
 
+    const isLeader = await this.studyroomRepository.isReservationLeader(
+      reservation.id,
+      userId,
+    );
+
+    if (!isLeader)
+      throw new BadRequestException('예약 취소는 예약자만 가능합니다');
+
     const res = await this.axiosService.post(
       this.configService.get<string>('CANCEL_RESERVATION_URL'),
       JSON.stringify({

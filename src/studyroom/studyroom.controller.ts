@@ -123,13 +123,14 @@ export class StudyroomController {
   })
   @ApiCreatedResponse()
   @ApiBadRequestResponse({
-    description: '현재 스터디룸 예약 내역이 없습니다',
+    description:
+      '현재 스터디룸 예약 내역이 없습니다. | 예약 취소는 예약자만 가능합니다',
   })
   @ApiUnauthorizedResponse({
     description: '포털 로그인 실패',
   })
   @ApiNotFoundResponse({
-    description: '예약을 찾을 수 없습니다',
+    description: '해당 id의 예약이 존재하지 않습니다 | 예약을 찾을 수 없습니다',
   })
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)

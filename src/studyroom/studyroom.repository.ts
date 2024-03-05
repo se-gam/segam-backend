@@ -140,66 +140,24 @@ export class StudyroomRepository {
     return reservations;
   }
 
-  async deleteReservations(
+  async isReservationLeader(
+    reservationId: number,
     userId: string,
-    reservations: ReservationResponse[],
-  ): Promise<void> {
-    await this.prismaService.$transaction(async (tx) => {
-      const myReservationIds = await tx.userReservation.findMany({
+  ): Promise<boolean> {
+    const reservation =
+      await this.prismaService.studyroomReservation.findUnique({
         where: {
-          studentId: userId,
-          deletedAt: null,
-          isLeader: true,
-          studyroomReservation: {
-            slots: {
-              some: {
-                studyroomSlot: {
-                  date: {
-                    gte: new Date(),
-                  },
-                },
-              },
+          id: reservationId,
+        },
+        select: {
+          users: {
+            where: {
+              studentId: userId,
             },
           },
         },
-        select: {
-          reservationId: true,
-        },
       });
-
-      const newIds = reservations.map((reservation) => {
-        return parseInt(reservation.booking_id);
-      });
-
-      const deletedReservationIds = _.flatMap(
-        myReservationIds,
-        'reservationId',
-      ).filter((id) => {
-        !newIds.includes(id);
-      });
-
-      await tx.userReservation.updateMany({
-        where: {
-          reservationId: {
-            in: deletedReservationIds,
-          },
-        },
-        data: {
-          deletedAt: new Date(),
-        },
-      });
-
-      await tx.studyroomReservation.updateMany({
-        where: {
-          id: {
-            in: deletedReservationIds,
-          },
-        },
-        data: {
-          deletedAt: new Date(),
-        },
-      });
-    });
+    return reservation.users[0].isLeader;
   }
 
   async deleteReservation(
