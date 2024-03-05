@@ -216,13 +216,15 @@ export class StudyroomRepository {
       parseInt(reservation.booking_id),
     );
 
-    const deletedIds = _.difference(prevIds, newIds);
-    const createdIds = _.difference(newIds, prevIds);
+    const existingIds = _.intersection(prevIds, newIds);
+    const deletedIds = _.difference(prevIds, existingIds);
+    const createdIds = _.difference(newIds, existingIds);
 
     const createdReservations = newReservations.filter((reservation) =>
       createdIds.includes(parseInt(reservation.booking_id)),
     );
 
+    // 사라진 예약들 삭제
     await this.prismaService.studyroomReservation.updateMany({
       where: {
         id: {
@@ -233,7 +235,6 @@ export class StudyroomRepository {
         deletedAt: new Date(),
       },
     });
-
     await this.prismaService.userReservation.updateMany({
       where: {
         reservationId: {
@@ -245,6 +246,7 @@ export class StudyroomRepository {
       },
     });
 
+    // 슬롯 다시 열어주기
     await this.prismaService.studyroomSlot.updateMany({
       where: {
         reservations: {
@@ -260,6 +262,7 @@ export class StudyroomRepository {
       },
     });
 
+    // 새로운 예약들 추가
     for (const reservation of createdReservations) {
       await this.prismaService.studyroomReservation.create({
         data: {
