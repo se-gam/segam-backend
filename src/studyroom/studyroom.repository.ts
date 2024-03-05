@@ -56,6 +56,8 @@ export class StudyroomRepository {
         slots: {
           where: {
             date: query.date,
+            isClosed: false,
+            isReserved: false,
           },
           orderBy: {
             startsAt: 'asc',
