@@ -264,8 +264,17 @@ export class StudyroomRepository {
 
     // 새로운 예약들 추가
     for (const reservation of createdReservations) {
-      await this.prismaService.studyroomReservation.create({
-        data: {
+      await this.prismaService.studyroomReservation.upsert({
+        where: {
+          id: parseInt(reservation.booking_id),
+        },
+        update: {
+          pid: parseInt(reservation.ipid),
+          studyroomId: parseInt(reservation.room_id),
+          reserveReason: reservation.purpose,
+          deletedAt: null,
+        },
+        create: {
           id: parseInt(reservation.booking_id),
           pid: parseInt(reservation.ipid),
           studyroomId: parseInt(reservation.room_id),
@@ -287,10 +296,34 @@ export class StudyroomRepository {
             },
           },
         },
-        select: {
-          id: true,
-        },
       });
+      // await this.prismaService.studyroomReservation.create({
+      //   data: {
+      //     id: parseInt(reservation.booking_id),
+      //     pid: parseInt(reservation.ipid),
+      //     studyroomId: parseInt(reservation.room_id),
+      //     reserveReason: reservation.purpose,
+      //     users: {
+      //       createMany: {
+      //         data: [
+      //           ...reservation.users.map((user) => {
+      //             return {
+      //               studentId: user.student_id,
+      //               isLeader: false,
+      //             };
+      //           }),
+      //           {
+      //             studentId: userId,
+      //             isLeader: true,
+      //           },
+      //         ],
+      //       },
+      //     },
+      //   },
+      //   select: {
+      //     id: true,
+      //   },
+      // });
 
       // 만약에 없는 슬롯이면 만들어준다
       const createdSlots = Array.from(
