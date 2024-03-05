@@ -270,29 +270,72 @@ export class StudyroomRepository {
           pid: parseInt(reservation.ipid),
           studyroomId: parseInt(reservation.room_id),
           reserveReason: reservation.purpose,
-          slots: {
-            createMany: {
-              data: Array.from(
-                { length: parseInt(reservation.duration) },
-                (_, index) => index,
-              ).map((idx) => ({
-                slotId: `${reservation.room_id}_${reservation.date}_${this.getSlotTime(reservation.starts_at, idx)}`,
-              })),
-            },
-          },
           users: {
             createMany: {
               data: [
-                ...reservation.users.map((user) => user.student_id),
-                userId,
-              ].map((id) => ({
-                studentId: id,
-                isLeader: id === userId,
-              })),
+                ...reservation.users.map((user) => {
+                  return {
+                    studentId: user.student_id,
+                    isLeader: false,
+                  };
+                }),
+                {
+                  studentId: userId,
+                  isLeader: true,
+                },
+              ],
             },
           },
         },
+        select: {
+          id: true,
+        },
       });
+
+      // 만약에 없는 슬롯이면 만들어준다
+      const createdSlots = Array.from(
+        { length: parseInt(reservation.duration) },
+        (_, index) => index,
+      ).map((idx) => ({
+        slotId: `${reservation.room_id}_${reservation.date}_${this.getSlotTime(reservation.starts_at, idx)}`,
+      }));
+
+      for (const slot of createdSlots) {
+        await this.prismaService.studyroomSlot.upsert({
+          where: {
+            id: slot.slotId,
+          },
+          update: {
+            isReserved: true,
+            reservations: {
+              create: {
+                studyroomReservation: {
+                  connect: {
+                    id: parseInt(reservation.booking_id),
+                  },
+                },
+              },
+            },
+          },
+          create: {
+            id: slot.slotId,
+            studyroomId: parseInt(reservation.room_id),
+            date: new Date(reservation.date),
+            startsAt: parseInt(slot.slotId.split('_')[2].split(':')[0]),
+            isReserved: true,
+            isClosed: false,
+            reservations: {
+              create: {
+                studyroomReservation: {
+                  connect: {
+                    id: parseInt(reservation.booking_id),
+                  },
+                },
+              },
+            },
+          },
+        });
+      }
     }
   }
 }
