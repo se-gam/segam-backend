@@ -27,7 +27,7 @@ export class UserService {
     payload: PushTokenPayload,
     user: UserInfo,
   ): Promise<void> {
-    await this.userRepository.updatePushToken(payload.pushToken, user);
+    await this.userRepository.updatePushToken(payload, user);
   }
 
   async getUserPid(
@@ -64,6 +64,7 @@ export class UserService {
         } else if (error.status === 401) {
           throw new UnauthorizedException('포털 로그인에 실패했습니다.');
         } else if (error.status >= 400) {
+          console.error(error);
           throw new InternalServerErrorException('Internal Server Error');
         }
       }
