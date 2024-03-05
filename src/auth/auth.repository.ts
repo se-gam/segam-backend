@@ -41,10 +41,12 @@ export class AuthRepository {
           sejongPid: true,
           name: true,
           departmentName: true,
+          deletedAt: true,
         },
       });
 
       if (!user) {
+        // 아예 새로운 유저
         const newUser = await tx.user.create({
           data: {
             studentId: portalUserInfo.studentId,
@@ -75,6 +77,7 @@ export class AuthRepository {
 
         return newUser;
       } else if (!user.departmentName) {
+        // 기존 유저인데 학과 정보가 없는 경우 -> 동반이용자로 생긴 유저였는데 새로 로그인함
         await tx.user.update({
           where: {
             studentId: portalUserInfo.studentId,
@@ -94,8 +97,8 @@ export class AuthRepository {
         });
 
         this.sendNewUserLog(user.studentId, user.name);
-        return user;
-      } else {
+      } else if (!user.deletedAt) {
+        // 탈퇴했던 유저가 되돌아온 경우
         const rejoinedUser = await tx.user.update({
           where: {
             studentId: portalUserInfo.studentId,
