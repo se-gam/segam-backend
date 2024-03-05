@@ -7,7 +7,6 @@ import { ConfigService } from '@nestjs/config';
 import { Cron } from '@nestjs/schedule';
 import { PasswordPayload } from 'src/auth/payload/password.payload';
 import { AxiosService } from 'src/common/services/axios.service';
-import { DiscordService } from 'src/common/services/discord.service';
 import { PrismaService } from 'src/common/services/prisma.service';
 import { UserRepository } from 'src/user/user.repository';
 import { UserService } from 'src/user/user.service';
@@ -32,7 +31,6 @@ export class StudyroomService {
     private readonly configService: ConfigService,
     private readonly userService: UserService,
     private readonly userRepository: UserRepository,
-    private readonly discordService: DiscordService,
   ) {}
 
   private getSlotTime(time: string) {
@@ -47,6 +45,7 @@ export class StudyroomService {
     if (this.configService.get<string>('NODE_ENV') !== 'dev') {
       return;
     }
+    console.log('crawler start @', new Date());
     const res = await this.axiosService.get(
       this.configService.get<string>('CRAWLER_API_ROOT') + '/calendar',
     );
