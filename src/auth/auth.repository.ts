@@ -13,6 +13,20 @@ export class AuthRepository {
     private readonly discordService: DiscordService,
   ) {}
 
+  private async sendNewUserLog(studentId: string, name: string) {
+    const userCount = await this.prismaService.user.count({
+      where: {
+        deletedAt: null,
+        department: {
+          isNot: null,
+        },
+      },
+    });
+    this.discordService.sendNewUserLog(
+      `🎉*회원가입 알림*🎉\n${studentId} ${name}님이 가입하셨습니다!!\n\n🔥전체 유저 수: ${number2emoji(userCount)}명 돌파!!🔥`,
+    );
+  }
+
   async getOrCreateUser(
     portalUserInfo: PortalUserInfo,
     payload: SignUpPayload,
@@ -29,6 +43,29 @@ export class AuthRepository {
           departmentName: true,
         },
       });
+
+      if (!user.departmentName) {
+        await tx.user.update({
+          where: {
+            studentId: portalUserInfo.studentId,
+          },
+          data: {
+            department: {
+              connectOrCreate: {
+                where: {
+                  name: portalUserInfo.department,
+                },
+                create: {
+                  name: portalUserInfo.department,
+                },
+              },
+            },
+          },
+        });
+
+        this.sendNewUserLog(user.studentId, user.name);
+        return user;
+      }
 
       if (!user) {
         const newUser = await tx.user.create({
@@ -57,17 +94,7 @@ export class AuthRepository {
           },
         });
 
-        const userCount = await tx.user.count({
-          where: {
-            deletedAt: null,
-            department: {
-              isNot: null,
-            },
-          },
-        });
-        this.discordService.sendNewUserLog(
-          `🎉*회원가입 알림*🎉\n${newUser.studentId} ${newUser.name}님이 가입하셨습니다!!\n\n🔥전체 유저 수: ${number2emoji(userCount)}명 돌파!!🔥`,
-        );
+        this.sendNewUserLog(newUser.studentId, newUser.name);
 
         return newUser;
       } else {
@@ -86,17 +113,7 @@ export class AuthRepository {
           },
         });
 
-        const userCount = await tx.user.count({
-          where: {
-            deletedAt: null,
-            department: {
-              isNot: null,
-            },
-          },
-        });
-        this.discordService.sendNewUserLog(
-          `🎉*회원가입 알림*🎉\n${rejoinedUser.studentId} ${rejoinedUser.name}님이 재가입하셨습니다!!\n\n🔥전체 유저 수: ${number2emoji(userCount)}명 돌파!!🔥`,
-        );
+        this.sendNewUserLog(rejoinedUser.studentId, rejoinedUser.name);
       }
 
       return user;
