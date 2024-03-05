@@ -22,6 +22,7 @@ import {
 } from '@nestjs/swagger';
 import { CurrentUser } from 'src/auth/decorator/user.decorator';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
+import { PasswordValidationPipe } from 'src/auth/pipes/signup-validation.pipe';
 import { UserInfo } from 'src/auth/types/user-info.type';
 import { FriendListDto } from './dto/friend.dto';
 import { PushTokenPayload } from './payload/pushToken.payload';
@@ -71,7 +72,7 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   async addUserAsFriend(
     @CurrentUser() user: UserInfo,
-    @Body() payload: UserPayload,
+    @Body(PasswordValidationPipe) payload: UserPayload,
   ): Promise<void> {
     await this.userService.addUserAsFriend(payload, user);
   }
