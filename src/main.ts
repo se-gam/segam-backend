@@ -21,11 +21,11 @@ async function bootstrap() {
   );
 
   app.useGlobalFilters(
-    new HttpExceptionFilter(),
     new AllExceptionsFilter(
       app.get<HttpAdapterHost>(HttpAdapterHost),
       app.get<DiscordService>(DiscordService),
     ),
+    new HttpExceptionFilter(),
   );
   app.enableCors();
 
