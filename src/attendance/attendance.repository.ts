@@ -387,293 +387,308 @@ export class AttendanceRepository {
     );
 
     // 수강철회 등 들었던 강의들이 사라졌을 경우
-    this.prismaService.$transaction([
-      this.prismaService.userCourse.deleteMany({
-        where: {
-          courseId: {
-            in: deletedIds,
-          },
-          studentId: user.studentId,
-        },
-      }),
-
-      this.prismaService.userLecture.deleteMany({
-        where: {
-          lecture: {
+    await this.prismaService.$transaction(
+      async (tx) => {
+        await tx.userCourse.deleteMany({
+          where: {
             courseId: {
               in: deletedIds,
             },
+            studentId: user.studentId,
           },
-          studentId: user.studentId,
-        },
-      }),
+        });
 
-      this.prismaService.userAssignment.deleteMany({
-        where: {
-          assignment: {
-            courseId: {
-              in: deletedIds,
+        await tx.userLecture.deleteMany({
+          where: {
+            lecture: {
+              courseId: {
+                in: deletedIds,
+              },
             },
+            studentId: user.studentId,
           },
-          studentId: user.studentId,
-        },
-      }),
-    ]);
+        });
+
+        await tx.userAssignment.deleteMany({
+          where: {
+            assignment: {
+              courseId: {
+                in: deletedIds,
+              },
+            },
+            studentId: user.studentId,
+          },
+        });
+      },
+      {
+        timeout: 20000,
+      },
+    );
 
     // 강의가 이미 DB에 있던, 없던 추가
-    this.prismaService.$transaction([
-      this.prismaService.course.createMany({
-        data: createdCourses.map((course) => {
-          return {
-            id: course.id,
-            ecampusId: course.ecampusId,
-            name: course.name,
-          };
-        }),
-        skipDuplicates: true,
-      }),
+    await this.prismaService.$transaction(
+      async (tx) => {
+        await tx.course.createMany({
+          data: createdCourses.map((course) => {
+            return {
+              id: course.id,
+              ecampusId: course.ecampusId,
+              name: course.name,
+            };
+          }),
+          skipDuplicates: true,
+        });
 
-      this.prismaService.userCourse.createMany({
-        data: createdCourses.map((course) => {
-          return {
-            studentId: user.studentId,
-            courseId: course.id,
-          };
-        }),
-        skipDuplicates: true,
-      }),
-    ]);
+        await tx.userCourse.createMany({
+          data: createdCourses.map((course) => {
+            return {
+              studentId: user.studentId,
+              courseId: course.id,
+            };
+          }),
+          skipDuplicates: true,
+        });
+      },
+      {
+        timeout: 20000,
+      },
+    );
 
     // 강의별로 강의, 과제 추가
     for (const course of createdCourses) {
-      await this.prismaService.$transaction(async (tx) => {
-        const prevLectures = await tx.lecture.findMany({
-          where: {
-            courseId: course.id,
-            users: {
-              some: {
-                studentId: user.studentId,
-              },
-            },
-            deletedAt: null,
-          },
-          select: {
-            id: true,
-          },
-        });
-        const prevLectureIds = prevLectures.map((lecture) => lecture.id);
-        const newLectureIds = course.lectures.map((lecture) =>
-          parseInt(lecture.id),
-        );
-
-        const existingLectureIds = _.intersection(
-          prevLectureIds,
-          newLectureIds,
-        );
-        const deletedLectureIds = _.difference(
-          prevLectureIds,
-          existingLectureIds,
-        );
-        const createdLectureIds = _.difference(
-          newLectureIds,
-          existingLectureIds,
-        );
-
-        const createdLectures = course.lectures.filter((lecture) =>
-          createdLectureIds.includes(lecture.id),
-        );
-
-        const existingLectures = course.lectures.filter((lecture) =>
-          existingLectureIds.includes(lecture.id),
-        );
-
-        // 사라진 강의들 삭제
-        await tx.userLecture.deleteMany({
-          where: {
-            lectureId: {
-              in: deletedLectureIds,
-            },
-            studentId: user.studentId,
-          },
-        });
-
-        // 이미 있는 강의들 업데이트
-        for (const lecture of existingLectures) {
-          await tx.lecture.update({
+      await this.prismaService.$transaction(
+        async (tx) => {
+          const prevLectures = await tx.lecture.findMany({
             where: {
-              id: lecture.id,
+              courseId: course.id,
+              users: {
+                some: {
+                  studentId: user.studentId,
+                },
+              },
+              deletedAt: null,
             },
-            data: {
-              name: lecture.name,
-              week: lecture.week,
-              startsAt: lecture.startsAt,
-              endsAt: lecture.endsAt,
+            select: {
+              id: true,
+            },
+          });
+          const prevLectureIds = prevLectures.map((lecture) => lecture.id);
+          const newLectureIds = course.lectures.map((lecture) =>
+            parseInt(lecture.id),
+          );
+
+          const existingLectureIds = _.intersection(
+            prevLectureIds,
+            newLectureIds,
+          );
+          const deletedLectureIds = _.difference(
+            prevLectureIds,
+            existingLectureIds,
+          );
+          const createdLectureIds = _.difference(
+            newLectureIds,
+            existingLectureIds,
+          );
+
+          const createdLectures = course.lectures.filter((lecture) =>
+            createdLectureIds.includes(lecture.id),
+          );
+
+          const existingLectures = course.lectures.filter((lecture) =>
+            existingLectureIds.includes(lecture.id),
+          );
+
+          // 사라진 강의들 삭제
+          await tx.userLecture.deleteMany({
+            where: {
+              lectureId: {
+                in: deletedLectureIds,
+              },
+              studentId: user.studentId,
             },
           });
 
-          await tx.userLecture.update({
-            where: {
-              studentId_lectureId: {
+          // 이미 있는 강의들 업데이트
+          for (const lecture of existingLectures) {
+            await tx.lecture.update({
+              where: {
+                id: lecture.id,
+              },
+              data: {
+                name: lecture.name,
+                week: lecture.week,
+                startsAt: lecture.startsAt,
+                endsAt: lecture.endsAt,
+              },
+            });
+
+            await tx.userLecture.update({
+              where: {
+                studentId_lectureId: {
+                  studentId: user.studentId,
+                  lectureId: lecture.id,
+                },
+              },
+              data: {
+                isDone: lecture.isDone,
+              },
+            });
+          }
+
+          // 새로운 강의들 추가
+          for (const lecture of createdLectures) {
+            await tx.lecture.upsert({
+              where: {
+                id: lecture.id,
+              },
+              update: {
+                name: lecture.name,
+                week: lecture.week,
+                startsAt: lecture.startsAt,
+                endsAt: lecture.endsAt,
+              },
+              create: {
+                id: lecture.id,
+                name: lecture.name,
+                week: lecture.week,
+                startsAt: lecture.startsAt,
+                endsAt: lecture.endsAt,
+                course: {
+                  connect: {
+                    id: course.id,
+                  },
+                },
+              },
+            });
+          }
+
+          await tx.userLecture.createMany({
+            data: createdLectures.map((lecture) => {
+              return {
                 studentId: user.studentId,
                 lectureId: lecture.id,
-              },
-            },
-            data: {
-              isDone: lecture.isDone,
-            },
+                isDone: lecture.isDone,
+              };
+            }),
           });
-        }
 
-        // 새로운 강의들 추가
-        for (const lecture of createdLectures) {
-          await tx.lecture.upsert({
+          const prevAssignments = await tx.assignment.findMany({
             where: {
-              id: lecture.id,
-            },
-            update: {
-              name: lecture.name,
-              week: lecture.week,
-              startsAt: lecture.startsAt,
-              endsAt: lecture.endsAt,
-            },
-            create: {
-              id: lecture.id,
-              name: lecture.name,
-              week: lecture.week,
-              startsAt: lecture.startsAt,
-              endsAt: lecture.endsAt,
-              course: {
-                connect: {
-                  id: course.id,
+              courseId: course.id,
+              users: {
+                some: {
+                  studentId: user.studentId,
                 },
               },
+              deletedAt: null,
+            },
+            select: {
+              id: true,
             },
           });
-        }
 
-        await tx.userLecture.createMany({
-          data: createdLectures.map((lecture) => {
-            return {
-              studentId: user.studentId,
-              lectureId: lecture.id,
-              isDone: lecture.isDone,
-            };
-          }),
-        });
+          const prevAssignmentIds = prevAssignments.map(
+            (assignment) => assignment.id,
+          );
+          const newAssignmentIds = course.assignments.map((assignment) =>
+            parseInt(assignment.id),
+          );
 
-        const prevAssignments = await tx.assignment.findMany({
-          where: {
-            courseId: course.id,
-            users: {
-              some: {
-                studentId: user.studentId,
+          const existingAssignmentIds = _.intersection(
+            prevAssignmentIds,
+            newAssignmentIds,
+          );
+          const deletedAssignmentIds = _.difference(
+            prevAssignmentIds,
+            existingAssignmentIds,
+          );
+          const createdAssignmentIds = _.difference(
+            newAssignmentIds,
+            existingAssignmentIds,
+          );
+
+          const createdAssignments = course.assignments.filter((assignment) =>
+            createdAssignmentIds.includes(assignment.id),
+          );
+
+          const existingAssignments = course.assignments.filter((assignment) =>
+            existingAssignmentIds.includes(assignment.id),
+          );
+
+          // 사라진 과제들 삭제
+          await tx.userAssignment.deleteMany({
+            where: {
+              assignmentId: {
+                in: deletedAssignmentIds,
               },
-            },
-            deletedAt: null,
-          },
-          select: {
-            id: true,
-          },
-        });
-
-        const prevAssignmentIds = prevAssignments.map(
-          (assignment) => assignment.id,
-        );
-        const newAssignmentIds = course.assignments.map((assignment) =>
-          parseInt(assignment.id),
-        );
-
-        const existingAssignmentIds = _.intersection(
-          prevAssignmentIds,
-          newAssignmentIds,
-        );
-        const deletedAssignmentIds = _.difference(
-          prevAssignmentIds,
-          existingAssignmentIds,
-        );
-        const createdAssignmentIds = _.difference(
-          newAssignmentIds,
-          existingAssignmentIds,
-        );
-
-        const createdAssignments = course.assignments.filter((assignment) =>
-          createdAssignmentIds.includes(assignment.id),
-        );
-
-        const existingAssignments = course.assignments.filter((assignment) =>
-          existingAssignmentIds.includes(assignment.id),
-        );
-
-        // 사라진 과제들 삭제
-        await tx.userAssignment.deleteMany({
-          where: {
-            assignmentId: {
-              in: deletedAssignmentIds,
-            },
-            studentId: user.studentId,
-          },
-        });
-
-        // 이미 있는 과제들 업데이트
-        for (const assignment of existingAssignments) {
-          await tx.assignment.update({
-            where: {
-              id: assignment.id,
-            },
-            data: {
-              name: assignment.name,
-              week: assignment.week,
-              endsAt: assignment.endsAt,
+              studentId: user.studentId,
             },
           });
 
-          await tx.userAssignment.update({
-            where: {
-              studentId_assignmentId: {
+          // 이미 있는 과제들 업데이트
+          for (const assignment of existingAssignments) {
+            await tx.assignment.update({
+              where: {
+                id: assignment.id,
+              },
+              data: {
+                name: assignment.name,
+                week: assignment.week,
+                endsAt: assignment.endsAt,
+              },
+            });
+
+            await tx.userAssignment.update({
+              where: {
+                studentId_assignmentId: {
+                  studentId: user.studentId,
+                  assignmentId: assignment.id,
+                },
+              },
+              data: {
+                isDone: assignment.isDone,
+              },
+            });
+          }
+
+          // 새로운 과제들 추가
+          for (const assignment of createdAssignments) {
+            await tx.assignment.upsert({
+              where: {
+                id: assignment.id,
+              },
+              update: {
+                name: assignment.name,
+                week: assignment.week,
+                endsAt: assignment.endsAt,
+              },
+              create: {
+                id: assignment.id,
+                name: assignment.name,
+                week: assignment.week,
+                endsAt: assignment.endsAt,
+                course: {
+                  connect: {
+                    id: course.id,
+                  },
+                },
+              },
+            });
+          }
+          await tx.userAssignment.createMany({
+            data: createdAssignments.map((assignment) => {
+              return {
                 studentId: user.studentId,
                 assignmentId: assignment.id,
-              },
-            },
-            data: {
-              isDone: assignment.isDone,
-            },
+                isDone: assignment.isDone,
+              };
+            }),
           });
-        }
-
-        // 새로운 과제들 추가
-        for (const assignment of createdAssignments) {
-          await tx.assignment.upsert({
-            where: {
-              id: assignment.id,
-            },
-            update: {
-              name: assignment.name,
-              week: assignment.week,
-              endsAt: assignment.endsAt,
-            },
-            create: {
-              id: assignment.id,
-              name: assignment.name,
-              week: assignment.week,
-              endsAt: assignment.endsAt,
-              course: {
-                connect: {
-                  id: course.id,
-                },
-              },
-            },
-          });
-        }
-        await tx.userAssignment.createMany({
-          data: createdAssignments.map((assignment) => {
-            return {
-              studentId: user.studentId,
-              assignmentId: assignment.id,
-              isDone: assignment.isDone,
-            };
-          }),
-        });
-      });
+        },
+        {
+          timeout: 20000,
+        },
+      );
     }
   }
 }
