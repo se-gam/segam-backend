@@ -25,7 +25,7 @@ async function bootstrap() {
       app.get<HttpAdapterHost>(HttpAdapterHost),
       app.get<DiscordService>(DiscordService),
     ),
-    new HttpExceptionFilter(),
+    new HttpExceptionFilter(app.get<DiscordService>(DiscordService)),
   );
   app.enableCors();
 
