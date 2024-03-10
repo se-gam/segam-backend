@@ -58,28 +58,31 @@ export class StudyroomService {
       studyroom.slots.map((slot) => ({ room_id: studyroom.room_id, slot })),
     );
 
-    studyrooms.forEach(async (rawStudyRoom) => {
-      const slotId = `${rawStudyRoom.room_id}_${rawStudyRoom.slot.date}_${rawStudyRoom.slot.time}`;
-      await this.prismaService.$transaction([
-        this.prismaService.studyroomSlot.upsert({
-          where: {
-            id: slotId,
-          },
-          update: {
-            isReserved: rawStudyRoom.slot.is_reserved,
-            isClosed: rawStudyRoom.slot.is_closed,
-          },
-          create: {
-            id: slotId,
-            studyroomId: parseInt(rawStudyRoom.room_id),
-            date: new Date(rawStudyRoom.slot.date),
-            startsAt: this.getSlotTime(rawStudyRoom.slot.time),
-            isReserved: rawStudyRoom.slot.is_reserved,
-            isClosed: rawStudyRoom.slot.is_closed,
-          },
-        }),
-      ]);
-    });
+    await this.prismaService.$transaction(
+      async (tx) => {
+        studyrooms.forEach(async (rawStudyRoom) => {
+          const slotId = `${rawStudyRoom.room_id}_${rawStudyRoom.slot.date}_${rawStudyRoom.slot.time}`;
+          await tx.studyroomSlot.upsert({
+            where: {
+              id: slotId,
+            },
+            update: {
+              isReserved: rawStudyRoom.slot.is_reserved,
+              isClosed: rawStudyRoom.slot.is_closed,
+            },
+            create: {
+              id: slotId,
+              studyroomId: parseInt(rawStudyRoom.room_id),
+              date: new Date(rawStudyRoom.slot.date),
+              startsAt: this.getSlotTime(rawStudyRoom.slot.time),
+              isReserved: rawStudyRoom.slot.is_reserved,
+              isClosed: rawStudyRoom.slot.is_closed,
+            },
+          });
+        });
+      },
+      { timeout: 20000 },
+    );
   }
 
   async getAllStudyrooms(query: StudyroomQuery): Promise<StudyroomListDto> {

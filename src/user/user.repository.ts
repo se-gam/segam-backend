@@ -122,60 +122,66 @@ export class UserRepository {
   }
 
   async deleteFriend(friendId: string, user: UserInfo): Promise<void> {
-    await this.prismaService.$transaction(async (tx) => {
-      const isFriend = await tx.friend.findUnique({
-        where: {
-          requestUserId_receiveUserId: {
-            requestUserId: user.studentId,
-            receiveUserId: friendId,
+    await this.prismaService.$transaction(
+      async (tx) => {
+        const isFriend = await tx.friend.findUnique({
+          where: {
+            requestUserId_receiveUserId: {
+              requestUserId: user.studentId,
+              receiveUserId: friendId,
+            },
           },
-        },
-      });
+        });
 
-      if (!isFriend || (isFriend && isFriend.deletedAt)) {
-        throw new BadRequestException('친구로 등록되지 않은 사용자입니다.');
-      }
+        if (!isFriend || (isFriend && isFriend.deletedAt)) {
+          throw new BadRequestException('친구로 등록되지 않은 사용자입니다.');
+        }
 
-      await tx.friend.updateMany({
-        where: {
-          id: isFriend.id,
-        },
-        data: {
-          deletedAt: new Date(),
-        },
-      });
-    });
+        await tx.friend.updateMany({
+          where: {
+            id: isFriend.id,
+          },
+          data: {
+            deletedAt: new Date(),
+          },
+        });
+      },
+      { timeout: 20000 },
+    );
   }
 
   async getFriendsByStudentId(studentId: string): Promise<UserInfo[]> {
-    return await this.prismaService.$transaction(async (tx) => {
-      const friends = await tx.friend.findMany({
-        where: {
-          requestUserId: studentId,
-          deletedAt: null,
-        },
-        select: {
-          receiveUserId: true,
-        },
-      });
-
-      const friendIds = _.flatMap(friends, 'receiveUserId');
-
-      return tx.user.findMany({
-        where: {
-          studentId: {
-            in: friendIds,
+    return await this.prismaService.$transaction(
+      async (tx) => {
+        const friends = await tx.friend.findMany({
+          where: {
+            requestUserId: studentId,
+            deletedAt: null,
           },
-          deletedAt: null,
-        },
-        select: {
-          studentId: true,
-          sejongPid: true,
-          name: true,
-          departmentName: true,
-        },
-      });
-    });
+          select: {
+            receiveUserId: true,
+          },
+        });
+
+        const friendIds = _.flatMap(friends, 'receiveUserId');
+
+        return tx.user.findMany({
+          where: {
+            studentId: {
+              in: friendIds,
+            },
+            deletedAt: null,
+          },
+          select: {
+            studentId: true,
+            sejongPid: true,
+            name: true,
+            departmentName: true,
+          },
+        });
+      },
+      { timeout: 20000 },
+    );
   }
 
   async deleteUser(user: UserInfo): Promise<void> {

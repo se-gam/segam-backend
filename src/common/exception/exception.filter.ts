@@ -9,6 +9,7 @@ import { DiscordService } from '../services/discord.service';
 
 @Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {
+  constructor(private readonly discordService: DiscordService) {}
   catch(exception: HttpException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
@@ -25,6 +26,9 @@ export class HttpExceptionFilter implements ExceptionFilter {
       }),
     );
 
+    if (exception.getStatus() === 500) {
+      this.discordService.sendErrorLog(exception, request);
+    }
     response.status(status).json(exception.getResponse());
   }
 }
