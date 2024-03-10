@@ -48,6 +48,9 @@ export class StudyroomService {
     console.log('crawler start @', new Date());
     const res = await this.axiosService.get(
       this.configService.get<string>('CRAWLER_API_ROOT') + '/calendar',
+      {
+        timeout: 20000,
+      },
     );
     console.log('crawler end @', new Date());
     const rawStudyrooms = JSON.parse(res.data);
