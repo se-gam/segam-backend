@@ -2,7 +2,7 @@ export type AssignmentData = {
   id: number;
   name: string;
   week: number;
-  endsAt: Date;
+  endsAt?: Date;
   users: {
     isDone: boolean;
   }[];

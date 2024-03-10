@@ -54,7 +54,7 @@ export class EcampusService {
     try {
       const res = await this.axiosService.get(this.assignmentUrl + `?id=${id}`);
       const root = parse(res.data);
-      let endsAt: Date;
+      let endsAt: Date = null;
 
       root.querySelectorAll('tr').forEach((el) => {
         if (
@@ -198,7 +198,6 @@ export class EcampusService {
         const endTime = assignmentEndTimes.find(
           (assignmentEndTime) => assignmentEndTime.id === assignment.id,
         );
-        if (!endTime.endsAt) return;
         return {
           ...assignment,
           endsAt: endTime.endsAt,
