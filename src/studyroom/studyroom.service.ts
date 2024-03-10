@@ -40,7 +40,7 @@ export class StudyroomService {
     return parseInt(time.split(':')[0]);
   }
 
-  @Cron('* */2 * * * *')
+  @Cron('*/1 * * * *')
   async handleCron() {
     if (this.configService.get<string>('NODE_ENV') !== 'dev') {
       return;
