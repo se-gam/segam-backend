@@ -40,7 +40,7 @@ export class StudyroomService {
     return parseInt(time.split(':')[0]);
   }
 
-  @Cron('* */1 * * * *')
+  @Cron('*/1 * * * *')
   async handleCron() {
     if (this.configService.get<string>('NODE_ENV') !== 'dev') {
       return;
@@ -49,7 +49,7 @@ export class StudyroomService {
     const res = await this.axiosService.get(
       this.configService.get<string>('CRAWLER_API_ROOT') + '/calendar',
       {
-        timeout: 20000,
+        timeout: 60000,
       },
     );
     console.log('crawler end @', new Date());
