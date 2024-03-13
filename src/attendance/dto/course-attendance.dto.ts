@@ -85,14 +85,14 @@ export class CourseAttendanceDto {
 
     // 아직 수강하지 않은 강의 중 종료된 강의 수
     const lectureAbsences = _.chain(course.lectures)
-      .filter((lecture) => !lecture.users[0].isDone && lecture.endsAt < today)
+      .filter((lecture) => !lecture.users[0].isDone && lecture.endsAt <= today)
       .value().length;
 
     // 아직 제출하지 않은 과제 중 종료된 과제 수
     const assignmentAbsences = _.chain(course.assignments)
       .filter(
         (assignment) =>
-          !assignment.users[0].isDone && assignment.endsAt < today,
+          !assignment.users[0].isDone && assignment.endsAt <= today,
       )
       .value().length;
 
@@ -106,7 +106,7 @@ export class CourseAttendanceDto {
     const imminentDueDate = _.chain([...course.assignments, ...course.lectures])
       .filter(
         (job: AssignmentData | LectureData) =>
-          !job.users[0].isDone && job.endsAt > today,
+          !job.users[0].isDone && job.endsAt >= today,
       )
       .filter((job: AssignmentData | LectureData) => {
         if ('startsAt' in job) {
@@ -131,7 +131,7 @@ export class CourseAttendanceDto {
       .filter(
         (lecture) =>
           lecture.startsAt < today &&
-          lecture.endsAt > today &&
+          lecture.endsAt >= today &&
           !lecture.users[0].isDone,
       )
       .value().length;
@@ -140,7 +140,7 @@ export class CourseAttendanceDto {
     const assignmentsLeft = _.chain(course.assignments)
       .filter(
         (assignment) =>
-          assignment.endsAt > today && !assignment.users[0].isDone,
+          assignment.endsAt >= today && !assignment.users[0].isDone,
       )
       .value().length;
 
