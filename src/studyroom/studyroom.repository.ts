@@ -17,6 +17,18 @@ export class StudyroomRepository {
     return hour + ':00';
   }
 
+  async getAllStudyroomIds(): Promise<number[]> {
+    const studyrooms = await this.prismaService.studyroom.findMany({
+      where: {
+        deletedAt: null,
+      },
+      select: {
+        id: true,
+      },
+    });
+    return studyrooms.map((studyroom) => studyroom.id);
+  }
+
   async getAllStudyrooms(query: StudyroomQuery): Promise<Studyroom[]> {
     const studyrooms = await this.prismaService.studyroom.findMany({
       where: {

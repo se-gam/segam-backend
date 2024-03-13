@@ -20,9 +20,13 @@ import { StudyroomQuery } from './query/studyroom.query';
 import { StudyroomDateQuery } from './query/studyroomDateQuery.query';
 import { ReservationService } from './reservation.service';
 import { StudyroomRepository } from './studyroom.repository';
+import { RawStudyroom } from './types/rawStudyroom';
 
 @Injectable()
 export class StudyroomService {
+  private studyroomIds: number[] = [];
+  private currentIndex = 0;
+
   constructor(
     private readonly prismaService: PrismaService,
     private readonly studyroomRepository: StudyroomRepository,
@@ -40,49 +44,51 @@ export class StudyroomService {
     return parseInt(time.split(':')[0]);
   }
 
-  @Cron('*/1 * * * *')
+  @Cron('*/3 * * * * *')
   async handleCron() {
     if (this.configService.get<string>('NODE_ENV') !== 'dev') {
       return;
     }
+
+    if (!this.studyroomIds.length) {
+      console.log('fetching studyroom ids');
+      this.studyroomIds = await this.studyroomRepository.getAllStudyroomIds();
+    }
+
+    const roomId = this.studyroomIds[this.currentIndex];
+    this.currentIndex = (this.currentIndex + 1) % this.studyroomIds.length;
+
+    console.log(roomId, this.currentIndex);
+
     console.log('crawler start @', new Date());
     const res = await this.axiosService.get(
-      this.configService.get<string>('CRAWLER_API_ROOT') + '/calendar',
-      {
-        timeout: 60000,
-      },
-    );
-    console.log('crawler end @', new Date());
-    const rawStudyrooms = JSON.parse(res.data);
-    const studyrooms = rawStudyrooms.flatMap((studyroom) =>
-      studyroom.slots.map((slot) => ({ room_id: studyroom.room_id, slot })),
+      this.configService.get<string>('CRAWLER_API_ROOT') +
+        `/calendar/${roomId}`,
     );
 
-    await this.prismaService.$transaction(
-      async (tx) => {
-        studyrooms.forEach(async (rawStudyRoom) => {
-          const slotId = `${rawStudyRoom.room_id}_${rawStudyRoom.slot.date}_${rawStudyRoom.slot.time}`;
-          await tx.studyroomSlot.upsert({
-            where: {
-              id: slotId,
-            },
-            update: {
-              isReserved: rawStudyRoom.slot.is_reserved,
-              isClosed: rawStudyRoom.slot.is_closed,
-            },
-            create: {
-              id: slotId,
-              studyroomId: parseInt(rawStudyRoom.room_id),
-              date: new Date(rawStudyRoom.slot.date),
-              startsAt: this.getSlotTime(rawStudyRoom.slot.time),
-              isReserved: rawStudyRoom.slot.is_reserved,
-              isClosed: rawStudyRoom.slot.is_closed,
-            },
-          });
-        });
-      },
-      { timeout: 20000 },
-    );
+    console.log('crawler end @', new Date());
+    const rawStudyroom = JSON.parse(res.data) as RawStudyroom;
+
+    for (const slot of rawStudyroom.slots) {
+      const slotId = `${rawStudyroom.room_id}_${slot.date}_${slot.time}`;
+      await this.prismaService.studyroomSlot.upsert({
+        where: {
+          id: slotId,
+        },
+        update: {
+          isReserved: slot.is_reserved,
+          isClosed: slot.is_closed,
+        },
+        create: {
+          id: slotId,
+          studyroomId: parseInt(rawStudyroom.room_id),
+          date: new Date(slot.date),
+          startsAt: this.getSlotTime(slot.time),
+          isReserved: slot.is_reserved,
+          isClosed: slot.is_closed,
+        },
+      });
+    }
   }
 
   async getAllStudyrooms(query: StudyroomQuery): Promise<StudyroomListDto> {
