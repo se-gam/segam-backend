@@ -314,7 +314,7 @@ export class AttendanceRepository {
     );
 
     // 강의별로 강의, 과제 추가
-    for (const course of createdCourses) {
+    for (const course of courses) {
       await this.prismaService.$transaction(
         async (tx) => {
           const prevLectures = await tx.lecture.findMany({
