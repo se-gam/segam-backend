@@ -14,7 +14,6 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
-import { Throttle } from '@nestjs/throttler';
 import { CurrentUser } from 'src/auth/decorator/user.decorator';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
 import { PasswordPayload } from 'src/auth/payload/password.payload';
@@ -36,7 +35,6 @@ export class AttendanceController {
   @ApiOperation({ summary: '출석 정보 업데이트' })
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @Throttle({ default: { limit: 3, ttl: 10000 } })
   async updateCourseAttendance(
     @CurrentUser() user: UserInfo,
     @Body(PasswordValidationPipe) payload: PasswordPayload,
