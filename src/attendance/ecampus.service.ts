@@ -142,7 +142,6 @@ export class EcampusService {
         );
 
         if (!rawAssignments.length && !rawLectures.length) return;
-
         rawAssignments.forEach((assignment) => {
           const [isSubmitted, name] = assignment
             .querySelector('span>img')
@@ -163,6 +162,9 @@ export class EcampusService {
         });
 
         rawLectures.forEach((lecture) => {
+          if (!lecture.querySelector('span.text-ubstrap')) {
+            return;
+          }
           const [isSubmitted, name] = lecture
             .querySelector('span>img')
             .getAttribute('alt')
