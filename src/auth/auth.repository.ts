@@ -27,7 +27,7 @@ export class AuthRepository {
       },
     });
     this.discordService.sendNewUserLog(
-      `🎉*회원가입 알림*🎉\n${studentId} ${name}님이 ${rejoined && '재'}가입하셨습니다!!\n\n🔥전체 유저 수: ${number2emoji(userCount)}명 돌파!!🔥`,
+      `🎉*회원가입 알림*🎉\n${studentId} ${name}님이 ${rejoined ? '재' : ''}가입하셨습니다!!\n\n🔥전체 유저 수: ${number2emoji(userCount)}명 돌파!!🔥`,
     );
   }
 

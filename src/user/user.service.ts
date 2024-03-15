@@ -13,12 +13,14 @@ import { FriendListDto } from './dto/friend.dto';
 import { PushTokenPayload } from './payload/pushToken.payload';
 import { UserPayload } from './payload/user.payload';
 import { UserRepository } from './user.repository';
+import { DiscordService } from 'src/common/services/discord.service';
 
 @Injectable()
 export class UserService {
   constructor(
     private readonly userRepository: UserRepository,
     private readonly reservationService: ReservationService,
+    private readonly discordService: DiscordService,
   ) {}
 
   private static verificationDate = new Date('2023-02-30');
@@ -108,5 +110,6 @@ export class UserService {
 
   async deleteUser(user: UserInfo): Promise<void> {
     await this.userRepository.deleteUser(user);
+    await this.discordService.sendQuitLog(user.studentId, user.name);
   }
 }

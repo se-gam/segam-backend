@@ -44,4 +44,16 @@ export class DiscordService {
     this.errorDiscordHook.setUsername('세감 맛없졍');
     this.errorDiscordHook.send(embed);
   }
+
+  async sendQuitLog(id: string, name: string) {
+    if (this.configService.get('NODE_ENV') === 'local') return;
+
+    const embed = new MessageBuilder()
+      .setTitle('탈퇴알림')
+      .setColor(parseInt('0x626FE5', 16))
+      .setDescription(`${id} ${name}님이 탈퇴했습니다.`)
+      .setTimestamp();
+    this.newUserDiscordHook.setUsername('세감 돌아와');
+    this.newUserDiscordHook.send(embed);
+  }
 }
