@@ -1,3 +1,5 @@
+import * as _ from 'lodash';
+
 import {
   BadRequestException,
   Injectable,
@@ -7,12 +9,11 @@ import { parse } from 'node-html-parser';
 import { PasswordPayload } from 'src/auth/payload/password.payload';
 import { UserInfo } from 'src/auth/types/user-info.type';
 import { AxiosService } from 'src/common/services/axios.service';
+import { DiscordService } from 'src/common/services/discord.service';
 import { AttendanceRepository } from './attendance.repository';
 import { RawAssignment } from './types/raw-assignment';
 import { RawCourse } from './types/raw-course';
 import { RawLecture } from './types/raw-lecture';
-
-import * as _ from 'lodash';
 
 @Injectable()
 export class EcampusService {
@@ -24,6 +25,7 @@ export class EcampusService {
   constructor(
     private readonly axiosService: AxiosService,
     private readonly attendanceRepository: AttendanceRepository,
+    private readonly discordService: DiscordService,
   ) {
     this.loginUrl = 'https://ecampus.sejong.ac.kr/login/index.php';
     this.dashboardUrl = 'https://ecampus.sejong.ac.kr/dashboard.php';
@@ -113,13 +115,14 @@ export class EcampusService {
       }
     }
 
+    const res = await this.axiosService.get(
+      this.courseUrl + `?id=${ecampusId}`,
+    );
+
     try {
       const lectures: RawLecture[] = [];
       let assignments: RawAssignment[] = [];
 
-      const res = await this.axiosService.get(
-        this.courseUrl + `?id=${ecampusId}`,
-      );
       const root = parse(res.data);
       let [name, id] = root
         .querySelector('h2.coursename')
@@ -214,6 +217,7 @@ export class EcampusService {
         assignments: _.uniqBy(assignments, 'id'),
       };
     } catch (error) {
+      await this.discordService.sendErrorHTMLLog(user, res.data);
       throw new BadRequestException(
         '강의 정보를 가져오는데 실패했습니다. 다시 시도해주세요.',
       );
@@ -236,10 +240,10 @@ export class EcampusService {
       }
     }
 
-    try {
-      const res = await this.axiosService.get(this.dashboardUrl);
-      const root = parse(res.data);
+    const res = await this.axiosService.get(this.dashboardUrl);
 
+    try {
+      const root = parse(res.data);
       const contents = root.querySelectorAll('li.course-label-r');
 
       const courseList = contents.map((content) => {
@@ -253,6 +257,7 @@ export class EcampusService {
 
       return courseList;
     } catch (error) {
+      await this.discordService.sendErrorHTMLLog(user, res.data);
       throw new BadRequestException(
         '강의 목록을 가져오는데 실패했습니다. 다시 시도해주세요.',
       );

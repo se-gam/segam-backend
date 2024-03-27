@@ -1,7 +1,10 @@
+import * as fs from 'node:fs';
+
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { MessageBuilder, Webhook } from 'discord-webhook-node';
 import { Request } from 'express';
+import { UserInfo } from 'src/auth/types/user-info.type';
 
 @Injectable()
 export class DiscordService {
@@ -55,5 +58,25 @@ export class DiscordService {
       .setTimestamp();
     this.newUserDiscordHook.setUsername('세감 돌아와');
     this.newUserDiscordHook.send(embed);
+  }
+
+  async sendErrorHTMLLog(user: UserInfo, html: string) {
+    const fileName = Math.random().toString(36).substring(7) + '.html';
+
+    fs.writeFileSync(fileName, html);
+    await this.errorDiscordHook.sendFile(fileName);
+    fs.unlinkSync(fileName);
+
+    const embed = new MessageBuilder()
+      .setTitle('🔥🔥🔥강의 정보 오류 발생🔥🔥🔥')
+      .setColor(parseInt('0xDA4237', 16))
+      .setDescription(
+        `이름: ${user.name}\n
+        학번: ${user.studentId}\n
+        학과: ${user.departmentName}\n`,
+      )
+      .setTimestamp();
+    this.errorDiscordHook.setUsername('세감 맛없졍');
+    this.errorDiscordHook.send(embed);
   }
 }
