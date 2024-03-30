@@ -150,10 +150,7 @@ export class EcampusService {
             .querySelector('span>img')
             .getAttribute('alt')
             .split(':');
-          const assignmentId = assignment
-            .querySelector('a')
-            .getAttribute('href')
-            .split('=')[1];
+          const assignmentId = assignment.getAttribute('id').split('-')[1];
 
           const assignmentData: RawAssignment = {
             id: Number(assignmentId),
@@ -176,10 +173,7 @@ export class EcampusService {
             .querySelector('span.text-ubstrap')
             ?.structuredText.split('~');
 
-          const lectureId = lecture
-            .querySelector('a')
-            .getAttribute('href')
-            .split('=')[1];
+          const lectureId = lecture.getAttribute('id').split('-')[1];
 
           const lectureData: RawLecture = {
             id: Number(lectureId),
