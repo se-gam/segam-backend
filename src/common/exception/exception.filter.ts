@@ -27,7 +27,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
     );
 
     if (exception.getStatus() === 500) {
-      this.discordService.sendErrorLog(exception, request);
+      this.discordService.sendInternalErrorLog(exception, request);
     }
     response.status(status).json(exception.getResponse());
   }
@@ -51,7 +51,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
     const ctx = host.switchToHttp();
 
     const request = ctx.getRequest<Request>();
-    this.discordService.sendErrorLog(exception, request);
+    this.discordService.sendInternalErrorLog(exception, request);
 
     const httpStatus =
       exception instanceof HttpException

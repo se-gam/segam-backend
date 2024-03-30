@@ -68,6 +68,7 @@ export class EcampusService {
 
       return { id, endsAt };
     } catch (error) {
+      await this.discordService.sendErrorLog(error);
       throw new BadRequestException(
         '과제 정보를 가져오는데 실패했습니다. 다시 시도해주세요.',
       );
@@ -212,6 +213,7 @@ export class EcampusService {
       };
     } catch (error) {
       await this.discordService.sendErrorHTMLLog(user, res.data);
+      await this.discordService.sendErrorLog(error);
       throw new BadRequestException(
         '강의 정보를 가져오는데 실패했습니다. 다시 시도해주세요.',
       );
@@ -252,6 +254,7 @@ export class EcampusService {
       return courseList;
     } catch (error) {
       await this.discordService.sendErrorHTMLLog(user, res.data);
+      await this.discordService.sendErrorLog(error);
       throw new BadRequestException(
         '강의 목록을 가져오는데 실패했습니다. 다시 시도해주세요.',
       );
