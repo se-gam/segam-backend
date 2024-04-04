@@ -125,11 +125,21 @@ export class EcampusService {
       let assignments: RawAssignment[] = [];
 
       const root = parse(res.data);
-      let [name, id] = root
-        .querySelector('h2.coursename')
-        .structuredText.split(' ');
 
-      id = id.slice(1, -1);
+      let id: string;
+      let name: string;
+
+      try {
+        const courseInfo = root.querySelector('h2.coursename').structuredText;
+        const courseIdRegex = /\((\d{6}-\d{3})\)/;
+        id = courseInfo.match(courseIdRegex)[1];
+        name = courseInfo.replace(courseIdRegex, '').trim();
+      } catch (error) {
+        [name, id] = root
+          .querySelector('h2.coursename')
+          .structuredText.split(' ');
+        id = id.slice(1, -1);
+      }
 
       const contents = root.querySelectorAll('li.section.main.clearfix');
 
