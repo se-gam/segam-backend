@@ -22,6 +22,7 @@ export const configModule = ConfigModule.forRoot({
     CANCEL_RESERVATION_URL: Joi.string().required(),
     GET_USER_AVAILABILITY_URL: Joi.string().required(),
     DISCORD_NEW_USER_WEBHOOK_URL: Joi.string().required(),
+    DISCORD_INTERNAL_ERROR_WEBHOOK_URL: Joi.string().required(),
     DISCORD_ERROR_WEBHOOK_URL: Joi.string().required(),
   }),
 });
