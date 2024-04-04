@@ -173,7 +173,10 @@ export class EcampusService {
         });
 
         rawLectures.forEach((lecture) => {
-          if (!lecture.querySelector('span.text-ubstrap')) {
+          if (
+            !lecture.querySelector('span.text-ubstrap') ||
+            !lecture.querySelector('span>img')
+          ) {
             return;
           }
           const [isSubmitted, name] = lecture
