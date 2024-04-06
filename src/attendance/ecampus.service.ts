@@ -1,3 +1,5 @@
+import * as _ from 'lodash';
+
 import {
   BadRequestException,
   Injectable,
@@ -7,6 +9,7 @@ import { parse } from 'node-html-parser';
 import { PasswordPayload } from 'src/auth/payload/password.payload';
 import { UserInfo } from 'src/auth/types/user-info.type';
 import { AxiosService } from 'src/common/services/axios.service';
+import { DiscordService } from 'src/common/services/discord.service';
 import { AttendanceRepository } from './attendance.repository';
 import { RawAssignment } from './types/raw-assignment';
 import { RawCourse } from './types/raw-course';
@@ -22,6 +25,7 @@ export class EcampusService {
   constructor(
     private readonly axiosService: AxiosService,
     private readonly attendanceRepository: AttendanceRepository,
+    private readonly discordService: DiscordService,
   ) {
     this.loginUrl = 'https://ecampus.sejong.ac.kr/login/index.php';
     this.dashboardUrl = 'https://ecampus.sejong.ac.kr/dashboard.php';
@@ -52,7 +56,7 @@ export class EcampusService {
     try {
       const res = await this.axiosService.get(this.assignmentUrl + `?id=${id}`);
       const root = parse(res.data);
-      let endsAt: Date;
+      let endsAt: Date = null;
 
       root.querySelectorAll('tr').forEach((el) => {
         if (
@@ -64,6 +68,7 @@ export class EcampusService {
 
       return { id, endsAt };
     } catch (error) {
+      await this.discordService.sendErrorLog(error);
       throw new BadRequestException(
         '과제 정보를 가져오는데 실패했습니다. 다시 시도해주세요.',
       );
@@ -111,19 +116,30 @@ export class EcampusService {
       }
     }
 
+    const res = await this.axiosService.get(
+      this.courseUrl + `?id=${ecampusId}`,
+    );
+
     try {
       const lectures: RawLecture[] = [];
       let assignments: RawAssignment[] = [];
 
-      const res = await this.axiosService.get(
-        this.courseUrl + `?id=${ecampusId}`,
-      );
       const root = parse(res.data);
-      let [name, id] = root
-        .querySelector('h2.coursename')
-        .structuredText.split(' ');
 
-      id = id.slice(1, -1);
+      let id: string;
+      let name: string;
+
+      try {
+        const courseInfo = root.querySelector('h2.coursename').structuredText;
+        const courseIdRegex = /\((\d{6}-\d{3})\)/;
+        id = courseInfo.match(courseIdRegex)[1];
+        name = courseInfo.replace(courseIdRegex, '').trim();
+      } catch (error) {
+        [name, id] = root
+          .querySelector('h2.coursename')
+          .structuredText.split(' ');
+        id = id.slice(1, -1);
+      }
 
       const contents = root.querySelectorAll('li.section.main.clearfix');
 
@@ -140,16 +156,12 @@ export class EcampusService {
         );
 
         if (!rawAssignments.length && !rawLectures.length) return;
-
         rawAssignments.forEach((assignment) => {
           const [isSubmitted, name] = assignment
             .querySelector('span>img')
             .getAttribute('alt')
             .split(':');
-          const assignmentId = assignment
-            .querySelector('a')
-            .getAttribute('href')
-            .split('=')[1];
+          const assignmentId = assignment.getAttribute('id').split('-')[1];
 
           const assignmentData: RawAssignment = {
             id: Number(assignmentId),
@@ -161,6 +173,12 @@ export class EcampusService {
         });
 
         rawLectures.forEach((lecture) => {
+          if (
+            !lecture.querySelector('span.text-ubstrap') ||
+            !lecture.querySelector('span>img')
+          ) {
+            return;
+          }
           const [isSubmitted, name] = lecture
             .querySelector('span>img')
             .getAttribute('alt')
@@ -169,10 +187,7 @@ export class EcampusService {
             .querySelector('span.text-ubstrap')
             ?.structuredText.split('~');
 
-          const lectureId = lecture
-            .querySelector('a')
-            .getAttribute('href')
-            .split('=')[1];
+          const lectureId = lecture.getAttribute('id').split('-')[1];
 
           const lectureData: RawLecture = {
             id: Number(lectureId),
@@ -192,25 +207,26 @@ export class EcampusService {
         ),
       );
 
-      // TODO: Lodash로 바꾸기
       assignments = assignments.map((assignment) => {
         const endTime = assignmentEndTimes.find(
           (assignmentEndTime) => assignmentEndTime.id === assignment.id,
         );
-        if (!endTime.endsAt) return;
         return {
           ...assignment,
           endsAt: endTime.endsAt,
         };
       });
+
       return {
-        id,
-        name,
+        id: id.trim(),
+        name: name.trim(),
         ecampusId,
-        lectures,
-        assignments,
+        lectures: _.uniqBy(lectures, 'id'),
+        assignments: _.uniqBy(assignments, 'id'),
       };
     } catch (error) {
+      await this.discordService.sendErrorHTMLLog(user, res.data);
+      await this.discordService.sendErrorLog(error);
       throw new BadRequestException(
         '강의 정보를 가져오는데 실패했습니다. 다시 시도해주세요.',
       );
@@ -233,10 +249,10 @@ export class EcampusService {
       }
     }
 
-    try {
-      const res = await this.axiosService.get(this.dashboardUrl);
-      const root = parse(res.data);
+    const res = await this.axiosService.get(this.dashboardUrl);
 
+    try {
+      const root = parse(res.data);
       const contents = root.querySelectorAll('li.course-label-r');
 
       const courseList = contents.map((content) => {
@@ -250,6 +266,8 @@ export class EcampusService {
 
       return courseList;
     } catch (error) {
+      await this.discordService.sendErrorHTMLLog(user, res.data);
+      await this.discordService.sendErrorLog(error);
       throw new BadRequestException(
         '강의 목록을 가져오는데 실패했습니다. 다시 시도해주세요.',
       );

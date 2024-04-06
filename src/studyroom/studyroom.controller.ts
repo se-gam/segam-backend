@@ -24,7 +24,7 @@ import { PasswordPayload } from 'src/auth/payload/password.payload';
 import { PasswordValidationPipe } from 'src/auth/pipes/signup-validation.pipe';
 import { UserInfo } from 'src/auth/types/user-info.type';
 import { StudyroomDto, StudyroomListDto } from './dto/studyroom.dto';
-import { StudyroomReservatoinListDto } from './dto/studyroomReservation.dto';
+import { StudyroomReservationListDto } from './dto/studyroomReservation.dto';
 import { UserPidDto } from './dto/userPid.dto';
 import { StudyroomCancelPayload } from './payload/studyroomCancel.payload';
 import { StudyroomReservePayload } from './payload/studyroomReserve.payload';
@@ -75,7 +75,7 @@ export class StudyroomController {
     description: '내가 예약한 스터디룸 목록을 가져옵니다.',
   })
   @ApiCreatedResponse({
-    type: StudyroomReservatoinListDto,
+    type: StudyroomReservationListDto,
     description: '예약 목록 조회 성공',
   })
   @ApiUnauthorizedResponse({
@@ -87,7 +87,7 @@ export class StudyroomController {
   async getStudyroomReservations(
     @CurrentUser() user: UserInfo,
     @Body(PasswordValidationPipe) payload: PasswordPayload,
-  ): Promise<StudyroomReservatoinListDto> {
+  ): Promise<StudyroomReservationListDto> {
     return this.studyroomService.getStudyroomReservations(
       user.studentId,
       payload,
@@ -123,13 +123,14 @@ export class StudyroomController {
   })
   @ApiCreatedResponse()
   @ApiBadRequestResponse({
-    description: '현재 스터디룸 예약 내역이 없습니다',
+    description:
+      '현재 스터디룸 예약 내역이 없습니다. | 예약 취소는 예약자만 가능합니다',
   })
   @ApiUnauthorizedResponse({
     description: '포털 로그인 실패',
   })
   @ApiNotFoundResponse({
-    description: '예약을 찾을 수 없습니다',
+    description: '해당 id의 예약이 존재하지 않습니다 | 예약을 찾을 수 없습니다',
   })
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
@@ -149,11 +150,13 @@ export class StudyroomController {
   @Version('1')
   @ApiOperation({
     summary: '스터디룸 인원 추가 확인 API',
-    description: '추가 가능한 친구인지 확인합니다.',
+    description:
+      '추가 가능한 친구인지 확인합니다. 스터디룸 사용자로 추가할 수 없는 경우, 내 친구에도 추가되지 않습니다.',
   })
-  @ApiCreatedResponse()
+  @ApiCreatedResponse({ type: UserPidDto })
   @ApiBadRequestResponse({
-    description: '예약이 불가능합니다. (스터디원으로 추가 불가능)',
+    description:
+      '예약이 불가능합니다. (스터디원으로 추가 불가능) | 자기 자신을 친구로 등록할 수 없습니다.',
   })
   @ApiUnauthorizedResponse({
     description: '포털 로그인 실패',

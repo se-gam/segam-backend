@@ -22,6 +22,7 @@ import {
 } from '@nestjs/swagger';
 import { CurrentUser } from 'src/auth/decorator/user.decorator';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
+import { PasswordValidationPipe } from 'src/auth/pipes/signup-validation.pipe';
 import { UserInfo } from 'src/auth/types/user-info.type';
 import { FriendListDto } from './dto/friend.dto';
 import { PushTokenPayload } from './payload/pushToken.payload';
@@ -65,13 +66,13 @@ export class UserController {
   })
   @ApiBadRequestResponse({
     description:
-      '이미 친구로 등록된 사용자입니다. | 자기 자신을 친구로 등록할 수 없습니다.',
+      '이미 친구로 등록된 사용자입니다. | 자기 자신을 친구로 등록할 수 없습니다. | 해당 id의 학생을 찾을 수 없습니다. (학번 - 이름 서버에서 불일치시)',
   })
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   async addUserAsFriend(
     @CurrentUser() user: UserInfo,
-    @Body() payload: UserPayload,
+    @Body(PasswordValidationPipe) payload: UserPayload,
   ): Promise<void> {
     await this.userService.addUserAsFriend(payload, user);
   }
@@ -108,9 +109,25 @@ export class UserController {
     summary: '친구 목록 조회',
     description: '친구 목록을 조회합니다.',
   })
+  @ApiOkResponse({ type: FriendListDto })
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   async getFriends(@CurrentUser() user: UserInfo): Promise<FriendListDto> {
     return this.userService.getFriends(user);
+  }
+
+  @Version('1')
+  @Delete('')
+  @ApiOperation({
+    summary: '탈퇴',
+    description: '사용자를 탈퇴입니다. (Soft Delete)',
+  })
+  @ApiNoContentResponse({
+    description: '탈퇴 성공',
+  })
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  async deleteUser(@CurrentUser() user: UserInfo): Promise<void> {
+    await this.userService.deleteUser(user);
   }
 }

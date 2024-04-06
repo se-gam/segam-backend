@@ -16,6 +16,7 @@ export class AxiosService extends Axios {
 
     super({
       withCredentials: true,
+      proxy: false,
       httpsAgent,
     });
   }

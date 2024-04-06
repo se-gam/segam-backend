@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString } from 'class-validator';
+import { OS } from '@prisma/client';
+import { IsEnum, IsString } from 'class-validator';
 
 export class PushTokenPayload {
   @IsString()
@@ -8,4 +9,11 @@ export class PushTokenPayload {
     type: String,
   })
   pushToken!: string;
+
+  @IsEnum(OS)
+  @ApiProperty({
+    description: 'OS',
+    enum: OS,
+  })
+  os!: OS;
 }

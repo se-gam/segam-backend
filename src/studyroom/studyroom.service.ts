@@ -1,11 +1,17 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Cron } from '@nestjs/schedule';
 import { PasswordPayload } from 'src/auth/payload/password.payload';
 import { AxiosService } from 'src/common/services/axios.service';
 import { PrismaService } from 'src/common/services/prisma.service';
+import { UserRepository } from 'src/user/user.repository';
+import { UserService } from 'src/user/user.service';
 import { StudyroomDto, StudyroomListDto } from './dto/studyroom.dto';
-import { StudyroomReservatoinListDto } from './dto/studyroomReservation.dto';
+import { StudyroomReservationListDto } from './dto/studyroomReservation.dto';
 import { UserPidDto } from './dto/userPid.dto';
 import { StudyroomCancelPayload } from './payload/studyroomCancel.payload';
 import { StudyroomReservePayload } from './payload/studyroomReserve.payload';
@@ -14,15 +20,21 @@ import { StudyroomQuery } from './query/studyroom.query';
 import { StudyroomDateQuery } from './query/studyroomDateQuery.query';
 import { ReservationService } from './reservation.service';
 import { StudyroomRepository } from './studyroom.repository';
+import { RawStudyroom } from './types/rawStudyroom';
 
 @Injectable()
 export class StudyroomService {
+  private studyroomIds: number[] = [];
+  private currentIndex = 0;
+
   constructor(
     private readonly prismaService: PrismaService,
     private readonly studyroomRepository: StudyroomRepository,
     private readonly reservationService: ReservationService,
     private readonly axiosService: AxiosService,
     private readonly configService: ConfigService,
+    private readonly userService: UserService,
+    private readonly userRepository: UserRepository,
   ) {}
 
   private getSlotTime(time: string) {
@@ -32,41 +44,51 @@ export class StudyroomService {
     return parseInt(time.split(':')[0]);
   }
 
-  @Cron('*/10 * * * * *')
+  @Cron('*/3 * * * * *')
   async handleCron() {
     if (this.configService.get<string>('NODE_ENV') !== 'dev') {
       return;
     }
+
+    if (!this.studyroomIds.length) {
+      console.log('fetching studyroom ids');
+      this.studyroomIds = await this.studyroomRepository.getAllStudyroomIds();
+    }
+
+    const roomId = this.studyroomIds[this.currentIndex];
+    this.currentIndex = (this.currentIndex + 1) % this.studyroomIds.length;
+
+    console.log(roomId, this.currentIndex);
+
+    console.log('crawler start @', new Date());
     const res = await this.axiosService.get(
-      this.configService.get<string>('CRAWLER_API_ROOT') + '/calendar',
-    );
-    const rawStudyrooms = JSON.parse(res.data);
-    const studyrooms = rawStudyrooms.flatMap((studyroom) =>
-      studyroom.slots.map((slot) => ({ room_id: studyroom.room_id, slot })),
+      this.configService.get<string>('CRAWLER_API_ROOT') +
+        `/calendar/${roomId}`,
     );
 
-    studyrooms.forEach(async (rawStudyRoom) => {
-      const slotId = `${rawStudyRoom.room_id}_${rawStudyRoom.slot.date}_${rawStudyRoom.slot.time}`;
-      await this.prismaService.$transaction([
-        this.prismaService.studyroomSlot.upsert({
-          where: {
-            id: slotId,
-          },
-          update: {
-            isReserved: rawStudyRoom.slot.is_reserved,
-            isClosed: rawStudyRoom.slot.is_closed,
-          },
-          create: {
-            id: slotId,
-            studyroomId: parseInt(rawStudyRoom.room_id),
-            date: new Date(rawStudyRoom.slot.date),
-            startsAt: this.getSlotTime(rawStudyRoom.slot.time),
-            isReserved: rawStudyRoom.slot.is_reserved,
-            isClosed: rawStudyRoom.slot.is_closed,
-          },
-        }),
-      ]);
-    });
+    console.log('crawler end @', new Date());
+    const rawStudyroom = JSON.parse(res.data) as RawStudyroom;
+
+    for (const slot of rawStudyroom.slots) {
+      const slotId = `${rawStudyroom.room_id}_${slot.date}_${slot.time}`;
+      await this.prismaService.studyroomSlot.upsert({
+        where: {
+          id: slotId,
+        },
+        update: {
+          isReserved: slot.is_reserved,
+          isClosed: slot.is_closed,
+        },
+        create: {
+          id: slotId,
+          studyroomId: parseInt(rawStudyroom.room_id),
+          date: new Date(slot.date),
+          startsAt: this.getSlotTime(slot.time),
+          isReserved: slot.is_reserved,
+          isClosed: slot.is_closed,
+        },
+      });
+    }
   }
 
   async getAllStudyrooms(query: StudyroomQuery): Promise<StudyroomListDto> {
@@ -91,20 +113,47 @@ export class StudyroomService {
   async getStudyroomReservations(
     userId: string,
     payload: PasswordPayload,
-  ): Promise<StudyroomReservatoinListDto> {
+  ): Promise<StudyroomReservationListDto> {
     await this.reservationService.updateUserReservations(
       userId,
       payload.password,
     );
     const reservations = await this.studyroomRepository.getReservations(userId);
-    return StudyroomReservatoinListDto.from(userId, reservations);
+    return StudyroomReservationListDto.from(userId, reservations);
   }
 
   async checkUserAvailablity(
     userId: string,
     payload: StudyroomUserPayload,
   ): Promise<UserPidDto> {
-    return await this.reservationService.checkUserAvailablity(userId, payload);
+    if (userId === payload.friendId) {
+      throw new BadRequestException('자기 자신을 친구로 등록할 수 없습니다.');
+    }
+
+    const friendPid = await this.userService.getUserPid(
+      {
+        friendId: payload.friendId,
+        friendName: payload.friendName,
+        password: payload.password,
+        date: payload.date,
+      },
+      userId,
+    );
+
+    const relation = await this.userRepository.getFriendRelation(
+      payload.friendId,
+      userId,
+    );
+
+    if (!relation || relation.deletedAt) {
+      await this.userRepository.addUserAsFriend(
+        relation,
+        payload.friendId,
+        userId,
+      );
+    }
+
+    return friendPid;
   }
 
   async reserveStudyroom(
@@ -119,11 +168,14 @@ export class StudyroomService {
   }
 
   async cancelStudyroomReservation(
-    id: number,
+    bookingId: number,
     userId: string,
     payload: StudyroomCancelPayload,
   ): Promise<void> {
-    await this.reservationService.cancelReservation(id, userId, payload);
-    await this.studyroomRepository.deleteReservation(id, payload.cancelReason);
+    await this.reservationService.cancelReservation(bookingId, userId, payload);
+    await this.studyroomRepository.deleteReservation(
+      bookingId,
+      payload.cancelReason,
+    );
   }
 }

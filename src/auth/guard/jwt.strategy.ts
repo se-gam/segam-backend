@@ -25,7 +25,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
         studentId: data.studentId,
       },
     });
-    if (!user) {
+    if (!user || user.deletedAt !== null) {
       throw new UnauthorizedException('토큰에 해당하는 유저가 없습니다.');
     }
     return user;

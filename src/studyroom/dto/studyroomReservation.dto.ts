@@ -87,7 +87,7 @@ export class StudyroomReservationDto {
   }
 }
 
-export class StudyroomReservatoinListDto {
+export class StudyroomReservationListDto {
   @ApiProperty({
     description: '스터디룸 예약 목록',
     type: [StudyroomReservationDto],
@@ -97,7 +97,7 @@ export class StudyroomReservatoinListDto {
   static from(
     userId: string,
     reservations: StudyroomReservationInfo[],
-  ): StudyroomReservatoinListDto {
+  ): StudyroomReservationListDto {
     const sortByDate = (
       a: StudyroomReservationDto,
       b: StudyroomReservationDto,

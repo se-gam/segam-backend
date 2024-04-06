@@ -1,8 +1,12 @@
 import { ValidationPipe, VersioningType } from '@nestjs/common';
-import { NestFactory } from '@nestjs/core';
+import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app/app.module';
-import { HttpExceptionFilter } from './common/exception/exception.filter';
+import {
+  AllExceptionsFilter,
+  HttpExceptionFilter,
+} from './common/exception/exception.filter';
+import { DiscordService } from './common/services/discord.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -16,7 +20,13 @@ async function bootstrap() {
     }),
   );
 
-  app.useGlobalFilters(new HttpExceptionFilter());
+  app.useGlobalFilters(
+    new AllExceptionsFilter(
+      app.get<HttpAdapterHost>(HttpAdapterHost),
+      app.get<DiscordService>(DiscordService),
+    ),
+    new HttpExceptionFilter(app.get<DiscordService>(DiscordService)),
+  );
   app.enableCors();
 
   const config = new DocumentBuilder()

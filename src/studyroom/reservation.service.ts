@@ -38,6 +38,7 @@ export class ReservationService {
     );
 
     const response = JSON.parse(res.data);
+
     if (res.status === 404) {
       return await this.studyroomRepository.updateReservations(userId, []);
     } else if (res.status === 401) {
@@ -90,14 +91,11 @@ export class ReservationService {
     if (!friendPid)
       throw new InternalServerErrorException('추가할 수 없는 사용자입니다.');
 
-    const friend = await this.userRepository.getOrCreateUser(
+    await this.userRepository.updateOrCreateUser(
       payload.friendId,
       payload.friendName,
+      friendPid,
     );
-
-    if (friend.sejongPid !== friendPid) {
-      await this.userRepository.updateUserPid(friend.studentId, friendPid);
-    }
 
     return UserPidDto.from(friendPid);
   }
@@ -153,22 +151,31 @@ export class ReservationService {
   }
 
   async cancelReservation(
-    id: number,
+    bookingId: number,
     userId: string,
     payload: StudyroomCancelPayload,
   ): Promise<ResultResponse> {
-    const reservation = await this.studyroomRepository.getReservationById(id);
+    const reservation =
+      await this.studyroomRepository.getReservationById(bookingId);
 
     if (!reservation)
       throw new NotFoundException('해당 id의 예약이 존재하지 않습니다');
+
+    const isLeader = await this.studyroomRepository.isReservationLeader(
+      reservation.id,
+      userId,
+    );
+
+    if (!isLeader)
+      throw new BadRequestException('예약 취소는 예약자만 가능합니다');
 
     const res = await this.axiosService.post(
       this.configService.get<string>('CANCEL_RESERVATION_URL'),
       JSON.stringify({
         id: userId,
         password: payload.password,
-        booking_id: '318314',
-        room_id: '54',
+        booking_id: reservation.id.toString(),
+        room_id: reservation.studyroomId.toString(),
         cancel_msg: payload.cancelReason,
       }),
       {
@@ -186,6 +193,7 @@ export class ReservationService {
     } else if (res.status === 404) {
       throw new NotFoundException(response.result);
     } else if (res.status >= 400) {
+      console.error(response);
       throw new InternalServerErrorException('Internal Server Error');
     }
 
