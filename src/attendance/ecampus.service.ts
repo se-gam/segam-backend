@@ -157,6 +157,9 @@ export class EcampusService {
 
         if (!rawAssignments.length && !rawLectures.length) return;
         rawAssignments.forEach((assignment) => {
+          if (!assignment.querySelector('span>img')) {
+            return;
+          }
           const [isSubmitted, name] = assignment
             .querySelector('span>img')
             .getAttribute('alt')
