@@ -46,7 +46,7 @@ export class StudyroomService {
 
   @Cron('*/3 * * * * *')
   async handleCron() {
-    if (this.configService.get<string>('NODE_ENV') !== 'dev') {
+    if (this.configService.get<string>('NODE_ENV') !== 'prod') {
       return;
     }
 
