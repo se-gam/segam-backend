@@ -60,6 +60,7 @@ export class EcampusService {
       let endsAt: Date = null;
 
       root.querySelectorAll('tr').forEach((el) => {
+        if (!el.querySelector('td.cell.c0')) return;
         if (
           el.querySelector('td.cell.c0').structuredText.trim() === '종료 일시'
         ) {
@@ -67,6 +68,9 @@ export class EcampusService {
         }
       });
 
+      if (!endsAt) {
+        throw new BadRequestException('과제 마감일을 가져오는데 실패했습니다.');
+      }
       return { id, endsAt };
     } catch (error) {
       await this.discordService.sendErrorHTMLLog(user, res.data);
