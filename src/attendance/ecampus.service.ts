@@ -70,9 +70,6 @@ export class EcampusService {
         }
       });
 
-      if (!endsAt) {
-        throw new BadRequestException('과제 마감일을 가져오는데 실패했습니다.');
-      }
       return { id, endsAt };
     } catch (error) {
       await this.discordService.sendErrorHTMLLog(user, res.data);
