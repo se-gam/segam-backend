@@ -51,10 +51,11 @@ export class EcampusService {
   }
 
   private async getAssignmentEndTime(
+    user: UserInfo,
     id: number,
   ): Promise<{ id: number; endsAt: Date }> {
+    const res = await this.axiosService.get(this.assignmentUrl + `?id=${id}`);
     try {
-      const res = await this.axiosService.get(this.assignmentUrl + `?id=${id}`);
       const root = parse(res.data);
       let endsAt: Date = null;
 
@@ -68,6 +69,7 @@ export class EcampusService {
 
       return { id, endsAt };
     } catch (error) {
+      await this.discordService.sendErrorHTMLLog(user, res.data);
       await this.discordService.sendErrorLog(error);
       throw new BadRequestException(
         '과제 정보를 가져오는데 실패했습니다. 다시 시도해주세요.',
@@ -206,7 +208,7 @@ export class EcampusService {
 
       const assignmentEndTimes = await Promise.all(
         assignments.map((assignment) =>
-          this.getAssignmentEndTime(assignment.id),
+          this.getAssignmentEndTime(user, assignment.id),
         ),
       );
 
