@@ -60,8 +60,11 @@ export class EcampusService {
       let endsAt: Date = null;
 
       root.querySelectorAll('tr').forEach((el) => {
+        if (!el.querySelector('td.cell.c0')) return;
         if (
-          el.querySelector('td.cell.c0').structuredText.trim() === '종료 일시'
+          el.querySelector('td.cell.c0').structuredText.trim() ===
+            '종료 일시' ||
+          el.querySelector('td.cell.c0').structuredText.trim() === 'Due date'
         ) {
           endsAt = new Date(el.querySelectorAll('td')[1].structuredText);
         }
@@ -167,12 +170,17 @@ export class EcampusService {
             .getAttribute('alt')
             .split(':');
           const assignmentId = assignment.getAttribute('id').split('-')[1];
+          const isDone =
+            isSubmitted.trim() === '완료하지 못함' ||
+            isSubmitted.trim() === 'Not completed'
+              ? false
+              : true;
 
           const assignmentData: RawAssignment = {
             id: Number(assignmentId),
-            name,
+            name: name.trim(),
             week: parseInt(week),
-            isDone: isSubmitted.trim() === '완료함' ? true : false,
+            isDone,
           };
           assignments.push(assignmentData);
         });
@@ -193,11 +201,16 @@ export class EcampusService {
             ?.structuredText.split('~');
 
           const lectureId = lecture.getAttribute('id').split('-')[1];
+          const isDone =
+            isSubmitted.trim() === '완료하지 못함' ||
+            isSubmitted.trim() === 'Not completed'
+              ? false
+              : true;
 
           const lectureData: RawLecture = {
             id: Number(lectureId),
-            name,
-            isDone: isSubmitted.trim() === '완료함' ? true : false,
+            name: name.trim(),
+            isDone,
             week: parseInt(week),
             startsAt: new Date(startsAt),
             endsAt: new Date(endsAt),
