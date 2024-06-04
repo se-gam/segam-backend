@@ -61,9 +61,10 @@ export class StudyroomService {
     console.log(roomId, this.currentIndex);
 
     console.log('crawler start @', new Date());
-    const res = await this.axiosService.get(
-      this.configService.get<string>('CRAWLER_API_ROOT') +
-        `/calendar/${roomId}`,
+    const res = await this.axiosService.post(
+      this.configService.get<string>('CRAWLER_API_ROOT'),
+      JSON.stringify({ room_id: roomId }),
+      { headers: { 'Content-Type': 'application/json' } },
     );
 
     console.log('crawler end @', new Date());
