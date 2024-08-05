@@ -14,10 +14,10 @@ const data = rawData[0].data;
 
 const courses = data.slice(1).map((course) => {
   return {
-    id: `${course[3]}-${course[4]}:${course[2]}`,
+    courseId: `${course[3]}-${course[4]}:${course[2]}`,
     name: course[5],
   };
-}) as { id: string; name: string }[];
+}) as { courseId: string; name: string }[];
 
 async function main() {
   console.log(`Inserting ${courses.length} courses`);

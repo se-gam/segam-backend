@@ -24,6 +24,7 @@ export class AttendanceRepository {
       },
       select: {
         id: true,
+        courseId: true,
         ecampusId: true,
         name: true,
         lectures: {
@@ -98,6 +99,7 @@ export class AttendanceRepository {
       },
       select: {
         id: true,
+        courseId: true,
         ecampusId: true,
         name: true,
         lectures: {
@@ -290,7 +292,7 @@ export class AttendanceRepository {
         await tx.course.createMany({
           data: createdCourses.map((course) => {
             return {
-              id: course.id,
+              courseId: course.id,
               ecampusId: course.ecampusId,
               name: course.name,
             };
