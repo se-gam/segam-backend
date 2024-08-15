@@ -7,12 +7,14 @@ import { LectureData } from './types/lecture-data';
 import { RawCourse } from './types/raw-course';
 
 import * as _ from 'lodash';
+import { getCurrentSemester } from './utils/getCurrentSemester';
 
 @Injectable()
 export class AttendanceRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
   async getCourseAttendanceList(user: UserInfo): Promise<CourseData[]> {
+    console.log(getCurrentSemester());
     return await this.prismaService.course.findMany({
       where: {
         users: {
@@ -20,10 +22,12 @@ export class AttendanceRepository {
             studentId: user.studentId,
           },
         },
+        semester: getCurrentSemester(),
         deletedAt: null,
       },
       select: {
         id: true,
+        courseId: true,
         ecampusId: true,
         name: true,
         lectures: {
@@ -98,6 +102,7 @@ export class AttendanceRepository {
       },
       select: {
         id: true,
+        courseId: true,
         ecampusId: true,
         name: true,
         lectures: {
@@ -164,6 +169,9 @@ export class AttendanceRepository {
             studentId: user.studentId,
           },
         },
+        course: {
+          semester: getCurrentSemester(),
+        },
         deletedAt: null,
       },
       select: {
@@ -194,6 +202,9 @@ export class AttendanceRepository {
           some: {
             studentId: user.studentId,
           },
+        },
+        course: {
+          semester: getCurrentSemester(),
         },
         deletedAt: null,
       },
@@ -228,6 +239,7 @@ export class AttendanceRepository {
             studentId: user.studentId,
           },
         },
+        semester: getCurrentSemester(),
         deletedAt: null,
       },
       select: {
@@ -290,9 +302,10 @@ export class AttendanceRepository {
         await tx.course.createMany({
           data: createdCourses.map((course) => {
             return {
-              id: course.id,
+              courseId: course.id,
               ecampusId: course.ecampusId,
               name: course.name,
+              semester: getCurrentSemester(),
             };
           }),
           skipDuplicates: true,

@@ -3,6 +3,7 @@ import { LectureData } from './lecture-data';
 
 export type CourseData = {
   id: string;
+  courseId: string;
   ecampusId: number;
   name: string;
   lectures: LectureData[];
