@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: segam
+      POSTGRES_PASSWORD: segam
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+  backend:
+    build:
+      context: .
+      dockerfile: local.dockerfile
+    restart: always
+    ports:
+      - '3000:3000'
+    depends_on:
+      - db
