@@ -21,6 +21,7 @@ model Course {
   ecampusId   Int?         @unique @map("ecampus_id")
   courseId    String       @map("course_id")
   name        String
+  semester    String
   createdAt   DateTime     @default(now()) @map("created_at")
   updatedAt   DateTime     @updatedAt @map("updated_at")
   deletedAt   DateTime?    @map("deleted_at")
