@@ -246,7 +246,7 @@ model Book {
 
 model GodokSlot {
   id             String    @id @default(uuid())
-  dataId         String    @map("data_id")
+  dataId         String    @unique @map("data_id")
   date           DateTime  @db.Date
   time           DateTime  @db.Time(0)
   availableSeats Int       @map("available_seats")
@@ -260,7 +260,7 @@ model GodokSlot {
 
 model GodokReservation {
   id            String    @id @default(uuid())
-  reservationId String    @map("reservation_id")
+  reservationId String    @unique @map("reservation_id")
   studentId     String    @map("student_id")
   bookId        Int       @map("book_id")
   date          DateTime  @db.Date
