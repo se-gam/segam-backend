@@ -24,5 +24,6 @@ export const configModule = ConfigModule.forRoot({
     DISCORD_NEW_USER_WEBHOOK_URL: Joi.string().required(),
     DISCORD_INTERNAL_ERROR_WEBHOOK_URL: Joi.string().required(),
     DISCORD_ERROR_WEBHOOK_URL: Joi.string().required(),
+    GET_GODOK_CALENDAR_URL: Joi.string().required(),
   }),
 });
