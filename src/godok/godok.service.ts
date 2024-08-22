@@ -16,7 +16,7 @@ export class GodokService {
     private readonly prismaService: PrismaService,
   ) {}
 
-  @Cron('*/2 * * * * *')
+  @Cron('*/10 * * * * *')
   async handleCron() {
     if (this.configService.get<string>('NODE_ENV') !== 'prod') {
       return;
