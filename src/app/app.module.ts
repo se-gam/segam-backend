@@ -9,6 +9,7 @@ import { UserModule } from 'src/user/user.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { configModule } from './modules/config.module';
+import { GodokModule } from 'src/godok/godok.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { configModule } from './modules/config.module';
     AttendanceModule,
     UserModule,
     RestaurantModule,
+    GodokModule,
   ],
   controllers: [AppController],
   providers: [AppService],
