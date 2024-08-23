@@ -3,6 +3,7 @@ import { AttendanceModule } from 'src/attendance/attendance.module';
 import { AuthModule } from 'src/auth/auth.module';
 import { CommonModule } from 'src/common/common.module';
 import { LoggerMiddleware } from 'src/common/middlewares/logger.middleware';
+import { GodokModule } from 'src/godok/godok.module';
 import { RestaurantModule } from 'src/restaurant/restaurant.module';
 import { StudyroomModule } from 'src/studyroom/studyroom.module';
 import { UserModule } from 'src/user/user.module';
@@ -19,6 +20,7 @@ import { configModule } from './modules/config.module';
     AttendanceModule,
     UserModule,
     RestaurantModule,
+    GodokModule,
   ],
   controllers: [AppController],
   providers: [AppService],
