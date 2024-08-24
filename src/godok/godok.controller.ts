@@ -22,9 +22,9 @@ import { PasswordPayload } from 'src/auth/payload/password.payload';
 import { PasswordValidationPipe } from 'src/auth/pipes/signup-validation.pipe';
 import { UserInfo } from 'src/auth/types/user-info.type';
 import { GodokBookDto } from './dto/godok-book.dto';
+import { GodokReservationDto } from './dto/godok-reservation.dto';
 import { GodokSlotListDto } from './dto/godok-slot.dto';
-import { GodokReservationDto } from './dto/godokReservation.dto';
-import { GodokStatusDto } from './dto/godokStatus.dto';
+import { GodokStatusDto } from './dto/godok-status.dto';
 import { GodokService } from './godok.service';
 import { GodokReservePayload } from './payload/godokReserve.payload';
 
