@@ -40,7 +40,7 @@ export class GodokStatusDto {
 
   @ApiProperty({
     description: '영역별 인증 권수',
-    type: GodokAreaStatusDto,
+    type: [GodokAreaStatusDto],
   })
   areaStatus!: GodokAreaStatusDto[];
 }

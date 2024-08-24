@@ -1,30 +1,30 @@
 import {
-  Get,
   Body,
   Controller,
+  Get,
   Param,
   Post,
   UseGuards,
   Version,
 } from '@nestjs/common';
 import {
-  ApiOkResponse,
-  ApiOperation,
-  ApiTags,
   ApiBearerAuth,
   ApiCreatedResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiParam,
+  ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import { GodokService } from './godok.service';
-import { GodokSlotListDto } from './dto/godok-slot.dto';
 import { CurrentUser } from 'src/auth/decorator/user.decorator';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
 import { PasswordPayload } from 'src/auth/payload/password.payload';
 import { PasswordValidationPipe } from 'src/auth/pipes/signup-validation.pipe';
 import { UserInfo } from 'src/auth/types/user-info.type';
+import { GodokSlotListDto } from './dto/godok-slot.dto';
 import { GodokReservationDto } from './dto/godokReservation.dto';
 import { GodokStatusDto } from './dto/godokStatus.dto';
-import { GodokCancelPayload } from './payload/godokCancel.payload';
+import { GodokService } from './godok.service';
 import { GodokReservePayload } from './payload/godokReserve.payload';
 
 @ApiTags('고전독서 API')
@@ -102,11 +102,16 @@ export class GodokController {
   })
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @Post('reservation/cancel/:id')
+  @ApiParam({
+    description: '예약 id',
+    name: 'reservationId',
+    example: 'OPAP-0000197302',
+  })
+  @Post('reservation/cancel/:reservationId')
   async cancelGodokReservation(
-    @Param('reservationId') id: number,
+    @Param('reservationId') reservationId: number,
     @CurrentUser() user: UserInfo,
-    @Body(PasswordValidationPipe) payload: GodokCancelPayload,
+    @Body(PasswordValidationPipe) payload: PasswordPayload,
   ): Promise<void> {
     return;
   }

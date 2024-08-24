@@ -1,6 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { GodokSlot } from '../types/godokSlot.type';
 
+import * as _ from 'lodash';
+
 export class GodokSlotDto {
   @ApiProperty({
     description: '고전 독서 슬롯 id',
@@ -46,15 +48,33 @@ export class GodokSlotDto {
 export class GodokSlotListDto {
   @ApiProperty({
     description: '고전 독서 슬롯 목록',
-    type: [GodokSlotDto],
+    type: Object,
+    example: {
+      godokSlots: {
+        '2024-08-26': [
+          {
+            id: '7380cde2-d4c6-4240-b4cd-34d0d6b3eac7',
+            slotId: 'SCHU_24051314224746959',
+            startsAt: '2024-08-26T02:00:00.000Z',
+            availableSeats: 5,
+            totalSeats: 16,
+            createdAt: '2024-08-24T15:19:50.767Z',
+            updatedAt: '2024-08-24T17:26:01.676Z',
+            deletedAt: null,
+          },
+        ],
+        '2024-08-27': [],
+      },
+    },
   })
-  godokSlots: GodokSlotDto[];
+  godokSlots: Record<string, GodokSlot[]>;
 
   static from(godokSlots: GodokSlot[]): GodokSlotListDto {
     return {
-      godokSlots: godokSlots.map((godokSlot) => {
-        return GodokSlotDto.from(godokSlot);
-      }),
+      godokSlots: _.groupBy(
+        godokSlots,
+        (godokSlot) => godokSlot.startsAt.toISOString().split('T')[0],
+      ),
     };
   }
 }
