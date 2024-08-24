@@ -1,26 +1,26 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-class GodokAreaStatusDto {
+class GodokCategoryStatusDto {
   @ApiProperty({
     description: '영역 코드',
     example: 3000,
     type: Number,
   })
-  areaCode!: number;
+  categoryCode!: number;
 
   @ApiProperty({
     description: '영역명',
     example: '동서양의 문학',
     type: String,
   })
-  areaName!: string;
+  categoryName!: string;
 
   @ApiProperty({
     description: '영역 인증 여부',
     example: false,
     type: Boolean,
   })
-  areaStatus!: boolean;
+  categoryStatus!: boolean;
 
   @ApiProperty({
     description: '인증 권수',
@@ -40,7 +40,7 @@ export class GodokStatusDto {
 
   @ApiProperty({
     description: '영역별 인증 권수',
-    type: [GodokAreaStatusDto],
+    type: [GodokCategoryStatusDto],
   })
-  areaStatus!: GodokAreaStatusDto[];
+  categoryStatus!: GodokCategoryStatusDto[];
 }

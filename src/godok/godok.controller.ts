@@ -21,6 +21,7 @@ import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
 import { PasswordPayload } from 'src/auth/payload/password.payload';
 import { PasswordValidationPipe } from 'src/auth/pipes/signup-validation.pipe';
 import { UserInfo } from 'src/auth/types/user-info.type';
+import { GodokBookDto } from './dto/godok-book.dto';
 import { GodokSlotListDto } from './dto/godok-slot.dto';
 import { GodokReservationDto } from './dto/godokReservation.dto';
 import { GodokStatusDto } from './dto/godokStatus.dto';
@@ -38,7 +39,7 @@ export class GodokController {
     summary: '고전독서 캘린더 조회 API',
     description: '고전독서 한달 캘린더를 조회합니다.',
   })
-  @Get()
+  @Get('calendar')
   async getGodokCalendar(): Promise<GodokSlotListDto> {
     return this.godokService.getGodokCalendar();
   }
@@ -137,32 +138,55 @@ export class GodokController {
   ): Promise<GodokStatusDto> {
     return {
       status: true,
-      areaStatus: [
+      categoryStatus: [
         {
-          areaCode: 1000,
-          areaName: '동양의 역사와 사상',
-          areaStatus: false,
+          categoryCode: 1000,
+          categoryName: '동양의 역사와 사상',
+          categoryStatus: false,
           count: 2,
         },
         {
-          areaCode: 2000,
-          areaName: '서양의 역사와 사상',
-          areaStatus: false,
+          categoryCode: 2000,
+          categoryName: '서양의 역사와 사상',
+          categoryStatus: false,
           count: 2,
         },
         {
-          areaCode: 3000,
-          areaName: '동서양의 문학',
-          areaStatus: false,
+          categoryCode: 3000,
+          categoryName: '동서양의 문학',
+          categoryStatus: false,
           count: 0,
         },
         {
-          areaCode: 4000,
-          areaName: '과학 사상',
-          areaStatus: true,
+          categoryCode: 4000,
+          categoryName: '과학 사상',
+          categoryStatus: true,
           count: 1,
         },
       ],
     } as GodokStatusDto;
+  }
+
+  @Version('1')
+  @ApiOperation({
+    summary: '고전독서 도서 목록 조회 API',
+    description: '고전독서 도서 목록을 조회합니다.',
+  })
+  @ApiOkResponse({
+    description: '고전독서 도서 목록 조회 성공',
+    type: [GodokBookDto],
+  })
+  @Get('books')
+  async getGodokBooks(): Promise<GodokBookDto[]> {
+    return [
+      {
+        bookId: 3003,
+        bookName: '췍',
+        categoryId: 3000,
+        categoryName: '동서양의 문학',
+        author: '김췍',
+        publisher: '췍출판사',
+      },
+    ];
   }
 }
