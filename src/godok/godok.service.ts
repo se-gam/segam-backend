@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { GodokRepository } from './godok.repository';
-import { GodokSlotListDto } from './dto/godok-slot.dto';
-import { AxiosService } from 'src/common/services/axios.service';
 import { ConfigService } from '@nestjs/config';
 import { Cron } from '@nestjs/schedule';
+import { AxiosService } from 'src/common/services/axios.service';
 import { PrismaService } from 'src/common/services/prisma.service';
+import { GodokSlotListDto } from './dto/godok-slot.dto';
+import { GodokRepository } from './godok.repository';
 import { RawGodokSlot } from './types/rawGodokSlot.type';
 
 @Injectable()
@@ -18,10 +18,6 @@ export class GodokService {
 
   @Cron('*/7 * * * * *')
   async handleCron() {
-    if (this.configService.get<string>('NODE_ENV') !== 'prod') {
-      return;
-    }
-
     console.log('[godok] crawler start @', new Date());
     const res = await this.axiosService.get(
       this.configService.get<string>('GET_GODOK_CALENDAR_URL'),
