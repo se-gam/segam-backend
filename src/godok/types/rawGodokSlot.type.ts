@@ -1,7 +1,6 @@
 export type RawGodokSlotItem = {
   data_id: string;
-  date: string;
-  time: string;
+  date_time: string;
   available_seats: string;
   total_seats: string;
 };

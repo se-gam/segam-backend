@@ -1,6 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { GodokSlot } from '../types/godokSlot.type';
-import { getSlotTime } from 'src/common/utils/getSoltTime';
 
 export class GodokSlotDto {
   @ApiProperty({
@@ -13,19 +12,13 @@ export class GodokSlotDto {
     description: '고전 독서 슬롯 data_id',
     type: String,
   })
-  dataId: string;
+  slotId: string;
 
   @ApiProperty({
-    description: '날짜',
+    description: '시험 날짜와 시간',
     type: Date,
   })
-  date!: Date;
-
-  @ApiProperty({
-    description: '시간 (HH:mm)',
-    type: String,
-  })
-  time!: string;
+  startsAt!: Date;
 
   @ApiProperty({
     description: '잔여 좌석',
@@ -42,9 +35,8 @@ export class GodokSlotDto {
   static from(godokSlot: GodokSlot): GodokSlotDto {
     return {
       id: godokSlot.id,
-      dataId: godokSlot.dataId,
-      date: godokSlot.date,
-      time: getSlotTime(godokSlot.time),
+      slotId: godokSlot.slotId,
+      startsAt: godokSlot.startsAt,
       availableSeats: godokSlot.availableSeats,
       totalSeats: godokSlot.totalSeats,
     };

@@ -12,9 +12,12 @@ export class GodokRepository {
     const slots = await this.prismaService.godokSlot.findMany({
       where: {
         deletedAt: null,
-        date: {
+        startsAt: {
           gt: today,
         },
+      },
+      orderBy: {
+        startsAt: 'asc',
       },
     });
 

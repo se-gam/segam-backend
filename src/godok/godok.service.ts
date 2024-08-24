@@ -5,7 +5,7 @@ import { AxiosService } from 'src/common/services/axios.service';
 import { ConfigService } from '@nestjs/config';
 import { Cron } from '@nestjs/schedule';
 import { PrismaService } from 'src/common/services/prisma.service';
-import { RawGodokSlot } from './types/rawGodokSlot';
+import { RawGodokSlot } from './types/rawGodokSlot.type';
 
 @Injectable()
 export class GodokService {
@@ -34,12 +34,11 @@ export class GodokService {
       for (const slot of rawGodokSlot.slots) {
         await this.prismaService.godokSlot.upsert({
           where: {
-            dataId: slot.data_id,
+            slotId: slot.data_id,
           },
           create: {
-            dataId: slot.data_id,
-            date: new Date(slot.date),
-            time: slot.time,
+            slotId: slot.data_id,
+            startsAt: new Date(slot.date_time),
             availableSeats: parseInt(slot.available_seats),
             totalSeats: parseInt(slot.total_seats),
           },

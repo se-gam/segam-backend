@@ -1,8 +1,7 @@
 export type GodokSlot = {
   id: string;
-  dataId: string;
-  date: Date;
-  time: Date;
+  slotId: string;
+  startsAt: Date;
   availableSeats: number;
   totalSeats: number;
 };
