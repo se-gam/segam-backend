@@ -16,7 +16,7 @@ export class GodokService {
     private readonly prismaService: PrismaService,
   ) {}
 
-  @Cron('*/10 * * * * *')
+  @Cron('*/7 * * * * *')
   async handleCron() {
     if (this.configService.get<string>('NODE_ENV') !== 'prod') {
       return;
@@ -30,23 +30,21 @@ export class GodokService {
     console.log('[godok] crawler end @', new Date());
     const rawGodokSlots = JSON.parse(res.data) as RawGodokSlot;
 
-    for (const rawGodokSlot of rawGodokSlots) {
-      for (const slot of rawGodokSlot.slots) {
-        await this.prismaService.godokSlot.upsert({
-          where: {
-            slotId: slot.data_id,
-          },
-          create: {
-            slotId: slot.data_id,
-            startsAt: new Date(slot.date_time),
-            availableSeats: parseInt(slot.available_seats),
-            totalSeats: parseInt(slot.total_seats),
-          },
-          update: {
-            availableSeats: parseInt(slot.available_seats),
-          },
-        });
-      }
+    for (const slot of rawGodokSlots) {
+      await this.prismaService.godokSlot.upsert({
+        where: {
+          slotId: slot.data_id,
+        },
+        create: {
+          slotId: slot.data_id,
+          startsAt: new Date(slot.date_time),
+          availableSeats: slot.available_seats,
+          totalSeats: slot.total_seats,
+        },
+        update: {
+          availableSeats: slot.available_seats,
+        },
+      });
     }
   }
 

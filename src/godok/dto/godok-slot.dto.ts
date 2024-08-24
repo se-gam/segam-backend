@@ -9,10 +9,10 @@ export class GodokSlotDto {
   id!: string;
 
   @ApiProperty({
-    description: '고전 독서 슬롯 data_id',
+    description: '고전 독서 슬롯 id (학교 서버) 다 차있는 경우 id가 null임',
     type: String,
   })
-  slotId: string;
+  slotId!: string | null;
 
   @ApiProperty({
     description: '시험 날짜와 시간',
@@ -30,7 +30,7 @@ export class GodokSlotDto {
     description: '총 좌석',
     type: Number,
   })
-  totalSeats: number;
+  totalSeats!: number;
 
   static from(godokSlot: GodokSlot): GodokSlotDto {
     return {
@@ -50,7 +50,6 @@ export class GodokSlotListDto {
   })
   godokSlots: GodokSlotDto[];
 
-  // TODO : 날짜 - 시간으로 sort 해야함
   static from(godokSlots: GodokSlot[]): GodokSlotListDto {
     return {
       godokSlots: godokSlots.map((godokSlot) => {
