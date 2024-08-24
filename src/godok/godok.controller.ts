@@ -110,7 +110,7 @@ export class GodokController {
   })
   @Post('reservation/cancel/:reservationId')
   async cancelGodokReservation(
-    @Param('reservationId') reservationId: number,
+    @Param('reservationId') reservationId: string,
     @CurrentUser() user: UserInfo,
     @Body(PasswordValidationPipe) payload: PasswordPayload,
   ): Promise<void> {
@@ -144,27 +144,31 @@ export class GodokController {
           categoryName: '동양의 역사와 사상',
           categoryStatus: false,
           count: 2,
+          targetCount: 4,
         },
         {
           categoryCode: 2000,
           categoryName: '서양의 역사와 사상',
           categoryStatus: false,
           count: 2,
+          targetCount: 4,
         },
         {
           categoryCode: 3000,
           categoryName: '동서양의 문학',
           categoryStatus: false,
           count: 0,
+          targetCount: 2,
         },
         {
           categoryCode: 4000,
           categoryName: '과학 사상',
           categoryStatus: true,
           count: 1,
+          targetCount: 1,
         },
       ],
-    } as GodokStatusDto;
+    };
   }
 
   @Version('1')

@@ -28,6 +28,13 @@ class GodokCategoryStatusDto {
     type: Number,
   })
   count!: number;
+
+  @ApiProperty({
+    description: '목표 권수',
+    example: 4,
+    type: Number,
+  })
+  targetCount!: number;
 }
 
 export class GodokStatusDto {
