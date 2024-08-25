@@ -243,12 +243,12 @@ export class AttendanceRepository {
         deletedAt: null,
       },
       select: {
-        id: true,
+        courseId: true,
       },
     });
 
-    const prevIds = prevCourses.map((course) => course.id);
-    const newIds = courses.map((course) => course.id);
+    const prevIds = prevCourses.map((course) => course.courseId);
+    const newIds = courses.map((course) => course.id); // RawCourse의 id는 학수번호
 
     const deletedIds = _.difference(prevIds, newIds);
     const createdIds = _.difference(newIds, prevIds);
