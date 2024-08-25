@@ -23,6 +23,13 @@ export class GodokReservationDto {
   bookName!: string;
 
   @ApiProperty({
+    description: '응시 책 영역 id',
+    example: 3000,
+    type: Number,
+  })
+  bookCategoryId: number;
+
+  @ApiProperty({
     description: '고전독서 시험예약 시간',
     type: Date,
   })

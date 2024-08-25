@@ -68,6 +68,7 @@ export class GodokController {
         reservationId: 1,
         bookId: 3003,
         bookName: '췍',
+        bookCategoryId: 3000,
         reservationTime: new Date(),
       },
     ];
