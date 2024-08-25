@@ -8,10 +8,16 @@ import { LectureAttendanceDto } from './lecture-attendance.dto';
 
 export class CourseAttendanceDto {
   @ApiProperty({
-    description: '학수번호',
+    description: 'Course ID',
     type: String,
   })
   id!: string;
+
+  @ApiProperty({
+    description: '학수번호',
+    type: String,
+  })
+  courseId!: string;
 
   @ApiProperty({
     description: '강좌 Ecampus id',
@@ -146,6 +152,7 @@ export class CourseAttendanceDto {
 
     return {
       id: course.id,
+      courseId: course.courseId,
       ecampusId: course.ecampusId,
       name: course.name,
       lectureAbsences,

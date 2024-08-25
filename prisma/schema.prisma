@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,29 +8,223 @@ datasource db {
 }
 
 model Department {
-  name            String            @id        
-  createdAt       DateTime          @default(now()) @map("created_at")
-  deletedAt       DateTime?         @map("deleted_at") 
-
-  users           User[]
+  name      String    @id
+  createdAt DateTime  @default(now()) @map("created_at")
+  deletedAt DateTime? @map("deleted_at")
+  users     User[]
 
   @@map("department")
 }
 
 model Course {
-  id              String            @id
-  ecampusId       Int?              @unique @map("ecampus_id")
-  name            String      
-  createdAt       DateTime          @default(now()) @map("created_at")
-  updatedAt       DateTime          @updatedAt @map("updated_at")
-  deletedAt       DateTime?         @map("deleted_at")
+  id          String       @id @default(uuid())
+  ecampusId   Int?         @unique @map("ecampus_id")
+  courseId    String       @map("course_id")
+  name        String
+  semester    String
+  createdAt   DateTime     @default(now()) @map("created_at")
+  updatedAt   DateTime     @updatedAt @map("updated_at")
+  deletedAt   DateTime?    @map("deleted_at")
+  users       UserCourse[]
+  lectures    Lecture[]
+  assignments Assignment[]
 
-  users           UserCourse[]
-  lectures        Lecture[]
-  assignments     Assignment[]
-
-  @@map("course")
   @@index([ecampusId])
+  @@map("course")
+}
+
+model User {
+  studentId      String    @id @map("student_id")
+  name           String
+  sejongPid      String    @map("sejong_pid")
+  departmentName String?   @map("department_name")
+  os             OS?       @map("os")
+  pushToken      String?   @map("push_token")
+  createdAt      DateTime  @default(now()) @map("created_at")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
+  deletedAt      DateTime? @map("deleted_at")
+
+  department   Department?       @relation(fields: [departmentName], references: [name])
+  assignments  UserAssignment[]
+  courses      UserCourse[]
+  lectures     UserLecture[]
+  reservations UserReservation[]
+  friend1      Friend[]          @relation("user1")
+  friend2      Friend[]          @relation("user2")
+
+  @@map("user")
+}
+
+model UserCourse {
+  id          Int      @id @default(autoincrement())
+  studentId   String   @map("student_id")
+  courseId    String   @map("course_id")
+  courseOldId String?  @map("course_old_id")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  user   User    @relation(fields: [studentId], references: [studentId])
+  course Course? @relation(fields: [courseId], references: [id], onDelete: Restrict)
+
+  @@unique([studentId, courseId])
+  @@map("user_course")
+}
+
+model Lecture {
+  id          Int           @id
+  courseId    String        @map("course_id")
+  courseOldId String?       @map("course_old_id")
+  name        String
+  week        Int
+  endsAt      DateTime      @map("ends_at")
+  createdAt   DateTime      @default(now()) @map("created_at")
+  updatedAt   DateTime      @updatedAt @map("updated_at")
+  deletedAt   DateTime?     @map("deleted_at")
+  startsAt    DateTime      @map("starts_at")
+  course      Course?       @relation(fields: [courseId], references: [id], onDelete: Restrict)
+  users       UserLecture[]
+
+  @@map("lecture")
+}
+
+model UserLecture {
+  id        Int      @id @default(autoincrement())
+  studentId String   @map("student_id")
+  lectureId Int      @map("lecture_id")
+  isDone    Boolean  @map("is_done")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  lecture   Lecture  @relation(fields: [lectureId], references: [id])
+  user      User     @relation(fields: [studentId], references: [studentId])
+
+  @@unique([studentId, lectureId])
+  @@map("user_lecture")
+}
+
+model Assignment {
+  id          Int              @id
+  courseId    String           @map("course_id")
+  courseOldId String?          @map("course_old_id")
+  name        String
+  week        Int
+  endsAt      DateTime?        @map("ends_at")
+  createdAt   DateTime         @default(now()) @map("created_at")
+  updatedAt   DateTime         @updatedAt @map("updated_at")
+  deletedAt   DateTime?        @map("deleted_at")
+  course      Course?          @relation(fields: [courseId], references: [id], onDelete: Restrict)
+  users       UserAssignment[]
+
+  @@map("assignment")
+}
+
+model UserAssignment {
+  id           Int        @id @default(autoincrement())
+  studentId    String     @map("student_id")
+  assignmentId Int        @map("assignment_id")
+  isDone       Boolean    @map("is_done")
+  createdAt    DateTime   @default(now()) @map("created_at")
+  user         User       @relation(fields: [studentId], references: [studentId])
+  assignment   Assignment @relation(fields: [assignmentId], references: [id])
+
+  @@unique([studentId, assignmentId])
+  @@map("user_assignment")
+}
+
+model Studyroom {
+  id             Int                    @id @default(autoincrement())
+  name           String
+  location       String
+  operatingHours String                 @map("operating_hours")
+  minUsers       Int                    @map("min_users")
+  maxUsers       Int                    @map("max_users")
+  isCinema       Boolean                @map("is_cinema")
+  createdAt      DateTime               @default(now()) @map("created_at")
+  updatedAt      DateTime               @updatedAt @map("updated_at")
+  deletedAt      DateTime?              @map("deleted_at")
+  slots          StudyroomSlot[]
+  reservations   StudyroomReservation[]
+
+  @@map("studyroom")
+}
+
+model StudyroomSlot {
+  id          String   @id
+  studyroomId Int      @map("studyroom_id")
+  date        DateTime @db.Date
+  startsAt    Int      @map("starts_at")
+  isReserved  Boolean  @map("is_reserved")
+  isClosed    Boolean  @map("is_closed")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  studyroom    Studyroom         @relation(fields: [studyroomId], references: [id])
+  reservations ReservationSlot[]
+
+  @@unique([studyroomId, date, startsAt])
+  @@map("studyroom_slot")
+}
+
+model StudyroomReservation {
+  id            Int       @id
+  pid           Int
+  studyroomId   Int       @map("studyroom_id")
+  reserveReason String
+  cancelReason  String?
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+  deletedAt     DateTime?
+
+  studyroom Studyroom         @relation(fields: [studyroomId], references: [id])
+  slots     ReservationSlot[]
+  users     UserReservation[]
+
+  @@map("studyroom_reservation")
+}
+
+model ReservationSlot {
+  id                   Int                  @id @default(autoincrement())
+  slotId               String               @map("slot_id")
+  reservationId        Int                  @map("reservation_id")
+  studyroomReservation StudyroomReservation @relation(fields: [reservationId], references: [id])
+  studyroomSlot        StudyroomSlot        @relation(fields: [slotId], references: [id])
+
+  @@unique([slotId, reservationId])
+  @@map("reservation_slot")
+}
+
+model UserReservation {
+  id                   Int                  @id @default(autoincrement())
+  studentId            String               @map("student_id")
+  reservationId        Int                  @map("reservation_id")
+  isLeader             Boolean              @map("is_leader")
+  createdAt            DateTime             @default(now()) @map("created_at")
+  deletedAt            DateTime?            @map("deleted_at")
+  studyroomReservation StudyroomReservation @relation(fields: [reservationId], references: [id])
+  user                 User                 @relation(fields: [studentId], references: [studentId])
+
+  @@unique([studentId, reservationId])
+  @@map("user_reservation")
+}
+
+model Friend {
+  id            Int       @id @default(autoincrement())
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+  deletedAt     DateTime? @map("deleted_at")
+  receiveUserId String    @map("receive_user_id")
+  requestUserId String    @map("request_user_id")
+  receiveUser   User      @relation("user2", fields: [receiveUserId], references: [studentId])
+  requestUser   User      @relation("user1", fields: [requestUserId], references: [studentId])
+
+  @@unique([requestUserId, receiveUserId])
+  @@map("friend")
+}
+
+model Restaurant {
+  id   Int    @id @default(autoincrement())
+  name String
+
+  @@map("restaurant")
 }
 
 enum OS {
@@ -42,202 +233,3 @@ enum OS {
 
   @@map("os")
 }
-
-model User {
-  studentId       String            @id @map("student_id")
-  name            String
-  sejongPid       String            @map("sejong_pid")
-  departmentName  String?           @map("department_name")
-  os              OS?               @map("os")
-  pushToken       String?           @map("push_token")
-  createdAt       DateTime          @default(now()) @map("created_at")
-  updatedAt       DateTime          @updatedAt @map("updated_at")
-  deletedAt       DateTime?         @map("deleted_at")
-  
-  department      Department?       @relation(fields: [departmentName], references: [name])
-  courses         UserCourse[]
-  lectures        UserLecture[]
-  assignments     UserAssignment[]
-  reservations    UserReservation[]
-  friend1         Friend[]          @relation("user1")
-  friend2         Friend[]          @relation("user2")
-
-  @@map("user")
-}
-
-model UserCourse {
-  id              Int               @id @default(autoincrement())
-  studentId       String            @map("student_id")
-  courseId        String            @map("course_id")
-  createdAt       DateTime          @default(now()) @map("created_at")
-  updatedAt       DateTime          @updatedAt @map("updated_at")
-
-  user            User              @relation(fields: [studentId], references: [studentId])
-  course          Course            @relation(fields: [courseId], references: [id])
-
-  @@unique([studentId, courseId])
-  @@map("user_course")
-}
-
-model Lecture {
-  id              Int               @id
-  courseId        String            @map("course_id")
-  name            String
-  week            Int
-  startsAt        DateTime          @map("starts_at")
-  endsAt          DateTime          @map("ends_at")
-  createdAt       DateTime          @default(now()) @map("created_at")
-  updatedAt       DateTime          @updatedAt @map("updated_at")
-  deletedAt       DateTime?         @map("deleted_at")
-
-  course          Course            @relation(fields: [courseId], references: [id])
-  users           UserLecture[]
-
-  @@map("lecture")
-}
-
-model UserLecture {
-  id              Int               @id @default(autoincrement())
-  studentId       String            @map("student_id")
-  lectureId       Int               @map("lecture_id")
-  isDone          Boolean           @map("is_done")
-  createdAt       DateTime          @default(now()) @map("created_at")
-  updatedAt       DateTime          @updatedAt @map("updated_at")
-
-  user            User              @relation(fields: [studentId], references: [studentId])
-  lecture         Lecture           @relation(fields: [lectureId], references: [id])
-
-  @@unique([studentId, lectureId])
-  @@map("user_lecture")
-}
-
-model Assignment {
-  id              Int               @id
-  courseId        String            @map("course_id")
-  name            String
-  week            Int
-  endsAt          DateTime?          @map("ends_at")
-  createdAt       DateTime          @default(now()) @map("created_at")
-  updatedAt       DateTime          @updatedAt @map("updated_at")
-  deletedAt       DateTime?         @map("deleted_at")
-
-  course          Course            @relation(fields: [courseId], references: [id])
-  users           UserAssignment[]
-
-  @@map("assignment")
-}
-
-model UserAssignment {
-  id              Int               @id @default(autoincrement())
-  studentId       String            @map("student_id")
-  assignmentId    Int               @map("assignment_id")
-  isDone          Boolean           @map("is_done")
-  createdAt       DateTime          @default(now()) @map("created_at")
-
-  user            User              @relation(fields: [studentId], references: [studentId])
-  assignment      Assignment        @relation(fields: [assignmentId], references: [id])
-
-  @@unique([studentId, assignmentId])
-  @@map("user_assignment")
-}
-
-model Studyroom {
-  id              Int               @id @default(autoincrement())
-  name            String
-  location        String
-  operatingHours  String            @map("operating_hours")
-  minUsers        Int               @map("min_users")
-  maxUsers        Int               @map("max_users")
-  isCinema        Boolean           @map("is_cinema")
-  createdAt       DateTime          @default(now()) @map("created_at")
-  updatedAt       DateTime          @updatedAt @map("updated_at")
-  deletedAt       DateTime?         @map("deleted_at")
-
-  slots           StudyroomSlot[]
-  reservations    StudyroomReservation[]
-
-  @@map("studyroom")
-}
-
-model StudyroomSlot {
-  id              String            @id
-  studyroomId     Int               @map("studyroom_id")
-  date            DateTime          @db.Date
-  startsAt        Int               @map("starts_at")
-  isReserved      Boolean           @map("is_reserved")
-  isClosed        Boolean           @map("is_closed")
-  createdAt       DateTime          @default(now()) @map("created_at")
-  updatedAt       DateTime          @updatedAt @map("updated_at")
-
-  studyroom       Studyroom         @relation(fields: [studyroomId], references: [id])
-  reservations    ReservationSlot[]
-
-  @@map("studyroom_slot")
-  @@unique([studyroomId, date, startsAt])
-}
-
-model StudyroomReservation {
-  id              Int               @id
-  pid             Int
-  studyroomId     Int               @map("studyroom_id")
-  reserveReason   String
-  cancelReason    String?
-  createdAt       DateTime          @default(now()) @map("created_at")
-  updatedAt       DateTime          @updatedAt @map("updated_at")
-  deletedAt       DateTime?          
-
-  studyroom       Studyroom         @relation(fields: [studyroomId], references: [id])
-  slots           ReservationSlot[]
-  users           UserReservation[]
-
-  @@map("studyroom_reservation")
-}
-
-model ReservationSlot {
-  id              Int               @id @default(autoincrement())
-  slotId          String            @map("slot_id")
-  reservationId   Int               @map("reservation_id")
-
-  studyroomSlot         StudyroomSlot         @relation(fields: [slotId], references: [id])
-  studyroomReservation  StudyroomReservation  @relation(fields: [reservationId], references: [id])
-
-  @@unique([slotId, reservationId])
-  @@map("reservation_slot")
-}
-
-model UserReservation {
-  id              Int               @id @default(autoincrement())
-  studentId       String            @map("student_id")
-  reservationId   Int               @map("reservation_id")
-  isLeader        Boolean           @map("is_leader")
-  createdAt       DateTime          @default(now()) @map("created_at")
-  deletedAt       DateTime?         @map("deleted_at")
-
-  user                  User                  @relation(fields: [studentId], references: [studentId])
-  studyroomReservation  StudyroomReservation  @relation(fields: [reservationId], references: [id])
-
-  @@unique([studentId, reservationId])
-  @@map("user_reservation")
-}
-
-model Friend {
-  id              Int               @id @default(autoincrement())
-  requestUserId   String            @map("request_user_id")
-  receiveUserId   String            @map("receive_user_id")
-  createdAt       DateTime          @default(now()) @map("created_at")
-  updatedAt       DateTime          @updatedAt @map("updated_at")
-  deletedAt       DateTime?         @map("deleted_at")
-
-  requestUser     User              @relation(name: "user1", fields: [requestUserId], references: [studentId])
-  receiveUser     User              @relation(name: "user2", fields: [receiveUserId], references: [studentId])
-  
-  @@unique([requestUserId,receiveUserId])
-  @@map("friend")
-}
-
-  model Restaurant {
-    id            Int               @id @default(autoincrement())
-    name          String
-
-    @@map("restaurant")
-  }
