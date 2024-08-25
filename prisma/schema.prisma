@@ -18,7 +18,7 @@ model Department {
 
 model Course {
   id          String       @id @default(uuid())
-  ecampusId   Int?         @unique @map("ecampus_id")
+  ecampusId   Int?         @map("ecampus_id")
   courseId    String       @map("course_id")
   name        String
   semester    String
@@ -29,6 +29,7 @@ model Course {
   lectures    Lecture[]
   assignments Assignment[]
 
+  @@unique([courseId, semester])
   @@index([ecampusId])
   @@map("course")
 }
