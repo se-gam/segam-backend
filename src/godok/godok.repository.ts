@@ -223,7 +223,7 @@ export class GodokRepository {
       return {
         categoryCode: GodokCategory[idx] as number,
         categoryName: categories[idx].name,
-        categoryStatus: categories[idx].targetCount == count,
+        categoryStatus: count >= categories[idx].targetCount,
         count: count,
         targetCount: categories[idx].targetCount,
       };
