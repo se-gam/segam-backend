@@ -44,6 +44,18 @@ export class GodokRepository {
     return new Map(books.map((book) => [book.title, book.id]));
   }
 
+  async deleteReservation(reservationId: string): Promise<void> {
+    const today = new Date();
+    await this.prismaService.godokReservation.update({
+      where: {
+        reservationId: reservationId,
+      },
+      data: {
+        deletedAt: today,
+      },
+    });
+  }
+
   async updateUserReservation(
     userId: string,
     newReservations: GodokReservationResponse[],

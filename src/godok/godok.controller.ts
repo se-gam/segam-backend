@@ -111,7 +111,11 @@ export class GodokController {
     @CurrentUser() user: UserInfo,
     @Body(PasswordValidationPipe) payload: PasswordPayload,
   ): Promise<void> {
-    return;
+    return await this.godokService.cancelReservation(
+      user.studentId,
+      payload,
+      reservationId,
+    );
   }
 
   @Version('1')

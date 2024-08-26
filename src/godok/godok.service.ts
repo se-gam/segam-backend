@@ -205,6 +205,33 @@ export class GodokService {
     await this.updateUserGodokReservation(userId, payload.password);
   }
 
+  async cancelReservation(
+    userId: string,
+    payload: PasswordPayload,
+    reservationId: string,
+  ): Promise<void> {
+    const res = await this.axiosService.post(
+      this.configService.get<string>('GET_USER_GODOK_RESERVATIONS_URL'),
+      JSON.stringify({
+        student_id: userId,
+        password: payload.password,
+        opAppInfoId: reservationId,
+      }),
+      { headers: { 'Content-Type': 'application/json' } },
+    );
+
+    const response = JSON.parse(res.data);
+    if (res.status === 400) {
+      throw new BadRequestException(response.error);
+    } else if (res.status === 401) {
+      throw new UnauthorizedException(response.error);
+    } else if (res.status >= 400) {
+      throw new InternalServerErrorException('Internal Server Error');
+    }
+
+    await this.godokRepository.deleteReservation(reservationId);
+  }
+
   async getUserReservations(
     userId: string,
     payload: PasswordPayload,
