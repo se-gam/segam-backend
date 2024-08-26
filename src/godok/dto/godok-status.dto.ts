@@ -1,4 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { GodokCategoryStatus, GodokStatus } from '../types/godokStatus.type';
+import { count } from 'console';
 
 class GodokCategoryStatusDto {
   @ApiProperty({
@@ -35,6 +37,16 @@ class GodokCategoryStatusDto {
     type: Number,
   })
   targetCount!: number;
+
+  static from(status: GodokCategoryStatus): GodokCategoryStatusDto {
+    return {
+      categoryCode: status.categoryCode,
+      categoryName: status.categoryName,
+      categoryStatus: status.categoryStatus,
+      count: status.count,
+      targetCount: status.targetCount,
+    };
+  }
 }
 
 export class GodokStatusDto {
@@ -50,4 +62,13 @@ export class GodokStatusDto {
     type: [GodokCategoryStatusDto],
   })
   categoryStatus!: GodokCategoryStatusDto[];
+
+  static from(status: GodokStatus): GodokStatusDto {
+    return {
+      status: status.status,
+      categoryStatus: status.categoryStatus.map((status) =>
+        GodokCategoryStatusDto.from(status),
+      ),
+    };
+  }
 }

@@ -19,6 +19,8 @@ import { ResultResponse } from 'src/studyroom/types/resultResponse.type';
 import { UserRepository } from 'src/user/user.repository';
 import { PasswordPayload } from 'src/auth/payload/password.payload';
 import { GodokReservationDto } from './dto/godok-reservation.dto';
+import { GodokStatusDto } from './dto/godok-status.dto';
+import { GodokStatusInfo } from './types/godokStatusInfo.type';
 
 @Injectable()
 export class GodokService {
@@ -241,5 +243,40 @@ export class GodokService {
     return reservations.map((reservation) =>
       GodokReservationDto.from(reservation),
     );
+  }
+
+  async getUserGodokStatus(
+    userId: string,
+    payload: PasswordPayload,
+  ): Promise<GodokStatusInfo> {
+    const res = await this.axiosService.post(
+      this.configService.get<string>('GET_USER_GODOK_STATUS_URL'),
+      JSON.stringify({
+        student_id: userId,
+        password: payload.password,
+      }),
+      { headers: { 'Content-Type': 'application/json' } },
+    );
+
+    const response = JSON.parse(res.data);
+    if (res.status === 400) {
+      throw new BadRequestException(response.error);
+    } else if (res.status === 401) {
+      throw new UnauthorizedException(response.error);
+    } else if (res.status >= 400) {
+      throw new InternalServerErrorException('Internal Server Error');
+    }
+
+    return response.reservations;
+  }
+
+  async getUserStatus(
+    userId: string,
+    payload: PasswordPayload,
+  ): Promise<GodokStatusDto> {
+    const statusInfo = await this.getUserGodokStatus(userId, payload);
+    await this.godokRepository.updateUserStatus(userId, statusInfo);
+    const status = await this.godokRepository.getUserStatus(userId);
+    return GodokStatusDto.from(status);
   }
 }

@@ -64,7 +64,7 @@ export class GodokController {
     @CurrentUser() user: UserInfo,
     @Body(PasswordValidationPipe) payload: PasswordPayload,
   ): Promise<GodokReservationDto[]> {
-    return await this.godokService.getUserReservations(user.studentId, payload);
+    return this.godokService.getUserReservations(user.studentId, payload);
   }
 
   @Version('1')
@@ -86,7 +86,7 @@ export class GodokController {
     @CurrentUser() user: UserInfo,
     @Body(PasswordValidationPipe) payload: GodokReservePayload,
   ): Promise<void> {
-    return await this.godokService.reserveGodok(user.studentId, payload);
+    return this.godokService.reserveGodok(user.studentId, payload);
   }
 
   @Version('1')
@@ -111,7 +111,7 @@ export class GodokController {
     @CurrentUser() user: UserInfo,
     @Body(PasswordValidationPipe) payload: PasswordPayload,
   ): Promise<void> {
-    return await this.godokService.cancelReservation(
+    return this.godokService.cancelReservation(
       user.studentId,
       payload,
       reservationId,
@@ -137,39 +137,7 @@ export class GodokController {
     @CurrentUser() user: UserInfo,
     @Body(PasswordValidationPipe) payload: PasswordPayload,
   ): Promise<GodokStatusDto> {
-    return {
-      status: true,
-      categoryStatus: [
-        {
-          categoryCode: 1000,
-          categoryName: '동양의 역사와 사상',
-          categoryStatus: false,
-          count: 2,
-          targetCount: 4,
-        },
-        {
-          categoryCode: 2000,
-          categoryName: '서양의 역사와 사상',
-          categoryStatus: false,
-          count: 2,
-          targetCount: 4,
-        },
-        {
-          categoryCode: 3000,
-          categoryName: '동서양의 문학',
-          categoryStatus: false,
-          count: 0,
-          targetCount: 2,
-        },
-        {
-          categoryCode: 4000,
-          categoryName: '과학 사상',
-          categoryStatus: true,
-          count: 1,
-          targetCount: 1,
-        },
-      ],
-    };
+    return this.godokService.getUserStatus(user.studentId, payload);
   }
 
   @Version('1')

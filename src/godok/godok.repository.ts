@@ -5,6 +5,10 @@ import { PrismaService } from 'src/common/services/prisma.service';
 import { GodokReservationResponse } from './types/godokReservationResponse.type';
 import { GodokBook } from './types/godokBook.type';
 import { GodokReservationInfo } from './types/godokReservationInfo.type';
+import { GodokStatusInfo } from './types/godokStatusInfo.type';
+import { GodokStatus } from './types/godokStatus.type';
+import { GodokCategory } from './types/godokCategory.type';
+import { count } from 'console';
 
 @Injectable()
 export class GodokRepository {
@@ -170,5 +174,64 @@ export class GodokRepository {
         },
       },
     });
+  }
+
+  async updateUserStatus(
+    userId: string,
+    status: GodokStatusInfo,
+  ): Promise<void> {
+    const counts = Object.values(status.values);
+    await this.prismaService.godokStatus.upsert({
+      where: {
+        studentId: userId,
+      },
+      update: {
+        counts: counts,
+      },
+      create: {
+        studentId: userId,
+        status: status.status,
+        counts: counts,
+      },
+    });
+  }
+
+  async getUserStatus(userId: string): Promise<GodokStatus> {
+    const status = await this.prismaService.godokStatus.findUnique({
+      where: {
+        studentId: userId,
+      },
+      select: {
+        status: true,
+        counts: true,
+      },
+    });
+
+    const categoryIds = Object.values(GodokCategory) as number[];
+    const categories = await this.prismaService.bookCategory.findMany({
+      where: {
+        id: {
+          in: categoryIds,
+        },
+      },
+      orderBy: {
+        id: 'asc',
+      },
+    });
+
+    const categoryStatuses = status.counts.map((count, idx) => {
+      return {
+        categoryCode: GodokCategory[idx] as number,
+        categoryName: categories[idx].name,
+        categoryStatus: categories[idx].targetCount == count,
+        count: count,
+        targetCount: categories[idx].targetCount,
+      };
+    });
+
+    return {
+      status: status.status,
+      categoryStatus: categoryStatuses,
+    };
   }
 }
