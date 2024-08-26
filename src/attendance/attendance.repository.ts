@@ -318,7 +318,7 @@ export class AttendanceRepository {
           skipDuplicates: true,
         });
 
-        const createdCoursesUUIDs = await tx.course.findMany({
+        const createdCourseUUIDs = await tx.course.findMany({
           where: {
             courseId: {
               in: createdIds,
@@ -331,7 +331,7 @@ export class AttendanceRepository {
         });
 
         await tx.userCourse.createMany({
-          data: createdCoursesUUIDs.map((course) => {
+          data: createdCourseUUIDs.map((course) => {
             return {
               studentId: user.studentId,
               courseId: course.id,
@@ -401,6 +401,20 @@ export class AttendanceRepository {
             },
           });
 
+          // Ecampus에서 받아온 유저가 지금 듣는 모든 강좌들
+          const courseEntities = await tx.course.findMany({
+            where: {
+              courseId: {
+                in: newIds,
+              },
+              semester: getCurrentSemester(),
+            },
+            select: {
+              id: true,
+              courseId: true,
+            },
+          });
+
           // 이미 있는 강의들 업데이트
           for (const lecture of existingLectures) {
             await tx.lecture.update({
@@ -448,7 +462,9 @@ export class AttendanceRepository {
                 endsAt: lecture.endsAt,
                 course: {
                   connect: {
-                    id: rawCourse.id,
+                    id: courseEntities.find(
+                      (course) => course.courseId === rawCourse.id,
+                    ).id,
                   },
                 },
               },
@@ -564,7 +580,9 @@ export class AttendanceRepository {
                 endsAt: assignment.endsAt,
                 course: {
                   connect: {
-                    id: rawCourse.id,
+                    id: courseEntities.find(
+                      (course) => course.courseId === rawCourse.id,
+                    ).id,
                   },
                 },
               },
