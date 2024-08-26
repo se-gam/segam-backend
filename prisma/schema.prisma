@@ -233,8 +233,6 @@ model BookCategory {
 model Book {
   id             Int       @id
   title          String
-  author         String
-  publisher      String
   bookCategoryId Int       @map("book_category_id")
   createdAt      DateTime  @default(now()) @map("created_at")
   deletedAt      DateTime? @map("deleted_at")
