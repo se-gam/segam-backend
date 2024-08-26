@@ -64,15 +64,7 @@ export class GodokController {
     @CurrentUser() user: UserInfo,
     @Body(PasswordValidationPipe) payload: PasswordPayload,
   ): Promise<GodokReservationDto[]> {
-    return [
-      {
-        reservationId: 1,
-        bookId: 3003,
-        bookName: '췍',
-        bookCategoryId: 3000,
-        reservationTime: new Date(),
-      },
-    ];
+    return await this.godokService.getUserReservations(user.studentId, payload);
   }
 
   @Version('1')
@@ -94,7 +86,7 @@ export class GodokController {
     @CurrentUser() user: UserInfo,
     @Body(PasswordValidationPipe) payload: GodokReservePayload,
   ): Promise<void> {
-    return this.godokService.reserveGodok(user.studentId, payload);
+    return await this.godokService.reserveGodok(user.studentId, payload);
   }
 
   @Version('1')

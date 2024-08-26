@@ -1,12 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { GodokReservationInfo } from '../types/godokReservationInfo.type';
 
 export class GodokReservationDto {
   @ApiProperty({
     description: '고전독서 시험예약 id',
     example: 'OPAP-0000197302',
-    type: Number,
+    type: String,
   })
-  reservationId!: number;
+  reservationId!: string;
 
   @ApiProperty({
     description: '응시 책 id',
@@ -34,4 +35,14 @@ export class GodokReservationDto {
     type: Date,
   })
   reservationTime!: Date;
+
+  static from(reservation: GodokReservationInfo): GodokReservationDto {
+    return {
+      reservationId: reservation.reservationId,
+      bookId: reservation.bookId,
+      bookName: reservation.book.title,
+      bookCategoryId: reservation.book.bookCategory.id,
+      reservationTime: reservation.startsAt,
+    };
+  }
 }

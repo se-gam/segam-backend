@@ -4,6 +4,7 @@ import * as _ from 'lodash';
 import { PrismaService } from 'src/common/services/prisma.service';
 import { GodokReservationResponse } from './types/godokReservationResponse.type';
 import { GodokBook } from './types/godokBook.type';
+import { GodokReservationInfo } from './types/godokReservationInfo.type';
 
 @Injectable()
 export class GodokRepository {
@@ -110,6 +111,38 @@ export class GodokRepository {
     });
 
     return _.flatMap(reservationIds, 'reservationId');
+  }
+
+  async getReservations(userId: string): Promise<GodokReservationInfo[]> {
+    const today = new Date();
+
+    const reservations = await this.prismaService.godokReservation.findMany({
+      where: {
+        deletedAt: null,
+        studentId: userId,
+        startsAt: {
+          gte: today,
+        },
+      },
+      select: {
+        reservationId: true,
+        studentId: true,
+        bookId: true,
+        book: {
+          select: {
+            bookCategory: {
+              select: {
+                id: true,
+              },
+            },
+            title: true,
+          },
+        },
+        startsAt: true,
+      },
+    });
+
+    return reservations;
   }
 
   async getGodokBooks(): Promise<GodokBook[]> {

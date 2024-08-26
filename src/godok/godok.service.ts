@@ -17,6 +17,8 @@ import { RawGodokSlot } from './types/rawGodokSlot.type';
 import { GodokReservePayload } from './payload/godokReserve.payload';
 import { ResultResponse } from 'src/studyroom/types/resultResponse.type';
 import { UserRepository } from 'src/user/user.repository';
+import { PasswordPayload } from 'src/auth/payload/password.payload';
+import { GodokReservationDto } from './dto/godok-reservation.dto';
 
 @Injectable()
 export class GodokService {
@@ -201,5 +203,16 @@ export class GodokService {
   ): Promise<void> {
     await this.createGodokReservaion(userId, payload);
     await this.updateUserGodokReservation(userId, payload.password);
+  }
+
+  async getUserReservations(
+    userId: string,
+    payload: PasswordPayload,
+  ): Promise<GodokReservationDto[]> {
+    await this.updateUserGodokReservation(userId, payload.password);
+    const reservations = await this.godokRepository.getReservations(userId);
+    return reservations.map((reservation) =>
+      GodokReservationDto.from(reservation),
+    );
   }
 }
