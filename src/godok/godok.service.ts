@@ -135,7 +135,10 @@ export class GodokService {
       throw new InternalServerErrorException('Internal Server Error');
     }
 
-    await this.godokRepository.updateUserReservation(userId, response.result);
+    await this.godokRepository.updateUserReservation(
+      userId,
+      response.reservations,
+    );
   }
   private async fetchGodokBooks(bkAreaCode: number) {
     const formData = new FormData();

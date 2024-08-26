@@ -49,7 +49,9 @@ export class GodokRepository {
   ) {
     // 이전 예약 id 탐색
     const prevIds = await this.getReservationIds(userId);
-    const newIds = newReservations.map((reservation) => reservation.reserve_id);
+    const newIds = (newReservations || []).map(
+      (reservation) => reservation.reserve_id,
+    );
 
     const existingIds = _.intersection(prevIds, newIds);
     const deletedIds = _.difference(prevIds, existingIds);
