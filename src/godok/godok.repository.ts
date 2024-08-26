@@ -186,6 +186,7 @@ export class GodokRepository {
         studentId: userId,
       },
       update: {
+        status: status.status,
         counts: counts,
       },
       create: {
