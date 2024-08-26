@@ -88,4 +88,23 @@ export class GodokRepository {
       ],
     });
   }
+
+  async getReservationIds(userId: string): Promise<string[]> {
+    const today = new Date();
+
+    const reservationIds = await this.prismaService.godokReservation.findMany({
+      where: {
+        deletedAt: null,
+        studentId: userId,
+        startsAt: {
+          gte: today,
+        },
+      },
+      select: {
+        reservationId: true,
+      },
+    });
+
+    return _.flatMap(reservationIds, 'reservationId');
+  }
 }
