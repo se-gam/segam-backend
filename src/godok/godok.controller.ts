@@ -187,15 +187,16 @@ export class GodokController {
   })
   @Get('books')
   async getGodokBooks(): Promise<GodokBookDto[]> {
-    return [
-      {
-        bookId: 3003,
-        bookName: '췍',
-        categoryId: 3000,
-        categoryName: '동서양의 문학',
-        author: '김췍',
-        publisher: '췍출판사',
-      },
-    ];
+    return this.godokService.getGodokBooks();
+  }
+
+  @Version('1')
+  @ApiOperation({
+    summary: '고전독서 도서 목록 업데이트 API',
+    description: '고전독서 도서 목록을 업데이트합니다.',
+  })
+  @Get('books-update')
+  async updateGodokBooks(): Promise<void> {
+    return this.godokService.updateGodokBooks();
   }
 }

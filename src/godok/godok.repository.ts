@@ -3,6 +3,7 @@ import { GodokSlot } from '@prisma/client';
 import * as _ from 'lodash';
 import { PrismaService } from 'src/common/services/prisma.service';
 import { GodokReservationResponse } from './types/godokReservationResponse.type';
+import { GodokBook } from './types/godokBook.type';
 
 @Injectable()
 export class GodokRepository {
@@ -86,6 +87,7 @@ export class GodokRepository {
           };
         }),
       ],
+      skipDuplicates: true,
     });
   }
 
@@ -106,5 +108,20 @@ export class GodokRepository {
     });
 
     return _.flatMap(reservationIds, 'reservationId');
+  }
+
+  async getGodokBooks(): Promise<GodokBook[]> {
+    return this.prismaService.book.findMany({
+      select: {
+        id: true,
+        title: true,
+        bookCategoryId: true,
+        bookCategory: {
+          select: {
+            name: true,
+          },
+        },
+      },
+    });
   }
 }

@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { GodokBook } from '../types/godokBook.type';
 
 export class GodokBookDto {
   @ApiProperty({
@@ -29,17 +30,14 @@ export class GodokBookDto {
   })
   categoryName!: string;
 
-  @ApiProperty({
-    description: '고전독서 도서 저자',
-    example: '김췍',
-    type: String,
-  })
-  author!: string;
-
-  @ApiProperty({
-    description: '고전독서 도서 출판사',
-    example: '췍출판사',
-    type: String,
-  })
-  publisher!: string;
+  static from(books: GodokBook[]) {
+    return books.map((book) => {
+      return {
+        bookId: book.id,
+        bookName: book.title,
+        categoryId: book.bookCategoryId,
+        categoryName: book.bookCategory.name,
+      };
+    });
+  }
 }
