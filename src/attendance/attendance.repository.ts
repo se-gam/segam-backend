@@ -14,7 +14,6 @@ export class AttendanceRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
   async getCourseAttendanceList(user: UserInfo): Promise<CourseData[]> {
-    console.log(getCurrentSemester());
     return await this.prismaService.course.findMany({
       where: {
         users: {
@@ -230,8 +229,9 @@ export class AttendanceRepository {
 
   async updateUserAttendance(
     user: UserInfo,
-    courses: RawCourse[],
+    rawCourses: RawCourse[],
   ): Promise<void> {
+    // 이번 학기에 듣는 DB에 있는 강좌들 조회
     const prevCourses = await this.prismaService.course.findMany({
       where: {
         users: {
@@ -243,27 +243,30 @@ export class AttendanceRepository {
         deletedAt: null,
       },
       select: {
-        id: true,
+        courseId: true,
       },
     });
 
-    const prevIds = prevCourses.map((course) => course.id);
-    const newIds = courses.map((course) => course.id);
+    // Ecampus에서 파싱한 강의들과 비교해서 추가, 삭제할 강좌들 구하기
+    const prevIds = prevCourses.map((course) => course.courseId);
+    const newIds = rawCourses.map((course) => course.id); // RawCourse의 id는 학수번호
 
     const deletedIds = _.difference(prevIds, newIds);
     const createdIds = _.difference(newIds, prevIds);
 
-    const createdCourses = courses.filter((course) =>
+    const createdCourses = rawCourses.filter((course) =>
       createdIds.includes(course.id),
     );
 
-    // 수강철회 등 들었던 강의들이 사라졌을 경우
+    // 수강철회 등 들었던 강좌들이 사라졌을 경우 삭제
     await this.prismaService.$transaction(
       async (tx) => {
         await tx.userCourse.deleteMany({
           where: {
-            courseId: {
-              in: deletedIds,
+            course: {
+              courseId: {
+                in: deletedIds,
+              },
             },
             studentId: user.studentId,
           },
@@ -272,8 +275,10 @@ export class AttendanceRepository {
         await tx.userLecture.deleteMany({
           where: {
             lecture: {
-              courseId: {
-                in: deletedIds,
+              course: {
+                courseId: {
+                  in: deletedIds,
+                },
               },
             },
             studentId: user.studentId,
@@ -283,8 +288,10 @@ export class AttendanceRepository {
         await tx.userAssignment.deleteMany({
           where: {
             assignment: {
-              courseId: {
-                in: deletedIds,
+              course: {
+                courseId: {
+                  in: deletedIds,
+                },
               },
             },
             studentId: user.studentId,
@@ -296,7 +303,7 @@ export class AttendanceRepository {
       },
     );
 
-    // 강의가 이미 DB에 있던, 없던 추가
+    // 강의가 이미 DB에 있던, 없던 강좌를 추가하고 유저와 강좌 연결 시도
     await this.prismaService.$transaction(
       async (tx) => {
         await tx.course.createMany({
@@ -311,8 +318,20 @@ export class AttendanceRepository {
           skipDuplicates: true,
         });
 
+        const createdCourseUUIDs = await tx.course.findMany({
+          where: {
+            courseId: {
+              in: createdIds,
+            },
+            semester: getCurrentSemester(),
+          },
+          select: {
+            id: true,
+          },
+        });
+
         await tx.userCourse.createMany({
-          data: createdCourses.map((course) => {
+          data: createdCourseUUIDs.map((course) => {
             return {
               studentId: user.studentId,
               courseId: course.id,
@@ -326,13 +345,15 @@ export class AttendanceRepository {
       },
     );
 
-    // 강의별로 강의, 과제 추가
-    for (const course of courses) {
+    // 각 강좌별로 새로 받아온 강의, 과제 추가
+    for (const rawCourse of rawCourses) {
       await this.prismaService.$transaction(
         async (tx) => {
           const prevLectures = await tx.lecture.findMany({
             where: {
-              courseId: course.id,
+              course: {
+                courseId: rawCourse.id,
+              },
               users: {
                 some: {
                   studentId: user.studentId,
@@ -345,7 +366,7 @@ export class AttendanceRepository {
             },
           });
           const prevLectureIds = prevLectures.map((lecture) => lecture.id);
-          const newLectureIds = course.lectures.map((lecture) =>
+          const newLectureIds = rawCourse.lectures.map((lecture) =>
             parseInt(lecture.id),
           );
 
@@ -362,11 +383,11 @@ export class AttendanceRepository {
             existingLectureIds,
           );
 
-          const createdLectures = course.lectures.filter((lecture) =>
+          const createdLectures = rawCourse.lectures.filter((lecture) =>
             createdLectureIds.includes(lecture.id),
           );
 
-          const existingLectures = course.lectures.filter((lecture) =>
+          const existingLectures = rawCourse.lectures.filter((lecture) =>
             existingLectureIds.includes(lecture.id),
           );
 
@@ -377,6 +398,20 @@ export class AttendanceRepository {
                 in: deletedLectureIds,
               },
               studentId: user.studentId,
+            },
+          });
+
+          // Ecampus에서 받아온 유저가 지금 듣는 모든 강좌들
+          const courseEntities = await tx.course.findMany({
+            where: {
+              courseId: {
+                in: newIds,
+              },
+              semester: getCurrentSemester(),
+            },
+            select: {
+              id: true,
+              courseId: true,
             },
           });
 
@@ -427,7 +462,9 @@ export class AttendanceRepository {
                 endsAt: lecture.endsAt,
                 course: {
                   connect: {
-                    id: course.id,
+                    id: courseEntities.find(
+                      (course) => course.courseId === rawCourse.id,
+                    ).id,
                   },
                 },
               },
@@ -446,7 +483,9 @@ export class AttendanceRepository {
 
           const prevAssignments = await tx.assignment.findMany({
             where: {
-              courseId: course.id,
+              course: {
+                courseId: rawCourse.id,
+              },
               users: {
                 some: {
                   studentId: user.studentId,
@@ -462,7 +501,7 @@ export class AttendanceRepository {
           const prevAssignmentIds = prevAssignments.map(
             (assignment) => assignment.id,
           );
-          const newAssignmentIds = course.assignments.map((assignment) =>
+          const newAssignmentIds = rawCourse.assignments.map((assignment) =>
             parseInt(assignment.id),
           );
 
@@ -479,12 +518,12 @@ export class AttendanceRepository {
             existingAssignmentIds,
           );
 
-          const createdAssignments = course.assignments.filter((assignment) =>
-            createdAssignmentIds.includes(assignment.id),
+          const createdAssignments = rawCourse.assignments.filter(
+            (assignment) => createdAssignmentIds.includes(assignment.id),
           );
 
-          const existingAssignments = course.assignments.filter((assignment) =>
-            existingAssignmentIds.includes(assignment.id),
+          const existingAssignments = rawCourse.assignments.filter(
+            (assignment) => existingAssignmentIds.includes(assignment.id),
           );
 
           // 사라진 과제들 삭제
@@ -541,7 +580,9 @@ export class AttendanceRepository {
                 endsAt: assignment.endsAt,
                 course: {
                   connect: {
-                    id: course.id,
+                    id: courseEntities.find(
+                      (course) => course.courseId === rawCourse.id,
+                    ).id,
                   },
                 },
               },
