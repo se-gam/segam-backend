@@ -53,6 +53,7 @@ model User {
   friend1          Friend[]           @relation("user1")
   friend2          Friend[]           @relation("user2")
   GodokReservation GodokReservation[]
+  GodokStatus      GodokStatus[]
 
   @@map("user")
 }
@@ -270,6 +271,16 @@ model GodokReservation {
   book Book @relation(fields: [bookId], references: [id])
 
   @@map("godok_revervation")
+}
+
+model GodokStatus {
+  id        String @id @default(uuid())
+  studentId String @unique @map("student_id")
+  counts    Int[]  @map("counts")
+
+  user User @relation(fields: [studentId], references: [studentId])
+
+  @@map("godok_status")
 }
 
 model Restaurant {
