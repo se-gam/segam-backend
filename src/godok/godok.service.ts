@@ -54,6 +54,38 @@ export class GodokService {
     }
   }
 
+  async createGodokReservaion(
+    userId: string,
+    payload: GodokReservePayload,
+  ): Promise<ResultResponse> {
+    const res = await this.axiosService.post(
+      this.configService.get<string>('CREATE_GODOK_RESERVATION_URL'),
+      JSON.stringify({
+        student_id: userId,
+        password: payload.password,
+        shInfoId: payload.godokSlotId,
+        bkCode: payload.bookCode,
+        bkAreaCode: payload.bookAreaCode,
+      }),
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+    );
+
+    const response = JSON.parse(res.data);
+    if (res.status === 400) {
+      throw new BadRequestException(response.error);
+    } else if (res.status === 401) {
+      throw new UnauthorizedException(response.error);
+    } else if (res.status >= 400) {
+      throw new InternalServerErrorException('Internal Server Error');
+    }
+
+    return response;
+  }
+
   async updateUserGodokReservation(userId: string, password: string) {
     const user = await this.userRepository.getUserByStudentId(userId);
 
@@ -82,5 +114,13 @@ export class GodokService {
   async getGodokCalendar(): Promise<GodokSlotListDto> {
     const slots = await this.godokRepository.getGodokCalendar();
     return GodokSlotListDto.from(slots);
+  }
+
+  async reserveGodok(
+    userId: string,
+    payload: GodokReservePayload,
+  ): Promise<void> {
+    await this.createGodokReservaion(userId, payload);
+    await this.updateUserGodokReservation(userId, payload.password);
   }
 }

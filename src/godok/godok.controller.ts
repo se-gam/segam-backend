@@ -8,6 +8,7 @@ import {
   Version,
 } from '@nestjs/common';
 import {
+  ApiBadRequestResponse,
   ApiBearerAuth,
   ApiCreatedResponse,
   ApiOkResponse,
@@ -83,6 +84,9 @@ export class GodokController {
   @ApiUnauthorizedResponse({
     description: '포털 로그인 실패',
   })
+  @ApiBadRequestResponse({
+    description: '예약 실패',
+  })
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @Post('reservation')
@@ -90,7 +94,7 @@ export class GodokController {
     @CurrentUser() user: UserInfo,
     @Body(PasswordValidationPipe) payload: GodokReservePayload,
   ): Promise<void> {
-    return;
+    return this.godokService.reserveGodok(user.studentId, payload);
   }
 
   @Version('1')
