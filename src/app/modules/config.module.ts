@@ -25,5 +25,9 @@ export const configModule = ConfigModule.forRoot({
     DISCORD_INTERNAL_ERROR_WEBHOOK_URL: Joi.string().required(),
     DISCORD_ERROR_WEBHOOK_URL: Joi.string().required(),
     GET_GODOK_CALENDAR_URL: Joi.string().required(),
+    CREATE_GODOK_RESERVATION_URL: Joi.string().required(),
+    GET_USER_GODOK_RESERVATIONS_URL: Joi.string().required(),
+    CANCEL_GODOK_RESERVATION_URL: Joi.string().required(),
+    GET_USER_GODOK_STATUS_URL: Joi.string().required(),
   }),
 });
