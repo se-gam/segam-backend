@@ -213,7 +213,7 @@ export class GodokService {
     reservationId: string,
   ): Promise<void> {
     const res = await this.axiosService.post(
-      this.configService.get<string>('GET_USER_GODOK_RESERVATIONS_URL'),
+      this.configService.get<string>('CANCEL_GODOK_RESERVATION_URL'),
       JSON.stringify({
         student_id: userId,
         password: payload.password,
