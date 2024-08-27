@@ -6,21 +6,21 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { AxiosService } from 'src/common/services/axios.service';
-import { PrismaService } from 'src/common/services/prisma.service';
-import { GodokSlotListDto } from './dto/godok-slot.dto';
-import { GodokRepository } from './godok.repository';
 import { Cron } from '@nestjs/schedule';
 import * as _ from 'lodash';
-import { GodokBookDto } from './dto/godok-book.dto';
-import { RawGodokSlot } from './types/rawGodokSlot.type';
-import { GodokReservePayload } from './payload/godokReserve.payload';
+import { PasswordPayload } from 'src/auth/payload/password.payload';
+import { AxiosService } from 'src/common/services/axios.service';
+import { PrismaService } from 'src/common/services/prisma.service';
 import { ResultResponse } from 'src/studyroom/types/resultResponse.type';
 import { UserRepository } from 'src/user/user.repository';
-import { PasswordPayload } from 'src/auth/payload/password.payload';
+import { GodokBookDto } from './dto/godok-book.dto';
 import { GodokReservationDto } from './dto/godok-reservation.dto';
+import { GodokSlotListDto } from './dto/godok-slot.dto';
 import { GodokStatusDto } from './dto/godok-status.dto';
+import { GodokRepository } from './godok.repository';
+import { GodokReservePayload } from './payload/godokReserve.payload';
 import { GodokStatusInfo } from './types/godokStatusInfo.type';
+import { RawGodokSlot } from './types/rawGodokSlot.type';
 
 @Injectable()
 export class GodokService {
@@ -107,9 +107,9 @@ export class GodokService {
 
     const response = JSON.parse(res.data);
     if (res.status === 400) {
-      throw new BadRequestException(response.error);
+      throw new BadRequestException(response.message);
     } else if (res.status === 401) {
-      throw new UnauthorizedException(response.error);
+      throw new UnauthorizedException(response.message);
     } else if (res.status >= 400) {
       throw new InternalServerErrorException('Internal Server Error');
     }
