@@ -2,13 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { GodokSlot } from '@prisma/client';
 import * as _ from 'lodash';
 import { PrismaService } from 'src/common/services/prisma.service';
-import { GodokReservationResponse } from './types/godokReservationResponse.type';
 import { GodokBook } from './types/godokBook.type';
 import { GodokReservationInfo } from './types/godokReservationInfo.type';
-import { GodokStatusInfo } from './types/godokStatusInfo.type';
+import { GodokReservationResponse } from './types/godokReservationResponse.type';
 import { GodokStatus } from './types/godokStatus.type';
-import { GodokCategory } from './types/godokCategory.type';
-import { count } from 'console';
+import { GodokStatusInfo } from './types/godokStatusInfo.type';
 
 @Injectable()
 export class GodokRepository {
@@ -180,7 +178,10 @@ export class GodokRepository {
     userId: string,
     status: GodokStatusInfo,
   ): Promise<void> {
-    const counts = Object.values(status.values);
+    const counts = Object.keys(status.values)
+      .sort((a, b) => Number(a) - Number(b))
+      .map((key) => status.values[key]);
+
     await this.prismaService.godokStatus.upsert({
       where: {
         studentId: userId,
@@ -208,13 +209,7 @@ export class GodokRepository {
       },
     });
 
-    const categoryIds = Object.values(GodokCategory) as number[];
     const categories = await this.prismaService.bookCategory.findMany({
-      where: {
-        id: {
-          in: categoryIds,
-        },
-      },
       orderBy: {
         id: 'asc',
       },
@@ -222,7 +217,7 @@ export class GodokRepository {
 
     const categoryStatuses = status.counts.map((count, idx) => {
       return {
-        categoryCode: GodokCategory[idx] as number,
+        categoryCode: categories[idx].id,
         categoryName: categories[idx].name,
         categoryStatus: count >= categories[idx].targetCount,
         count: count,

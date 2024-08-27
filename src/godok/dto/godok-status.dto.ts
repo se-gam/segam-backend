@@ -1,6 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { GodokCategoryStatus, GodokStatus } from '../types/godokStatus.type';
-import { count } from 'console';
 
 class GodokCategoryStatusDto {
   @ApiProperty({
