@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Studyroom } from '../types/studyroom.type';
-import { StudyroomSlotDto } from './studyroomSlot.dto';
+import { StudyroomSlotDto } from './studyroom-slot.dto';
 
 export class StudyroomDto {
   @ApiProperty({

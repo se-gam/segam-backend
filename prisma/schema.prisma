@@ -45,13 +45,15 @@ model User {
   updatedAt      DateTime  @updatedAt @map("updated_at")
   deletedAt      DateTime? @map("deleted_at")
 
-  department   Department?       @relation(fields: [departmentName], references: [name])
-  assignments  UserAssignment[]
-  courses      UserCourse[]
-  lectures     UserLecture[]
-  reservations UserReservation[]
-  friend1      Friend[]          @relation("user1")
-  friend2      Friend[]          @relation("user2")
+  department       Department?        @relation(fields: [departmentName], references: [name])
+  assignments      UserAssignment[]
+  courses          UserCourse[]
+  lectures         UserLecture[]
+  reservations     UserReservation[]
+  friend1          Friend[]           @relation("user1")
+  friend2          Friend[]           @relation("user2")
+  GodokReservation GodokReservation[]
+  GodokStatus      GodokStatus[]
 
   @@map("user")
 }
@@ -219,6 +221,67 @@ model Friend {
 
   @@unique([requestUserId, receiveUserId])
   @@map("friend")
+}
+
+model BookCategory {
+  id          Int    @id
+  name        String
+  targetCount Int    @map("target_count")
+  Book        Book[]
+
+  @@map("book_category")
+}
+
+model Book {
+  id             Int       @id
+  title          String
+  bookCategoryId Int       @map("book_category_id")
+  createdAt      DateTime  @default(now()) @map("created_at")
+  deletedAt      DateTime? @map("deleted_at")
+
+  bookCategory     BookCategory       @relation(fields: [bookCategoryId], references: [id])
+  GodokReservation GodokReservation[]
+
+  @@map("book")
+}
+
+model GodokSlot {
+  id             String    @id @default(uuid())
+  slotId         String    @unique @map("slot_id")
+  startsAt       DateTime  @map("starts_at")
+  availableSeats Int       @map("available_seats")
+  totalSeats     Int       @map("total_seats")
+  createdAt      DateTime  @default(now()) @map("created_at")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
+  deletedAt      DateTime? @map("deleted_at")
+
+  @@map("godok_slot")
+}
+
+model GodokReservation {
+  id            String    @id @default(uuid())
+  reservationId String    @unique @map("reservation_id")
+  studentId     String    @map("student_id")
+  bookId        Int       @map("book_id")
+  startsAt      DateTime  @map("starts_at")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  deletedAt     DateTime? @map("deleted_at")
+
+  user User @relation(fields: [studentId], references: [studentId])
+  book Book @relation(fields: [bookId], references: [id])
+
+  @@map("godok_revervation")
+}
+
+model GodokStatus {
+  id        String  @id @default(uuid())
+  status    Boolean
+  studentId String  @unique @map("student_id")
+  counts    Int[]   @map("counts")
+
+  user User @relation(fields: [studentId], references: [studentId])
+
+  @@map("godok_status")
 }
 
 model Restaurant {
