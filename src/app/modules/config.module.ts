@@ -29,5 +29,6 @@ export const configModule = ConfigModule.forRoot({
     GET_USER_GODOK_RESERVATIONS_URL: Joi.string().required(),
     CANCEL_GODOK_RESERVATION_URL: Joi.string().required(),
     GET_USER_GODOK_STATUS_URL: Joi.string().required(),
+    GET_COURSE_ATTENDANCE_URL: Joi.string().required(),
   }),
 });
