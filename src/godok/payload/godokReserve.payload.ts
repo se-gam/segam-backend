@@ -14,7 +14,7 @@ export class GodokReservePayload extends PasswordPayload {
 
   @ApiProperty({
     description: '영역 코드',
-    example: 3000,
+    example: 1000,
     type: Number,
   })
   @IsInt()
@@ -23,7 +23,7 @@ export class GodokReservePayload extends PasswordPayload {
 
   @ApiProperty({
     description: '책 코드',
-    example: 3003,
+    example: 1002,
     type: Number,
   })
   @IsInt()
