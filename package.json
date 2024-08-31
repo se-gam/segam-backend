@@ -22,7 +22,7 @@
     "db:save:local": "dotenv -e .local.env -- yarn prisma migrate dev",
     "db:save:dev": "dotenv -e .dev.env -- yarn prisma migrate dev",
     "deploy:local": "dotenv -e .local.env -- node dist/main.js",
-    "deploy:dev": "dotenv -e .dev.env -- node dist/src/main.js",
+    "deploy:dev": "dotenv -e .dev.env -- node dist/main.js",
     "deploy:prod": "dotenv -e .prod.env -- node dist/main.js",
     "seed:studyroom:local": "dotenv -e .local.env -- npx ts-node ./prisma/seeds/insert-studyrooms.ts",
     "seed:studyroom:dev": "dotenv -e .dev.env -- npx ts-node ./prisma/seeds/insert-studyrooms.ts",
