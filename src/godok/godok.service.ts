@@ -68,20 +68,27 @@ export class GodokService {
     const rawGodokSlots = JSON.parse(res.data) as RawGodokSlot;
 
     for (const slot of rawGodokSlots) {
-      await this.prismaService.godokSlot.upsert({
-        where: {
-          slotId: slot.data_id,
-        },
-        create: {
-          slotId: slot.data_id,
-          startsAt: new Date(slot.date_time),
-          availableSeats: slot.available_seats,
-          totalSeats: slot.total_seats,
-        },
-        update: {
-          availableSeats: slot.available_seats,
-        },
-      });
+      const startsAt = new Date(slot.date_time);
+      try {
+        await this.prismaService.godokSlot.upsert({
+          where: {
+            startsAt,
+          },
+          create: {
+            slotId: slot.data_id,
+            startsAt,
+            availableSeats: slot.available_seats,
+            totalSeats: slot.total_seats,
+          },
+          update: {
+            slotId: slot.data_id,
+            availableSeats: slot.available_seats,
+            totalSeats: slot.total_seats,
+          },
+        });
+      } catch (error) {
+        console.error(error);
+      }
     }
   }
 

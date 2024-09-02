@@ -247,8 +247,8 @@ model Book {
 
 model GodokSlot {
   id             String    @id @default(uuid())
-  slotId         String    @unique @map("slot_id")
-  startsAt       DateTime  @map("starts_at")
+  slotId         String?   @map("slot_id")
+  startsAt       DateTime  @unique @map("starts_at")
   availableSeats Int       @map("available_seats")
   totalSeats     Int       @map("total_seats")
   createdAt      DateTime  @default(now()) @map("created_at")
