@@ -8,5 +8,6 @@ export type Studyroom = {
   maxUsers: number;
   isCinema: boolean;
   operatingHours: string;
+  tags: string[];
   slots: StudyroomSlot[];
 };
