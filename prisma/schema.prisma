@@ -144,6 +144,7 @@ model Studyroom {
   createdAt      DateTime               @default(now()) @map("created_at")
   updatedAt      DateTime               @updatedAt @map("updated_at")
   deletedAt      DateTime?              @map("deleted_at")
+  tags           String[]               @map("tags")
   slots          StudyroomSlot[]
   reservations   StudyroomReservation[]
 
