@@ -45,6 +45,12 @@ export class StudyroomDto {
   operatingHours!: string;
 
   @ApiProperty({
+    description: '스터디룸 태그',
+    type: [String],
+  })
+  tags!: string[];
+
+  @ApiProperty({
     description: '스터디룸 slot 정보',
     type: [StudyroomSlotDto],
   })
@@ -59,6 +65,7 @@ export class StudyroomDto {
       maxUsers: studyroom.maxUsers,
       isCinema: studyroom.isCinema,
       operatingHours: studyroom.operatingHours,
+      tags: studyroom.tags,
       slots: studyroom.slots.map((slot) => {
         return StudyroomSlotDto.from(slot);
       }),
