@@ -1,0 +1,24 @@
+model User {
+    studentId      String    @id @map("student_id")
+    name           String
+    sejongPid      String    @map("sejong_pid")
+    departmentName String?   @map("department_name")
+    os             OS?       @map("os")
+    pushToken      String?   @map("push_token")
+    comment        String?   @map("comment")
+    createdAt      DateTime  @default(now()) @map("created_at")
+    updatedAt      DateTime  @updatedAt @map("updated_at")
+    deletedAt      DateTime? @map("deleted_at")
+
+    department       Department?        @relation(fields: [departmentName], references: [name])
+    assignments      UserAssignment[]
+    courses          UserCourse[]
+    lectures         UserLecture[]
+    reservations     UserReservation[]
+    friend1          Friend[]           @relation("user1")
+    friend2          Friend[]           @relation("user2")
+    GodokReservation GodokReservation[]
+    GodokStatus      GodokStatus[]
+
+    @@map("user")
+}

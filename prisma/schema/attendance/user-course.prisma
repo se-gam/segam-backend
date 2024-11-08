@@ -1,0 +1,14 @@
+model UserCourse {
+    id          Int      @id @default(autoincrement())
+    studentId   String   @map("student_id")
+    courseId    String   @map("course_id")
+    courseOldId String?  @map("course_old_id")
+    createdAt   DateTime @default(now()) @map("created_at")
+    updatedAt   DateTime @updatedAt @map("updated_at")
+
+    user   User    @relation(fields: [studentId], references: [studentId])
+    course Course? @relation(fields: [courseId], references: [id], onDelete: Restrict)
+
+    @@unique([studentId, courseId])
+    @@map("user_course")
+}

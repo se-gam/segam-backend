@@ -1,0 +1,12 @@
+model UserAssignment {
+    id           Int        @id @default(autoincrement())
+    studentId    String     @map("student_id")
+    assignmentId Int        @map("assignment_id")
+    isDone       Boolean    @map("is_done")
+    createdAt    DateTime   @default(now()) @map("created_at")
+    user         User       @relation(fields: [studentId], references: [studentId])
+    assignment   Assignment @relation(fields: [assignmentId], references: [id])
+
+    @@unique([studentId, assignmentId])
+    @@map("user_assignment")
+}

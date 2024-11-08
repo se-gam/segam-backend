@@ -1,0 +1,16 @@
+model StudyroomReservation {
+    id            Int       @id
+    pid           Int
+    studyroomId   Int       @map("studyroom_id")
+    reserveReason String
+    cancelReason  String?
+    createdAt     DateTime  @default(now()) @map("created_at")
+    updatedAt     DateTime  @updatedAt @map("updated_at")
+    deletedAt     DateTime?
+
+    studyroom Studyroom         @relation(fields: [studyroomId], references: [id])
+    slots     ReservationSlot[]
+    users     UserReservation[]
+
+    @@map("studyroom_reservation")
+}

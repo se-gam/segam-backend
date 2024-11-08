@@ -1,0 +1,12 @@
+model Book {
+    id             Int       @id
+    title          String
+    bookCategoryId Int       @map("book_category_id")
+    createdAt      DateTime  @default(now()) @map("created_at")
+    deletedAt      DateTime? @map("deleted_at")
+
+    bookCategory     BookCategory       @relation(fields: [bookCategoryId], references: [id])
+    GodokReservation GodokReservation[]
+
+    @@map("book")
+}

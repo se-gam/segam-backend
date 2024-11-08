@@ -1,0 +1,14 @@
+model GodokReservation {
+    id            String    @id @default(uuid())
+    reservationId String    @unique @map("reservation_id")
+    studentId     String    @map("student_id")
+    bookId        Int       @map("book_id")
+    startsAt      DateTime  @map("starts_at")
+    createdAt     DateTime  @default(now()) @map("created_at")
+    deletedAt     DateTime? @map("deleted_at")
+
+    user User @relation(fields: [studentId], references: [studentId])
+    book Book @relation(fields: [bookId], references: [id])
+
+    @@map("godok_revervation")
+}

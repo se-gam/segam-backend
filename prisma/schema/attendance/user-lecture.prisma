@@ -1,0 +1,13 @@
+model UserLecture {
+    id        Int      @id @default(autoincrement())
+    studentId String   @map("student_id")
+    lectureId Int      @map("lecture_id")
+    isDone    Boolean  @map("is_done")
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
+    lecture   Lecture  @relation(fields: [lectureId], references: [id])
+    user      User     @relation(fields: [studentId], references: [studentId])
+
+    @@unique([studentId, lectureId])
+    @@map("user_lecture")
+}

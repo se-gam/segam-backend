@@ -1,0 +1,6 @@
+model Restaurant {
+    id   Int    @id @default(autoincrement())
+    name String
+
+    @@map("restaurant")
+}

@@ -1,0 +1,6 @@
+enum OS {
+    IOS
+    ANDROID
+
+    @@map("os")
+}
