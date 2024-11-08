@@ -7,6 +7,7 @@ import { ConfigService } from '@nestjs/config';
 import { Cron } from '@nestjs/schedule';
 import { PasswordPayload } from 'src/auth/payload/password.payload';
 import { AxiosService } from 'src/common/services/axios.service';
+import { DiscordService } from 'src/common/services/discord.service';
 import { PrismaService } from 'src/common/services/prisma.service';
 import { UserRepository } from 'src/user/user.repository';
 import { UserService } from 'src/user/user.service';
@@ -35,6 +36,7 @@ export class StudyroomService {
     private readonly configService: ConfigService,
     private readonly userService: UserService,
     private readonly userRepository: UserRepository,
+    private readonly discordService: DiscordService,
   ) {}
 
   private getSlotTime(time: string) {
@@ -58,16 +60,16 @@ export class StudyroomService {
     const roomId = this.studyroomIds[this.currentIndex];
     this.currentIndex = (this.currentIndex + 1) % this.studyroomIds.length;
 
-    console.log(roomId, this.currentIndex);
+    // console.log(roomId, this.currentIndex);
 
-    console.log('crawler start @', new Date());
+    // console.log('crawler start @', new Date());
     const res = await this.axiosService.post(
       this.configService.get<string>('CRAWLER_API_ROOT'),
       JSON.stringify({ room_id: roomId }),
       { headers: { 'Content-Type': 'application/json' } },
     );
 
-    console.log('crawler end @', new Date());
+    // console.log('crawler end @', new Date());
     const rawStudyroom = JSON.parse(res.data) as RawStudyroom;
 
     for (const slot of rawStudyroom.slots) {
@@ -89,6 +91,23 @@ export class StudyroomService {
           isClosed: slot.is_closed,
         },
       });
+    }
+  }
+
+  @Cron('*/1 * * * *')
+  async healthCheck() {
+    const recentStudyroomSlot =
+      await this.prismaService.studyroomSlot.findFirst({
+        orderBy: {
+          updatedAt: 'desc',
+        },
+      });
+
+    // 3분 이상 슬롯이 업데이트가 되지 않으면 에러 로그 발생
+    if (recentStudyroomSlot.updatedAt.getTime() + 1000 * 60 * 3 < Date.now()) {
+      await this.discordService.sendInternalErrorLog(
+        new Error('Studyroom Slot Crawler is not working'),
+      );
     }
   }
 

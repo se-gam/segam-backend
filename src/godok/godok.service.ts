@@ -10,6 +10,7 @@ import { Cron } from '@nestjs/schedule';
 import * as _ from 'lodash';
 import { PasswordPayload } from 'src/auth/payload/password.payload';
 import { AxiosService } from 'src/common/services/axios.service';
+import { DiscordService } from 'src/common/services/discord.service';
 import { PrismaService } from 'src/common/services/prisma.service';
 import { ResultResponse } from 'src/studyroom/types/resultResponse.type';
 import { UserRepository } from 'src/user/user.repository';
@@ -55,16 +56,17 @@ export class GodokService {
     private readonly axiosService: AxiosService,
     private readonly configService: ConfigService,
     private readonly prismaService: PrismaService,
+    private readonly discordService: DiscordService,
   ) {}
 
   @Cron('*/7 * * * * *')
   async handleCron() {
-    console.log('[godok] crawler start @', new Date());
+    // console.log('[godok] crawler start @', new Date());
     const res = await this.axiosService.get(
       this.configService.get<string>('GET_GODOK_CALENDAR_URL'),
     );
 
-    console.log('[godok] crawler end @', new Date());
+    // console.log('[godok] crawler end @', new Date());
     const rawGodokSlots = JSON.parse(res.data) as RawGodokSlot;
 
     for (const slot of rawGodokSlots) {
@@ -89,6 +91,22 @@ export class GodokService {
       } catch (error) {
         console.error(error);
       }
+    }
+  }
+
+  @Cron('*/1 * * * *')
+  async healthCheck() {
+    const recentGodokSlot = await this.prismaService.godokSlot.findFirst({
+      orderBy: {
+        updatedAt: 'desc',
+      },
+    });
+
+    // 3분 이상 슬롯이  업데이트가 되지 않으면 에러 로그 발생
+    if (recentGodokSlot.updatedAt.getTime() + 1000 * 60 * 3 < Date.now()) {
+      this.discordService.sendErrorLog(
+        new Error('Godok Slot Crawler is not working'),
+      );
     }
   }
 
