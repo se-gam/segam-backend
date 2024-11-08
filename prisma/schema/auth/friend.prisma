@@ -1,0 +1,13 @@
+model Friend {
+    id            Int       @id @default(autoincrement())
+    createdAt     DateTime  @default(now()) @map("created_at")
+    updatedAt     DateTime  @updatedAt @map("updated_at")
+    deletedAt     DateTime? @map("deleted_at")
+    receiveUserId String    @map("receive_user_id")
+    requestUserId String    @map("request_user_id")
+    receiveUser   User      @relation("user2", fields: [receiveUserId], references: [studentId])
+    requestUser   User      @relation("user1", fields: [requestUserId], references: [studentId])
+
+    @@unique([requestUserId, receiveUserId])
+    @@map("friend")
+}

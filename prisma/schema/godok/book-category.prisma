@@ -1,0 +1,8 @@
+model BookCategory {
+    id          Int    @id
+    name        String
+    targetCount Int    @map("target_count")
+    Book        Book[]
+
+    @@map("book_category")
+}
