@@ -5,7 +5,6 @@ model User {
     departmentName String?   @map("department_name")
     os             OS?       @map("os")
     pushToken      String?   @map("push_token")
-    comment        String?   @map("comment")
     createdAt      DateTime  @default(now()) @map("created_at")
     updatedAt      DateTime  @updatedAt @map("updated_at")
     deletedAt      DateTime? @map("deleted_at")
