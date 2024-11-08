@@ -1,0 +1,8 @@
+model Department {
+    name      String    @id
+    createdAt DateTime  @default(now()) @map("created_at")
+    deletedAt DateTime? @map("deleted_at")
+    users     User[]
+
+    @@map("department")
+}

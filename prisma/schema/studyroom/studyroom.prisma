@@ -1,0 +1,17 @@
+model Studyroom {
+    id             Int                    @id @default(autoincrement())
+    name           String
+    location       String
+    operatingHours String                 @map("operating_hours")
+    minUsers       Int                    @map("min_users")
+    maxUsers       Int                    @map("max_users")
+    isCinema       Boolean                @map("is_cinema")
+    createdAt      DateTime               @default(now()) @map("created_at")
+    updatedAt      DateTime               @updatedAt @map("updated_at")
+    deletedAt      DateTime?              @map("deleted_at")
+    tags           String[]               @map("tags")
+    slots          StudyroomSlot[]
+    reservations   StudyroomReservation[]
+
+    @@map("studyroom")
+}

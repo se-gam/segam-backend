@@ -1,0 +1,15 @@
+model Assignment {
+    id          Int              @id
+    courseId    String           @map("course_id")
+    courseOldId String?          @map("course_old_id")
+    name        String
+    week        Int
+    endsAt      DateTime?        @map("ends_at")
+    createdAt   DateTime         @default(now()) @map("created_at")
+    updatedAt   DateTime         @updatedAt @map("updated_at")
+    deletedAt   DateTime?        @map("deleted_at")
+    course      Course?          @relation(fields: [courseId], references: [id], onDelete: Restrict)
+    users       UserAssignment[]
+
+    @@map("assignment")
+}

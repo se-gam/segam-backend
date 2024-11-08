@@ -1,0 +1,10 @@
+model GodokStatus {
+    id        String  @id @default(uuid())
+    status    Boolean
+    studentId String  @unique @map("student_id")
+    counts    Int[]   @map("counts")
+
+    user User @relation(fields: [studentId], references: [studentId])
+
+    @@map("godok_status")
+}

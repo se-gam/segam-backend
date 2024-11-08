@@ -35,7 +35,7 @@ export class DiscordService {
     this.newUserDiscordHook.send(embed);
   }
 
-  async sendInternalErrorLog(err: Error, request: Request) {
+  async sendInternalErrorLog(err: Error, request?: Request) {
     if (this.configService.get('NODE_ENV') === 'local') return;
     const embed = new MessageBuilder()
       .setTitle('🔥🔥🔥🔥🔥500 에러발생🔥🔥🔥🔥🔥')
@@ -44,8 +44,8 @@ export class DiscordService {
         `에러발생: ${err.name}\n
         에러메시지: ${err.message}\n
         에러스택: ${err.stack}\n
-        요청URL: ${request.url}\n
-        요청IP: ${request.ip}\n`,
+        요청URL: ${request?.url}\n
+        요청IP: ${request?.ip}\n`,
       )
       .setTimestamp();
     this.internalErrorDiscordHook.setUsername('세감 맛없졍');
