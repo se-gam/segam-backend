@@ -58,7 +58,9 @@ export class DiscordService {
     const embed = new MessageBuilder()
       .setTitle('탈퇴알림')
       .setColor(parseInt('0x626FE5', 16))
-      .setDescription(`${id} ${name}님이 탈퇴했습니다.`)
+      .setDescription(
+        `${id.slice(0, 2)}학번 ${name.slice(0, 1)}OO님이 탈퇴했습니다.`,
+      )
       .setTimestamp();
     this.newUserDiscordHook.setUsername('세감 돌아와');
     this.newUserDiscordHook.send(embed);
