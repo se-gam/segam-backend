@@ -30,7 +30,7 @@ jobs:
 
       - name: Create .env file
         run: |
-          jq -r 'to_entries|map("\(.key)=\(.value|tostring)")|.[]' <<< "$SECRETS_CONTEXT" > .prod.env
+          jq -r 'to_entries|map("\(.key)=\(.value|tostring)")|.[]' <<< "$SECRETS_CONTEXT" > .prod2025.env
         env:
           SECRETS_CONTEXT: ${{ toJson(secrets) }}
 
@@ -43,7 +43,7 @@ jobs:
         run: |
           # Build a docker container and
           # push it to ECR
-          docker build -f prod.dockerfile -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker build -f prod2025.dockerfile -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 
