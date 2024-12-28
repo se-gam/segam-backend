@@ -50,8 +50,8 @@ jobs:
       - name: Deploy to EB
         uses: einaregilsson/beanstalk-deploy@v14
         with:
-          aws_access_key: ${{ secrets.PROD_AWS_ACCESS_KEY }}
-          aws_secret_key: ${{ secrets.PROD_AWS_SECRET_KEY }}
+          aws_access_key: ${{ secrets.PROD_2025_AWS_ACCESS_KEY }}
+          aws_secret_key: ${{ secrets.PROD_2025_AWS_SECRET_KEY }}
           application_name: segam-2025
           environment_name: Segam-2025-env
           region: ap-northeast-2
