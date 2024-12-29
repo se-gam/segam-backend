@@ -31,7 +31,7 @@ export class DiscordService {
       .setColor(parseInt('0x626FE5', 16))
       .setDescription(message)
       .setTimestamp();
-    this.newUserDiscordHook.setUsername('세감 마싯졍');
+    // this.newUserDiscordHook.setUsername('세감 마싯졍');
     this.newUserDiscordHook.send(embed);
   }
 
@@ -48,7 +48,7 @@ export class DiscordService {
         요청IP: ${request?.ip}\n`,
       )
       .setTimestamp();
-    this.internalErrorDiscordHook.setUsername('세감 맛없졍');
+    // this.internalErrorDiscordHook.setUsername('세감 맛없졍');
     this.internalErrorDiscordHook.send(embed);
   }
 
@@ -62,7 +62,7 @@ export class DiscordService {
         `${id.slice(0, 2)}학번 ${name.slice(0, 1)}OO님이 탈퇴했습니다.`,
       )
       .setTimestamp();
-    this.newUserDiscordHook.setUsername('세감 돌아와');
+    // this.newUserDiscordHook.setUsername('세감 돌아와');
     this.newUserDiscordHook.send(embed);
   }
 
@@ -82,7 +82,7 @@ export class DiscordService {
         학과: ${user.departmentName}\n`,
       )
       .setTimestamp();
-    this.internalErrorDiscordHook.setUsername('세감 맛없졍');
+    // this.internalErrorDiscordHook.setUsername('세감 맛없졍');
     this.internalErrorDiscordHook.send(embed);
   }
 
@@ -97,7 +97,7 @@ export class DiscordService {
         에러스택: ${err.stack}`,
       )
       .setTimestamp();
-    this.errorDiscordHook.setUsername('세감지켜줘');
+    // this.errorDiscordHook.setUsername('세감지켜줘');
     this.errorDiscordHook.send(embed);
   }
 }
