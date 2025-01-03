@@ -45,6 +45,10 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('delicious-segam-docs', app, document);
 
-  await app.listen(3000);
+  if (process.env.NODE_ENV === 'dev') {
+    await app.listen(3000, '0.0.0.0');
+  } else {
+    await app.listen(3000);
+  }
 }
 bootstrap();
