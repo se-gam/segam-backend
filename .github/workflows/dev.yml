@@ -1,4 +1,4 @@
-name: Deploy to Amazon Elastic Beanstalk (Prod 2025)
+name: Deploy to Dev Server
 
 on:
   push:
