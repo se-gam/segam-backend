@@ -41,6 +41,6 @@ jobs:
             cd /home/${{ secrets.DEV_SERVER_USER }}/segam-backend
             git pull origin dev
             yarn install
-            yarn build
             yarn db:save:dev
+            yarn build
             dotenv -e .dev.env -- pm2 restart main
