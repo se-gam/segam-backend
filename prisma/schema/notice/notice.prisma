@@ -1,5 +1,5 @@
 model Notice {
-    id        Int       @id
+    id        Int       @id @default(autoincrement())
     title     String
     content   String
     isPopup   Boolean   @default(false) @map("is_popup")
