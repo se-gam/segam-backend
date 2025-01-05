@@ -41,6 +41,16 @@ export class NoticeController {
 
   @Version('1')
   @ApiOperation({
+    summary: '팝업 공지사항 등록 API',
+    description: '팝업 공지사항을 등록합니다.',
+  })
+  @Post('popup/:id')
+  async createPopupNotice(@Param('id') id: number): Promise<void> {
+    return this.noticeService.createPopupNotice(id);
+  }
+
+  @Version('1')
+  @ApiOperation({
     summary: '공지사항 생성 API',
     description: '공지사항을 생성합니다.',
   })

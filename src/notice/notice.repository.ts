@@ -32,7 +32,7 @@ export class NoticeRepository {
 
   async getNoticeById(id: number): Promise<Notice | null> {
     return this.prisma.notice.findUnique({
-      where: { id },
+      where: { id, deletedAt: null },
     });
   }
 
@@ -41,7 +41,6 @@ export class NoticeRepository {
       data: {
         title: payload.title,
         content: payload.content,
-        isPopup: payload.isPopup,
       },
     });
   }
@@ -55,7 +54,6 @@ export class NoticeRepository {
       data: {
         title: payload.title,
         content: payload.content,
-        isPopup: payload.isPopup,
       },
     });
   }
@@ -64,6 +62,18 @@ export class NoticeRepository {
     await this.prisma.notice.update({
       where: { id },
       data: { deletedAt: new Date() },
+    });
+  }
+
+  async createPopupNotice(id: number): Promise<void> {
+    await this.prisma.notice.updateMany({
+      where: { isPopup: true },
+      data: { isPopup: false },
+    });
+
+    await this.prisma.notice.update({
+      where: { id },
+      data: { isPopup: true },
     });
   }
 }

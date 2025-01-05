@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsString } from 'class-validator';
+import { IsString } from 'class-validator';
 
 export class CreateUpdateNoticePayload {
   @ApiProperty({
@@ -15,12 +15,4 @@ export class CreateUpdateNoticePayload {
   })
   @IsString()
   content!: string;
-
-  @ApiProperty({
-    description: '공지사항 팝업 여부',
-    example: false,
-    type: Boolean,
-  })
-  @IsBoolean()
-  isPopup!: boolean;
 }

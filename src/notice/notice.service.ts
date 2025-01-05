@@ -43,4 +43,12 @@ export class NoticeService {
 
     return this.noticeRepository.deleteNotice(id);
   }
+
+  async createPopupNotice(id: number): Promise<void> {
+    const notice = await this.noticeRepository.getNoticeById(id);
+
+    if (!notice) throw new NotFoundException('공지사항을 찾을 수 없습니다.');
+
+    return this.noticeRepository.createPopupNotice(id);
+  }
 }
