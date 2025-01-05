@@ -42,4 +42,5 @@ jobs:
             git pull origin dev
             yarn install
             yarn build
+            yarn db:save:dev
             dotenv -e .dev.env -- pm2 restart main
