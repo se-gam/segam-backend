@@ -61,6 +61,7 @@ export class GodokService {
 
   @Cron('*/7 * * * * *')
   async handleCron() {
+    return;
     // console.log('[godok] crawler start @', new Date());
     const res = await this.axiosService.get(
       this.configService.get<string>('GET_GODOK_CALENDAR_URL'),
@@ -96,6 +97,7 @@ export class GodokService {
 
   @Cron('*/1 * * * *')
   async healthCheck() {
+    return;
     const recentGodokSlot = await this.prismaService.godokSlot.findFirst({
       orderBy: {
         updatedAt: 'desc',
