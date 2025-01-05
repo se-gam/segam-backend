@@ -13,6 +13,14 @@ export class NoticeService {
     return notices.map(NoticeDto.from);
   }
 
+  async getPopupNotice(): Promise<NoticeDto> {
+    const notice = await this.noticeRepository.getPopupNotice();
+
+    if (!notice) throw new NotFoundException('팝업 공지사항이 없습니다.');
+
+    return NoticeDto.from(notice);
+  }
+
   async createNotice(payload: CreateUpdateNoticePayload): Promise<void> {
     return this.noticeRepository.createNotice(payload);
   }
@@ -23,10 +31,16 @@ export class NoticeService {
   ): Promise<void> {
     const notice = await this.noticeRepository.getNoticeById(id);
 
-    if (!notice) {
-      throw new NotFoundException('공지사항을 찾을 수 없습니다.');
-    }
+    if (!notice) throw new NotFoundException('공지사항을 찾을 수 없습니다.');
 
     return this.noticeRepository.updateNotice(id, payload);
+  }
+
+  async deleteNotice(id: number): Promise<void> {
+    const notice = await this.noticeRepository.getNoticeById(id);
+
+    if (!notice) throw new NotFoundException('공지사항을 찾을 수 없습니다.');
+
+    return this.noticeRepository.deleteNotice(id);
   }
 }

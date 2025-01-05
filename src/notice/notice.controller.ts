@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -30,6 +31,16 @@ export class NoticeController {
 
   @Version('1')
   @ApiOperation({
+    summary: '팝업 공지사항 조회 API',
+    description: '팝업 공지사항을 조회합니다.',
+  })
+  @Get('popup')
+  async getPopupNotice(): Promise<NoticeDto> {
+    return this.noticeService.getPopupNotice();
+  }
+
+  @Version('1')
+  @ApiOperation({
     summary: '공지사항 생성 API',
     description: '공지사항을 생성합니다.',
   })
@@ -51,5 +62,15 @@ export class NoticeController {
     @Body() payload: CreateUpdateNoticePayload,
   ): Promise<void> {
     return this.noticeService.updateNotice(id, payload);
+  }
+
+  @Version('1')
+  @ApiOperation({
+    summary: '공지사항 삭제 API',
+    description: '공지사항을 삭제합니다.',
+  })
+  @Delete(':id')
+  async deleteNotice(@Param('id') id: number): Promise<void> {
+    return this.noticeService.deleteNotice(id);
   }
 }

@@ -8,7 +8,26 @@ export class NoticeRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   async getNotice(): Promise<Notice[]> {
-    return this.prisma.notice.findMany();
+    return this.prisma.notice.findMany({
+      where: {
+        deletedAt: null,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+  }
+
+  async getPopupNotice(): Promise<Notice | null> {
+    return this.prisma.notice.findFirst({
+      where: {
+        isPopup: true,
+        deletedAt: null,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
   }
 
   async getNoticeById(id: number): Promise<Notice | null> {
@@ -38,6 +57,13 @@ export class NoticeRepository {
         content: payload.content,
         isPopup: payload.isPopup,
       },
+    });
+  }
+
+  async deleteNotice(id: number): Promise<void> {
+    await this.prisma.notice.update({
+      where: { id },
+      data: { deletedAt: new Date() },
     });
   }
 }
