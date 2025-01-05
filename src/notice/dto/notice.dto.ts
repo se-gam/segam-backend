@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Notice } from '@prisma/client';
 
 export class NoticeDto {
   @ApiProperty({
@@ -40,4 +41,15 @@ export class NoticeDto {
     type: Date,
   })
   deletedAt?: Date;
+
+  static from(notice: Notice): NoticeDto {
+    return {
+      id: notice.id,
+      title: notice.title,
+      content: notice.content,
+      isPopup: notice.isPopup,
+      createdAt: notice.createdAt,
+      deletedAt: notice.deletedAt,
+    };
+  }
 }
