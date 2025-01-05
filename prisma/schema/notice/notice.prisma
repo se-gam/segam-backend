@@ -1,0 +1,10 @@
+model Notice {
+    id        Int       @id @default(autoincrement())
+    title     String
+    content   String
+    isPopup   Boolean   @default(false) @map("is_popup")
+    createdAt DateTime  @default(now()) @map("created_at")
+    deletedAt DateTime? @map("deleted_at")
+
+    @@map("notice")
+}
