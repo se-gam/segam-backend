@@ -76,4 +76,15 @@ export class NoticeRepository {
       data: { isPopup: true },
     });
   }
+
+  async getNoticeByPagination(
+    skip: number,
+    take: number,
+  ): Promise<Partial<Notice>[]> {
+    return this.prisma.notice.findMany({
+      skip: skip,
+      take: take,
+      select: { title: true, createdAt: true },
+    });
+  }
 }
