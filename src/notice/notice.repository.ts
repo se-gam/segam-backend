@@ -2,13 +2,19 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/common/services/prisma.service';
 import { CreateUpdateNoticePayload } from './payload/create-update-notice.payload';
 import { Notice } from './types/notice.type';
+import { NoticePreviewDto } from './dto/notice-preview.dto';
 
 @Injectable()
 export class NoticeRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async getNotice(): Promise<Notice[]> {
+  async getNotice(): Promise<NoticePreviewDto[]> {
     return this.prisma.notice.findMany({
+      select: {
+        id: true,
+        title: true,
+        createdAt: true,
+      },
       where: {
         deletedAt: null,
       },

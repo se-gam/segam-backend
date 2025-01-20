@@ -2,7 +2,6 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { NoticeDto } from './dto/notice.dto';
 import { NoticeRepository } from './notice.repository';
 import { CreateUpdateNoticePayload } from './payload/create-update-notice.payload';
-import { PaginationPayload } from './payload/pagination.payload';
 
 @Injectable()
 export class NoticeService {
@@ -61,14 +60,14 @@ export class NoticeService {
     return this.noticeRepository.createPopupNotice(id);
   }
 
-  async getNoticeByPagination(
-    queryData: PaginationPayload,
-  ): Promise<Partial<NoticeDto>[]> {
-    const notice = await this.noticeRepository.getNoticeByPagination(
-      queryData.skip,
-      queryData.take,
-    );
+  // async getNoticeByPagination(
+  //   queryData: PaginationPayload,
+  // ): Promise<Partial<NoticeDto>[]> {
+  //   const notice = await this.noticeRepository.getNoticeByPagination(
+  //     queryData.skip,
+  //     queryData.take,
+  //   );
 
-    return notice;
-  }
+  //   return notice;
+  // }
 }
