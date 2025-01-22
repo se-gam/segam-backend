@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Post,
   Put,
   Version,
@@ -97,7 +98,9 @@ export class NoticeController {
     type: NoticeDto,
   })
   @Get('/:id')
-  async getNoticeById(@Param('id') id: number): Promise<NoticeDto> {
+  async getNoticeById(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<NoticeDto> {
     return this.noticeService.getNoticeById(id);
   }
 }
