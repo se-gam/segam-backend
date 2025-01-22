@@ -80,11 +80,24 @@ export class NoticeController {
     description: '공지사항을 조회합니다.',
   })
   @ApiOkResponse({
-    description: '전체 공지사항의 id, title, createdAt 필드를 조회합니다다.',
+    description: '전체 공지사항의 id, title, createdAt 필드를 조회합니다.',
     type: [NoticePreviewDto],
   })
   @Get()
   async getNotice(): Promise<NoticePreviewDto[]> {
     return this.noticeService.getNotice();
+  }
+
+  @Version('1')
+  @ApiOperation({
+    summary: '공지사항 단일조회 api',
+    description: '특정 공지사항을 조회합니다.',
+  })
+  @ApiOkResponse({
+    type: NoticeDto,
+  })
+  @Get('/:id')
+  async getNoticeById(@Param('id') id: number): Promise<NoticeDto> {
+    return this.noticeService.getNoticeById(id);
   }
 }
