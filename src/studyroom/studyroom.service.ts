@@ -52,7 +52,9 @@ export class StudyroomService {
       return;
     }
 
-    if (!this.studyroomIds.length) {
+    const now = new Date();
+
+    if (now.getMinutes() === 0) {
       console.log('fetching studyroom ids');
       this.studyroomIds = await this.studyroomRepository.getAllStudyroomIds();
     }
