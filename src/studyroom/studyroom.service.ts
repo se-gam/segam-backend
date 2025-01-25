@@ -100,6 +100,11 @@ export class StudyroomService {
   async healthCheck() {
     const recentStudyroomSlot =
       await this.prismaService.studyroomSlot.findFirst({
+        where: {
+          studyroom: {
+            isActive: true,
+          },
+        },
         orderBy: {
           updatedAt: 'desc',
         },
