@@ -20,6 +20,7 @@ export class StudyroomRepository {
   async getAllStudyroomIds(): Promise<number[]> {
     const studyrooms = await this.prismaService.studyroom.findMany({
       where: {
+        isActive: true,
         deletedAt: null,
       },
       select: {
@@ -32,6 +33,7 @@ export class StudyroomRepository {
   async getAllStudyrooms(query: StudyroomQuery): Promise<Studyroom[]> {
     const studyrooms = await this.prismaService.studyroom.findMany({
       where: {
+        isActive: true,
         deletedAt: null,
       },
       include: {
