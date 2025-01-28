@@ -57,6 +57,7 @@ export class StudyroomService {
     if (this.studyroomIds.length === 0 || now.getMinutes() === 0) {
       console.log('fetching studyroom ids');
       this.studyroomIds = await this.studyroomRepository.getAllStudyroomIds();
+      this.currentIndex = 0;
     }
 
     const roomId = this.studyroomIds[this.currentIndex];
