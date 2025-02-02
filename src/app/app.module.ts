@@ -3,13 +3,14 @@ import { AttendanceModule } from 'src/attendance/attendance.module';
 import { AuthModule } from 'src/auth/auth.module';
 import { CommonModule } from 'src/common/common.module';
 import { LoggerMiddleware } from 'src/common/middlewares/logger.middleware';
+import { GodokModule } from 'src/godok/godok.module';
+import { NoticeModule } from 'src/notice/notice.module';
 import { RestaurantModule } from 'src/restaurant/restaurant.module';
 import { StudyroomModule } from 'src/studyroom/studyroom.module';
 import { UserModule } from 'src/user/user.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { configModule } from './modules/config.module';
-import { GodokModule } from 'src/godok/godok.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { GodokModule } from 'src/godok/godok.module';
     UserModule,
     RestaurantModule,
     GodokModule,
+    NoticeModule,
   ],
   controllers: [AppController],
   providers: [AppService],
