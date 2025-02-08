@@ -8,6 +8,7 @@ import { AuthRepository } from './auth.repository';
 import { AuthService } from './auth.service';
 import { JwtStrategy } from './guard/jwt.strategy';
 import { TokenService } from './token.service';
+import { AdminApiStrategy } from './guard/admin.strategy';
 
 @Module({
   imports: [
@@ -21,13 +22,14 @@ import { TokenService } from './token.service';
       }),
     }),
   ],
-  exports: [],
+  exports: [AdminApiStrategy],
   controllers: [AuthController],
   providers: [
     AuthService,
     TokenService,
     ConfigService,
     JwtStrategy,
+    AdminApiStrategy,
     AuthRepository,
     EcampusService,
     AttendanceRepository,

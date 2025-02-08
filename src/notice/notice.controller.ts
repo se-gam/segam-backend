@@ -7,13 +7,20 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  UseGuards,
   Version,
 } from '@nestjs/common';
-import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiHeader,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
 import { NoticeDto } from './dto/notice.dto';
 import { NoticeService } from './notice.service';
 import { CreateUpdateNoticePayload } from './payload/create-update-notice.payload';
 import { NoticePreviewDto } from './dto/notice-preview.dto';
+import { AdminApiGuard } from 'src/auth/guard/admin.guard';
 
 @ApiTags('공지사항 API')
 @Controller('notice')
@@ -35,6 +42,12 @@ export class NoticeController {
     summary: '팝업 공지사항 등록 API',
     description: '팝업 공지사항을 등록합니다.',
   })
+  @UseGuards(AdminApiGuard)
+  @ApiHeader({
+    name: 'admin-api-key',
+    description: 'API key for admin access',
+    required: true,
+  })
   @Post('popup/:id')
   async createPopupNotice(@Param('id') id: number): Promise<void> {
     return this.noticeService.createPopupNotice(id);
@@ -44,6 +57,12 @@ export class NoticeController {
   @ApiOperation({
     summary: '공지사항 생성 API',
     description: '공지사항을 생성합니다.',
+  })
+  @UseGuards(AdminApiGuard)
+  @ApiHeader({
+    name: 'admin-api-key',
+    description: 'API key for admin access',
+    required: true,
   })
   @Post('')
   async createNotice(
@@ -57,6 +76,12 @@ export class NoticeController {
     summary: '공지사항 수정 API',
     description: '공지사항을 수정합니다.',
   })
+  @UseGuards(AdminApiGuard)
+  @ApiHeader({
+    name: 'admin-api-key',
+    description: 'API key for admin access',
+    required: true,
+  })
   @Put(':id')
   async updateNotice(
     @Param('id') id: number,
@@ -69,6 +94,12 @@ export class NoticeController {
   @ApiOperation({
     summary: '공지사항 삭제 API',
     description: '공지사항을 삭제합니다.',
+  })
+  @UseGuards(AdminApiGuard)
+  @ApiHeader({
+    name: 'admin-api-key',
+    description: 'API key for admin access',
+    required: true,
   })
   @Delete(':id')
   async deleteNotice(@Param('id') id: number): Promise<void> {
