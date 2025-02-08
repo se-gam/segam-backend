@@ -30,5 +30,6 @@ export const configModule = ConfigModule.forRoot({
     CANCEL_GODOK_RESERVATION_URL: Joi.string().required(),
     GET_USER_GODOK_STATUS_URL: Joi.string().required(),
     GET_COURSE_ATTENDANCE_URL: Joi.string().required(),
+    ADMIN_API_KEY: Joi.string().required(),
   }),
 });
