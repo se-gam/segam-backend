@@ -52,9 +52,12 @@ export class StudyroomService {
       return;
     }
 
-    if (!this.studyroomIds.length) {
+    const now = new Date();
+
+    if (this.studyroomIds.length === 0 || now.getMinutes() === 0) {
       console.log('fetching studyroom ids');
       this.studyroomIds = await this.studyroomRepository.getAllStudyroomIds();
+      this.currentIndex = 0;
     }
 
     const roomId = this.studyroomIds[this.currentIndex];
@@ -98,6 +101,11 @@ export class StudyroomService {
   async healthCheck() {
     const recentStudyroomSlot =
       await this.prismaService.studyroomSlot.findFirst({
+        where: {
+          studyroom: {
+            isActive: true,
+          },
+        },
         orderBy: {
           updatedAt: 'desc',
         },
