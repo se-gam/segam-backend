@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { StudyroomReservation as PrismaStudyroomReservation } from '@prisma/client';
 import * as _ from 'lodash';
 import { PrismaService } from 'src/common/services/prisma.service';
@@ -7,6 +7,8 @@ import { StudyroomDateQuery } from './query/studyroomDateQuery.query';
 import { ReservationResponse } from './types/reservationResponse.type';
 import { Studyroom } from './types/studyroom.type';
 import { StudyroomReservationInfo } from './types/studyroomReservationInfo.type';
+import { StudyroomInfo } from './types/studyroomInfo.type';
+import { StudyroomUpdatePayload } from './payload/studyroomUpdate.payload';
 
 @Injectable()
 export class StudyroomRepository {
@@ -15,6 +17,46 @@ export class StudyroomRepository {
   private getSlotTime(time: string, idx: number): string {
     const hour = parseInt(time.split(':')[0]) + idx;
     return hour + ':00';
+  }
+
+  async getStudyroomInfoById(id: number): Promise<StudyroomInfo> {
+    const studyroomInfo = await this.prismaService.studyroom.findUnique({
+      where: {
+        id: id,
+        deletedAt: null,
+      },
+      select: {
+        id: true,
+        name: true,
+        location: true,
+        minUsers: true,
+        maxUsers: true,
+        isCinema: true,
+        operatingHours: true,
+        tags: true,
+      },
+    });
+
+    if (!studyroomInfo) {
+      throw new NotFoundException('스터디룸이 존재하지 않습니다.');
+    }
+
+    const lastUpdatedSlot = await this.prismaService.studyroomSlot.findFirst({
+      where: {
+        studyroomId: id,
+      },
+      orderBy: {
+        updatedAt: 'desc',
+      },
+      select: {
+        updatedAt: true,
+      },
+    });
+
+    return {
+      ...studyroomInfo,
+      lastUpdatedAt: lastUpdatedSlot.updatedAt,
+    };
   }
 
   async getAllStudyroomIds(): Promise<number[]> {
@@ -376,5 +418,19 @@ export class StudyroomRepository {
         });
       }
     }
+  }
+
+  async updateStudyroom(
+    id: number,
+    payload: StudyroomUpdatePayload,
+  ): Promise<void> {
+    await this.prismaService.studyroom.update({
+      where: {
+        id,
+      },
+      data: {
+        isActive: payload.isActive,
+      },
+    });
   }
 }

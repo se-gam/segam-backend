@@ -3,6 +3,8 @@ import {
   Controller,
   Get,
   Param,
+  ParseIntPipe,
+  Patch,
   Post,
   Query,
   UseGuards,
@@ -12,6 +14,7 @@ import {
   ApiBadRequestResponse,
   ApiBearerAuth,
   ApiCreatedResponse,
+  ApiHeader,
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
@@ -32,6 +35,8 @@ import { StudyroomUserPayload } from './payload/studyroomUserPayload.payload';
 import { StudyroomQuery } from './query/studyroom.query';
 import { StudyroomDateQuery } from './query/studyroomDateQuery.query';
 import { StudyroomService } from './studyroom.service';
+import { AdminApiGuard } from 'src/auth/guard/admin.guard';
+import { StudyroomUpdatePayload } from './payload/studyroomUpdate.payload';
 
 @ApiTags('스터디룸 API')
 @Controller('studyroom')
@@ -169,5 +174,30 @@ export class StudyroomController {
     @Body(PasswordValidationPipe) payload: StudyroomUserPayload,
   ): Promise<UserPidDto> {
     return this.studyroomService.checkUserAvailablity(user.studentId, payload);
+  }
+
+  @Version('1')
+  @ApiOperation({
+    summary: '스터디룸 정보 업데이트 API',
+    description: '스터디룸 정보를 업데이트 합니다.',
+  })
+  @ApiOkResponse({
+    description: '스터디룸 정보 업데이트 성공',
+  })
+  @ApiNotFoundResponse({
+    description: '해당 id의 스터디룸을 찾을 수 없습니다.',
+  })
+  @UseGuards(AdminApiGuard)
+  @ApiHeader({
+    name: 'admin-api-key',
+    description: 'API key for admin access',
+    required: true,
+  })
+  @Patch('info/:id')
+  async updateStudyroom(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() payload: StudyroomUpdatePayload,
+  ): Promise<void> {
+    return this.studyroomService.updateStudyroom(id, payload);
   }
 }

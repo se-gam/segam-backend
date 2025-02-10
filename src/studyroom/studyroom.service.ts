@@ -22,6 +22,7 @@ import { StudyroomDateQuery } from './query/studyroomDateQuery.query';
 import { ReservationService } from './reservation.service';
 import { StudyroomRepository } from './studyroom.repository';
 import { RawStudyroom } from './types/rawStudyroom';
+import { StudyroomUpdatePayload } from './payload/studyroomUpdate.payload';
 
 @Injectable()
 export class StudyroomService {
@@ -205,5 +206,14 @@ export class StudyroomService {
       bookingId,
       payload.cancelReason,
     );
+  }
+
+  async updateStudyroom(
+    id: number,
+    payload: StudyroomUpdatePayload,
+  ): Promise<void> {
+    const studyroomInfo =
+      await this.studyroomRepository.getStudyroomInfoById(id);
+    await this.studyroomRepository.updateStudyroom(id, payload);
   }
 }
