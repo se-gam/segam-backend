@@ -179,7 +179,7 @@ export class StudyroomController {
 
   @Version('1')
   @ApiOperation({
-    summary: '스터디룸 정보 업데이트 API',
+    summary: '[어드민] 스터디룸 정보 업데이트 API',
     description: '스터디룸 정보를 업데이트 합니다.',
   })
   @ApiOkResponse({
@@ -204,7 +204,7 @@ export class StudyroomController {
 
   @Version('1')
   @ApiOperation({
-    summary: '스터디룸 정보 목록 조회 API',
+    summary: '[어드민] 스터디룸 정보 목록 조회 API',
     description: '스터디룸 정보 목록을 조회합니다.',
   })
   @ApiOkResponse({
