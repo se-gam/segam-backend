@@ -6,9 +6,10 @@ import { StudyroomController } from './studyroom.controller';
 import { StudyroomRepository } from './studyroom.repository';
 import { StudyroomService } from './studyroom.service';
 import { UserService } from 'src/user/user.service';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
-  imports: [ScheduleModule.forRoot()],
+  imports: [ScheduleModule.forRoot(), AuthModule],
   controllers: [StudyroomController],
   providers: [
     StudyroomService,

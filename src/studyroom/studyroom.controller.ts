@@ -3,6 +3,8 @@ import {
   Controller,
   Get,
   Param,
+  ParseIntPipe,
+  Patch,
   Post,
   Query,
   UseGuards,
@@ -12,6 +14,7 @@ import {
   ApiBadRequestResponse,
   ApiBearerAuth,
   ApiCreatedResponse,
+  ApiHeader,
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
@@ -19,15 +22,18 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { CurrentUser } from 'src/auth/decorator/user.decorator';
+import { AdminApiGuard } from 'src/auth/guard/admin.guard';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
 import { PasswordPayload } from 'src/auth/payload/password.payload';
 import { PasswordValidationPipe } from 'src/auth/pipes/signup-validation.pipe';
 import { UserInfo } from 'src/auth/types/user-info.type';
+import { StudyroomInfoListDto } from './dto/studyroom-infp.dto';
 import { StudyroomReservationListDto } from './dto/studyroom-reservation.dto';
 import { StudyroomDto, StudyroomListDto } from './dto/studyroom.dto';
 import { UserPidDto } from './dto/userPid.dto';
 import { StudyroomCancelPayload } from './payload/studyroomCancel.payload';
 import { StudyroomReservePayload } from './payload/studyroomReserve.payload';
+import { StudyroomUpdatePayload } from './payload/studyroomUpdate.payload';
 import { StudyroomUserPayload } from './payload/studyroomUserPayload.payload';
 import { StudyroomQuery } from './query/studyroom.query';
 import { StudyroomDateQuery } from './query/studyroomDateQuery.query';
@@ -169,5 +175,49 @@ export class StudyroomController {
     @Body(PasswordValidationPipe) payload: StudyroomUserPayload,
   ): Promise<UserPidDto> {
     return this.studyroomService.checkUserAvailablity(user.studentId, payload);
+  }
+
+  @Version('1')
+  @ApiOperation({
+    summary: '[어드민] 스터디룸 정보 업데이트 API',
+    description: '스터디룸 정보를 업데이트 합니다.',
+  })
+  @ApiOkResponse({
+    description: '스터디룸 정보 업데이트 성공',
+  })
+  @ApiNotFoundResponse({
+    description: '해당 id의 스터디룸을 찾을 수 없습니다.',
+  })
+  @UseGuards(AdminApiGuard)
+  @ApiHeader({
+    name: 'admin-api-key',
+    description: 'API key for admin access',
+    required: true,
+  })
+  @Patch('info/:id')
+  async updateStudyroom(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() payload: StudyroomUpdatePayload,
+  ): Promise<void> {
+    return this.studyroomService.updateStudyroom(id, payload);
+  }
+
+  @Version('1')
+  @ApiOperation({
+    summary: '[어드민] 스터디룸 정보 목록 조회 API',
+    description: '스터디룸 정보 목록을 조회합니다.',
+  })
+  @ApiOkResponse({
+    description: '스터디룸 정보 목록 조회 성공',
+  })
+  @UseGuards(AdminApiGuard)
+  @ApiHeader({
+    name: 'admin-api-key',
+    description: 'API key for admin access',
+    required: true,
+  })
+  @Get('info/all')
+  async getAllStudyroomInfo(): Promise<StudyroomInfoListDto> {
+    return this.studyroomService.getAllStudyroomInfo();
   }
 }
