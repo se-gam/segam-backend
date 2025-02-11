@@ -2,13 +2,13 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { StudyroomReservation as PrismaStudyroomReservation } from '@prisma/client';
 import * as _ from 'lodash';
 import { PrismaService } from 'src/common/services/prisma.service';
+import { StudyroomUpdatePayload } from './payload/studyroomUpdate.payload';
 import { StudyroomQuery } from './query/studyroom.query';
 import { StudyroomDateQuery } from './query/studyroomDateQuery.query';
 import { ReservationResponse } from './types/reservationResponse.type';
 import { Studyroom } from './types/studyroom.type';
-import { StudyroomReservationInfo } from './types/studyroomReservationInfo.type';
 import { StudyroomInfo } from './types/studyroomInfo.type';
-import { StudyroomUpdatePayload } from './payload/studyroomUpdate.payload';
+import { StudyroomReservationInfo } from './types/studyroomReservationInfo.type';
 
 @Injectable()
 export class StudyroomRepository {
@@ -17,6 +17,46 @@ export class StudyroomRepository {
   private getSlotTime(time: string, idx: number): string {
     const hour = parseInt(time.split(':')[0]) + idx;
     return hour + ':00';
+  }
+
+  async getAllStudyroomInfo(): Promise<StudyroomInfo[]> {
+    const studyrooms = await this.prismaService.studyroom.findMany({
+      where: {
+        deletedAt: null,
+      },
+      select: {
+        id: true,
+        name: true,
+        location: true,
+        minUsers: true,
+        maxUsers: true,
+        isCinema: true,
+        operatingHours: true,
+        tags: true,
+        isActive: true,
+      },
+    });
+
+    const lastUpdatedSlots = await this.prismaService.studyroomSlot.groupBy({
+      by: ['studyroomId'],
+      _max: {
+        updatedAt: true,
+      },
+      where: {
+        studyroomId: {
+          in: studyrooms.map((studyroom) => studyroom.id),
+        },
+      },
+    });
+
+    return studyrooms.map((studyroom) => {
+      return {
+        ...studyroom,
+        lastUpdatedAt: lastUpdatedSlots.find(
+          (slot) => slot.studyroomId === studyroom.id,
+        )?._max.updatedAt,
+      };
+    });
   }
 
   async getStudyroomInfoById(id: number): Promise<StudyroomInfo> {
@@ -34,6 +74,7 @@ export class StudyroomRepository {
         isCinema: true,
         operatingHours: true,
         tags: true,
+        isActive: true,
       },
     });
 

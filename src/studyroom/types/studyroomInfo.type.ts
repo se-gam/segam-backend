@@ -7,5 +7,6 @@ export type StudyroomInfo = {
   isCinema: boolean;
   operatingHours: string;
   tags: string[];
+  isActive: boolean;
   lastUpdatedAt: Date;
 };

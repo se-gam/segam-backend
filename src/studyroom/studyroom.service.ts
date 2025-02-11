@@ -11,18 +11,19 @@ import { DiscordService } from 'src/common/services/discord.service';
 import { PrismaService } from 'src/common/services/prisma.service';
 import { UserRepository } from 'src/user/user.repository';
 import { UserService } from 'src/user/user.service';
+import { StudyroomInfoListDto } from './dto/studyroom-infp.dto';
 import { StudyroomReservationListDto } from './dto/studyroom-reservation.dto';
 import { StudyroomDto, StudyroomListDto } from './dto/studyroom.dto';
 import { UserPidDto } from './dto/userPid.dto';
 import { StudyroomCancelPayload } from './payload/studyroomCancel.payload';
 import { StudyroomReservePayload } from './payload/studyroomReserve.payload';
+import { StudyroomUpdatePayload } from './payload/studyroomUpdate.payload';
 import { StudyroomUserPayload } from './payload/studyroomUserPayload.payload';
 import { StudyroomQuery } from './query/studyroom.query';
 import { StudyroomDateQuery } from './query/studyroomDateQuery.query';
 import { ReservationService } from './reservation.service';
 import { StudyroomRepository } from './studyroom.repository';
 import { RawStudyroom } from './types/rawStudyroom';
-import { StudyroomUpdatePayload } from './payload/studyroomUpdate.payload';
 
 @Injectable()
 export class StudyroomService {
@@ -214,6 +215,12 @@ export class StudyroomService {
   ): Promise<void> {
     const studyroomInfo =
       await this.studyroomRepository.getStudyroomInfoById(id);
-    await this.studyroomRepository.updateStudyroom(id, payload);
+
+    await this.studyroomRepository.updateStudyroom(studyroomInfo.id, payload);
+  }
+
+  async getAllStudyroomInfo(): Promise<StudyroomInfoListDto> {
+    const studyrooms = await this.studyroomRepository.getAllStudyroomInfo();
+    return StudyroomInfoListDto.from(studyrooms);
   }
 }
