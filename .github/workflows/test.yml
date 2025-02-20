@@ -30,7 +30,7 @@ jobs:
       - name: Create .env file (excluding EC2_PRIVATE_KEY)
         run: |
           # Exclude EC2_PRIVATE_KEY and create .env file from the remaining secrets
-          jq -r 'to_entries | map(select(.key != "EC2_PRIVATE_KEY") | "\(.key)=\(.value | tostring)") | .[]' <<< "$SECRETS_CONTEXT" | sed 's/=/="/;s/$/"/' > .prod2025.env
+          jq -r 'to_entries | map(select(.key != "EC2_PRIVATE_KEY") | "\(.key)=\(.value | tostring)") | .[]' <<< "$SECRETS_CONTEXT" > .prod2025.env
         env:
           SECRETS_CONTEXT: ${{ toJson(secrets) }}
 
@@ -55,13 +55,7 @@ jobs:
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           debug: true
           script: |
-            CONTAINER_ID=$(sudo docker ps -q --filter "publish=80-8080")
-
-            if [ ! -z "$CONTAINER_ID" ]; then
-              sudo docker stop $CONTAINER_ID
-              sudo docker rm $CONTAINER_ID
-            fi
-
+            sudo docker rm ${{ secrets.EC2_CONTAINER_NAME }}
             cd ~/actions-runner/_work/segam-backend/segam-backend
             sudo docker pull ${{ steps.login-ecr.outputs.registry }}/${{secrets.ECR_REPOSITORY}}:${{secrets.IMAGE_TAG}}
-            sudo docker run --name ${{ secrets.EC2_CONTAINER_NAME }} -d -p 80:8080 --env-file ./.prod2025.env -e TZ=Asia/Seoul ${{ steps.login-ecr.outputs.registry }}/${{secrets.ECR_REPOSITORY}}:${{secrets.IMAGE_TAG}}
+            sudo docker run --name ${{ secrets.EC2_CONTAINER_NAME }} -d -p 3000:3000 --env-file ./.prod2025.env -e TZ=Asia/Seoul -e NODE_ENV=prod ${{ steps.login-ecr.outputs.registry }}/${{secrets.ECR_REPOSITORY}}:${{secrets.IMAGE_TAG}}
