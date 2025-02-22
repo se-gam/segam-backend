@@ -101,7 +101,9 @@ export class StudyroomService {
     }
   }
 
-  @Cron('*/1 * * * *')
+  @Cron('*/1 * * * *', {
+    name: 'studyroomSlotCrawlerHealthCheck',
+  })
   async healthCheck() {
     const recentStudyroomSlot =
       await this.prismaService.studyroomSlot.findFirst({

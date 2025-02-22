@@ -23,16 +23,40 @@ export class BatchService {
         const cronJob = this.schedulerRegistry.getCronJob(
             'studyroomSlotCrawler'
         );
+        const healthCheckJob = this.schedulerRegistry.getCronJob(
+            'studyroomSlotCrawlerHealthCheck'
+        );
 
         cronJob.start();
+        healthCheckJob.start();
     }
 
     async deactivateStudyroomSlotCrawler() {
         const cronJob = this.schedulerRegistry.getCronJob(
             'studyroomSlotCrawler'
         );
+        const healthCheckJob = this.schedulerRegistry.getCronJob(
+            'studyroomSlotCrawlerHealthCheck'
+        );
 
         cronJob.stop();
+        healthCheckJob.stop();
+    }
+
+    async activateStudyroomSlotCrawlerHealthCheck() {
+        const healthCheckJob = this.schedulerRegistry.getCronJob(
+            'studyroomSlotCrawlerHealthCheck'
+        );
+
+        healthCheckJob.start();
+    }
+
+    async deactivateStudyroomSlotCrawlerHealthCheck() {
+        const healthCheckJob = this.schedulerRegistry.getCronJob(
+            'studyroomSlotCrawlerHealthCheck'
+        );
+
+        healthCheckJob.stop();
     }
 
     async changeStudyroomSlotCrawlerCronTime(rawCronTime: string) {
