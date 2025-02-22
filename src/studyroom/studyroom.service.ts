@@ -48,7 +48,9 @@ export class StudyroomService {
     return parseInt(time.split(':')[0]);
   }
 
-  @Cron('*/2 * * * * *')
+  @Cron('*/2 * * * * *', {
+    name: 'studyroomSlotCrawler',
+  })
   async handleCron() {
     if (this.configService.get<string>('NODE_ENV') !== 'prod') {
       return;
