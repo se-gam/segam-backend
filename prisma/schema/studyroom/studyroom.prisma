@@ -6,6 +6,7 @@ model Studyroom {
     minUsers       Int                    @map("min_users")
     maxUsers       Int                    @map("max_users")
     isCinema       Boolean                @map("is_cinema")
+    isActive       Boolean                @default(true) @map("is_active")
     createdAt      DateTime               @default(now()) @map("created_at")
     updatedAt      DateTime               @updatedAt @map("updated_at")
     deletedAt      DateTime?              @map("deleted_at")

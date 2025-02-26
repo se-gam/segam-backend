@@ -11,6 +11,7 @@ import { UserModule } from 'src/user/user.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { configModule } from './modules/config.module';
+import { BatchModule } from 'src/batch/batch.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { configModule } from './modules/config.module';
     RestaurantModule,
     GodokModule,
     NoticeModule,
+    BatchModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -16,11 +16,11 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
+import { AdminApiGuard } from 'src/auth/guard/admin.guard';
+import { NoticePreviewDto } from './dto/notice-preview.dto';
 import { NoticeDto } from './dto/notice.dto';
 import { NoticeService } from './notice.service';
 import { CreateUpdateNoticePayload } from './payload/create-update-notice.payload';
-import { NoticePreviewDto } from './dto/notice-preview.dto';
-import { AdminApiGuard } from 'src/auth/guard/admin.guard';
 
 @ApiTags('공지사항 API')
 @Controller('notice')
@@ -39,7 +39,7 @@ export class NoticeController {
 
   @Version('1')
   @ApiOperation({
-    summary: '팝업 공지사항 등록 API',
+    summary: '[어드민] 팝업 공지사항 등록 API',
     description: '팝업 공지사항을 등록합니다.',
   })
   @UseGuards(AdminApiGuard)
@@ -55,7 +55,7 @@ export class NoticeController {
 
   @Version('1')
   @ApiOperation({
-    summary: '공지사항 생성 API',
+    summary: '[어드민] 공지사항 생성 API',
     description: '공지사항을 생성합니다.',
   })
   @UseGuards(AdminApiGuard)
@@ -73,7 +73,7 @@ export class NoticeController {
 
   @Version('1')
   @ApiOperation({
-    summary: '공지사항 수정 API',
+    summary: '[어드민] 공지사항 수정 API',
     description: '공지사항을 수정합니다.',
   })
   @UseGuards(AdminApiGuard)
@@ -92,7 +92,7 @@ export class NoticeController {
 
   @Version('1')
   @ApiOperation({
-    summary: '공지사항 삭제 API',
+    summary: '[어드민] 공지사항 삭제 API',
     description: '공지사항을 삭제합니다.',
   })
   @UseGuards(AdminApiGuard)

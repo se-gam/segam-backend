@@ -24,6 +24,9 @@ import { AssignmentAttendanceListDto } from './dto/assignment-attendance.dto';
 import { CourseAttendanceListDto } from './dto/course-attendace-list.dto';
 import { CourseAttendanceDto } from './dto/course-attendance.dto';
 import { LectureAttendanceListDto } from './dto/lecture-attendance.dto';
+import { LectureListDto } from './dto/lecture-list.dto';
+
+import * as LECTURES from '../../parser/lectures_2025-1.json';
 
 @ApiTags('출석 API')
 @Controller('attendance')
@@ -92,5 +95,13 @@ export class AttendanceController {
     @CurrentUser() user: UserInfo,
   ): Promise<AssignmentAttendanceListDto> {
     return this.attendanceService.getAssignmentAttendance(user);
+  }
+
+  @Version('1')
+  @Get('lecture/list')
+  @ApiOperation({ summary: '강의 목록' })
+  @ApiCreatedResponse({ type: LectureListDto })
+  async getLectureList(): Promise<LectureListDto> {
+    return LectureListDto.from(LECTURES);
   }
 }

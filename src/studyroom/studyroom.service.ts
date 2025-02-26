@@ -11,11 +11,13 @@ import { DiscordService } from 'src/common/services/discord.service';
 import { PrismaService } from 'src/common/services/prisma.service';
 import { UserRepository } from 'src/user/user.repository';
 import { UserService } from 'src/user/user.service';
+import { StudyroomInfoListDto } from './dto/studyroom-infp.dto';
 import { StudyroomReservationListDto } from './dto/studyroom-reservation.dto';
 import { StudyroomDto, StudyroomListDto } from './dto/studyroom.dto';
 import { UserPidDto } from './dto/userPid.dto';
 import { StudyroomCancelPayload } from './payload/studyroomCancel.payload';
 import { StudyroomReservePayload } from './payload/studyroomReserve.payload';
+import { StudyroomUpdatePayload } from './payload/studyroomUpdate.payload';
 import { StudyroomUserPayload } from './payload/studyroomUserPayload.payload';
 import { StudyroomQuery } from './query/studyroom.query';
 import { StudyroomDateQuery } from './query/studyroomDateQuery.query';
@@ -46,15 +48,20 @@ export class StudyroomService {
     return parseInt(time.split(':')[0]);
   }
 
-  @Cron('*/2 * * * * *')
+  @Cron('*/2 * * * * *', {
+    name: 'studyroomSlotCrawler',
+  })
   async handleCron() {
     if (this.configService.get<string>('NODE_ENV') !== 'prod') {
       return;
     }
 
-    if (!this.studyroomIds.length) {
+    const now = new Date();
+
+    if (this.studyroomIds.length === 0 || now.getMinutes() === 0) {
       console.log('fetching studyroom ids');
       this.studyroomIds = await this.studyroomRepository.getAllStudyroomIds();
+      this.currentIndex = 0;
     }
 
     const roomId = this.studyroomIds[this.currentIndex];
@@ -94,10 +101,17 @@ export class StudyroomService {
     }
   }
 
-  @Cron('*/1 * * * *')
+  @Cron('*/1 * * * *', {
+    name: 'studyroomSlotCrawlerHealthCheck',
+  })
   async healthCheck() {
     const recentStudyroomSlot =
       await this.prismaService.studyroomSlot.findFirst({
+        where: {
+          studyroom: {
+            isActive: true,
+          },
+        },
         orderBy: {
           updatedAt: 'desc',
         },
@@ -197,5 +211,20 @@ export class StudyroomService {
       bookingId,
       payload.cancelReason,
     );
+  }
+
+  async updateStudyroom(
+    id: number,
+    payload: StudyroomUpdatePayload,
+  ): Promise<void> {
+    const studyroomInfo =
+      await this.studyroomRepository.getStudyroomInfoById(id);
+
+    await this.studyroomRepository.updateStudyroom(studyroomInfo.id, payload);
+  }
+
+  async getAllStudyroomInfo(): Promise<StudyroomInfoListDto> {
+    const studyrooms = await this.studyroomRepository.getAllStudyroomInfo();
+    return StudyroomInfoListDto.from(studyrooms);
   }
 }

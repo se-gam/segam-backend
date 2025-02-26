@@ -1,11 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { StudyroomReservation as PrismaStudyroomReservation } from '@prisma/client';
 import * as _ from 'lodash';
 import { PrismaService } from 'src/common/services/prisma.service';
+import { StudyroomUpdatePayload } from './payload/studyroomUpdate.payload';
 import { StudyroomQuery } from './query/studyroom.query';
 import { StudyroomDateQuery } from './query/studyroomDateQuery.query';
 import { ReservationResponse } from './types/reservationResponse.type';
 import { Studyroom } from './types/studyroom.type';
+import { StudyroomInfo } from './types/studyroomInfo.type';
 import { StudyroomReservationInfo } from './types/studyroomReservationInfo.type';
 
 @Injectable()
@@ -17,9 +19,91 @@ export class StudyroomRepository {
     return hour + ':00';
   }
 
+  async getAllStudyroomInfo(): Promise<StudyroomInfo[]> {
+    const studyrooms = await this.prismaService.studyroom.findMany({
+      where: {
+        deletedAt: null,
+      },
+      select: {
+        id: true,
+        name: true,
+        location: true,
+        minUsers: true,
+        maxUsers: true,
+        isCinema: true,
+        operatingHours: true,
+        tags: true,
+        isActive: true,
+      },
+    });
+
+    const lastUpdatedSlots = await this.prismaService.studyroomSlot.groupBy({
+      by: ['studyroomId'],
+      _max: {
+        updatedAt: true,
+      },
+      where: {
+        studyroomId: {
+          in: studyrooms.map((studyroom) => studyroom.id),
+        },
+      },
+    });
+
+    return studyrooms.map((studyroom) => {
+      return {
+        ...studyroom,
+        lastUpdatedAt: lastUpdatedSlots.find(
+          (slot) => slot.studyroomId === studyroom.id,
+        )?._max.updatedAt,
+      };
+    });
+  }
+
+  async getStudyroomInfoById(id: number): Promise<StudyroomInfo> {
+    const studyroomInfo = await this.prismaService.studyroom.findUnique({
+      where: {
+        id: id,
+        deletedAt: null,
+      },
+      select: {
+        id: true,
+        name: true,
+        location: true,
+        minUsers: true,
+        maxUsers: true,
+        isCinema: true,
+        operatingHours: true,
+        tags: true,
+        isActive: true,
+      },
+    });
+
+    if (!studyroomInfo) {
+      throw new NotFoundException('스터디룸이 존재하지 않습니다.');
+    }
+
+    const lastUpdatedSlot = await this.prismaService.studyroomSlot.findFirst({
+      where: {
+        studyroomId: id,
+      },
+      orderBy: {
+        updatedAt: 'desc',
+      },
+      select: {
+        updatedAt: true,
+      },
+    });
+
+    return {
+      ...studyroomInfo,
+      lastUpdatedAt: lastUpdatedSlot.updatedAt,
+    };
+  }
+
   async getAllStudyroomIds(): Promise<number[]> {
     const studyrooms = await this.prismaService.studyroom.findMany({
       where: {
+        isActive: true,
         deletedAt: null,
       },
       select: {
@@ -32,6 +116,7 @@ export class StudyroomRepository {
   async getAllStudyrooms(query: StudyroomQuery): Promise<Studyroom[]> {
     const studyrooms = await this.prismaService.studyroom.findMany({
       where: {
+        isActive: true,
         deletedAt: null,
       },
       include: {
@@ -374,5 +459,19 @@ export class StudyroomRepository {
         });
       }
     }
+  }
+
+  async updateStudyroom(
+    id: number,
+    payload: StudyroomUpdatePayload,
+  ): Promise<void> {
+    await this.prismaService.studyroom.update({
+      where: {
+        id,
+      },
+      data: {
+        isActive: payload.isActive,
+      },
+    });
   }
 }
