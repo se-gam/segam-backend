@@ -59,4 +59,4 @@ jobs:
             sudo docker rm ${{ secrets.EC2_CONTAINER_NAME }}
             cd ~/actions-runner/_work/segam-backend/segam-backend
             sudo docker pull ${{ steps.login-ecr.outputs.registry }}/${{secrets.ECR_REPOSITORY}}:${{secrets.IMAGE_TAG}}
-            sudo docker run --privileged --name ${{ secrets.EC2_CONTAINER_NAME }} -d -p 3000:3000 --env-file ./.prod2025.env -e TZ=Asia/Seoul -e NODE_ENV=prod ${{ steps.login-ecr.outputs.registry }}/${{secrets.ECR_REPOSITORY}}:${{secrets.IMAGE_TAG}}
+            sudo docker run --privileged --name ${{ secrets.EC2_CONTAINER_NAME }} -d -p 3000:3000 --env-file ./.prod2025.env -e TZ=Asia/Seoul -e NODE_ENV=prod -v /etc/localtime:/etc/localtime:ro ${{ steps.login-ecr.outputs.registry }}/${{secrets.ECR_REPOSITORY}}:${{secrets.IMAGE_TAG}}
