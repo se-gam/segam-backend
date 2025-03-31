@@ -29,7 +29,7 @@ export class AttendanceService {
   async getCourseAttendance(user: UserInfo): Promise<CourseAttendanceListDto> {
     const courses =
       await this.attendanceRepository.getCourseAttendanceList(user);
-
+    console.log(courses);
     return CourseAttendanceListDto.from(courses);
   }
 

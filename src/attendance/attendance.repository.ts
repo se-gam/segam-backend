@@ -44,6 +44,7 @@ export class AttendanceRepository {
             week: true,
             startsAt: true,
             endsAt: true,
+            updatedAt: true,
             users: {
               where: {
                 studentId: user.studentId,
@@ -76,6 +77,7 @@ export class AttendanceRepository {
                 isDone: true,
               },
             },
+            updatedAt: true,
           },
           orderBy: {
             endsAt: 'asc',

@@ -6,4 +6,5 @@ export type AssignmentData = {
   users: {
     isDone: boolean;
   }[];
+  updatedAt?: Date;
 };
