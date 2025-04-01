@@ -7,4 +7,5 @@ export type LectureData = {
   users: {
     isDone: boolean;
   }[];
+  updatedAt?: Date;
 };

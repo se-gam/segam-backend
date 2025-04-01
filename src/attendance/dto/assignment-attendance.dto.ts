@@ -32,6 +32,12 @@ export class AssignmentAttendanceDto {
   })
   week!: number;
 
+  @ApiProperty({
+    description: '과제 업데이트 시간',
+    type: Date,
+  })
+  updatedAt!: Date | null;
+
   static from(assignment: AssignmentData) {
     return {
       id: assignment.id,
@@ -39,6 +45,7 @@ export class AssignmentAttendanceDto {
       endsAt: assignment.endsAt,
       isDone: assignment.users[0].isDone,
       week: assignment.week,
+      updatedAt: assignment.updatedAt,
     };
   }
 }

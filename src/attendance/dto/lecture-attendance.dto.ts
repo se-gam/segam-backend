@@ -38,6 +38,12 @@ export class LectureAttendanceDto {
   })
   week!: number;
 
+  @ApiProperty({
+    description: '강의 업데이트 시간',
+    type: Date,
+  })
+  updatedAt!: Date | null;
+
   static from(lecture: LectureData) {
     return {
       id: lecture.id,
@@ -46,6 +52,7 @@ export class LectureAttendanceDto {
       endsAt: lecture.endsAt,
       isDone: lecture.users[0].isDone,
       week: lecture.week,
+      updatedAt: lecture.updatedAt,
     };
   }
 }

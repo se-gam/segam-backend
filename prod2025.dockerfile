@@ -1,6 +1,11 @@
 FROM node:20-alpine3.20 as builder
+
 ENV TZ=Asia/Seoul
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+RUN apk add --no-cache tzdata && \
+    ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && \
+    echo $TZ > /etc/timezone && \
+    apk del tzdata
 
 WORKDIR /usr/src/app
 
@@ -10,20 +15,19 @@ RUN yarn install
 
 COPY . .
 
-# ENV NPM_CONFIG_PREFIX=/home/node/.npm-global
-# ENV PATH=$PATH:/home/node/.npm-global/bin
-
-# RUN npm install --global --unsafe-perm dotenv-cli
 RUN yarn add dotenv-cli
 RUN yarn prisma generate
 
 RUN yarn build && rm -rf node_modules && yarn install --production
 
 FROM node:20-alpine3.20 as runner
-ENV TZ=Asia/Seoul
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-#RUN apk add --no-cache udev chromium
+ENV TZ=Asia/Seoul
+
+RUN apk add --no-cache tzdata && \
+    ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && \
+    echo $TZ > /etc/timezone && \
+    apk del tzdata
 
 COPY --from=builder /usr/src/app/node_modules ./node_modules
 COPY --from=builder /usr/src/app/package.json ./package.json
