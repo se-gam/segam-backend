@@ -29,7 +29,6 @@ export class AttendanceService {
   async getCourseAttendance(user: UserInfo): Promise<CourseAttendanceListDto> {
     const courses =
       await this.attendanceRepository.getCourseAttendanceList(user);
-
     return CourseAttendanceListDto.from(courses);
   }
 
