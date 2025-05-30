@@ -11,7 +11,7 @@ import { getCurrentSemester } from './utils/getCurrentSemester';
 
 @Injectable()
 export class AttendanceRepository {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(private readonly prismaService: PrismaService) { }
 
   async getCourseAttendanceList(user: UserInfo): Promise<CourseData[]> {
     return await this.prismaService.course.findMany({
@@ -564,30 +564,44 @@ export class AttendanceRepository {
 
           // 새로운 과제들 추가
           for (const assignment of createdAssignments) {
+            const courseId = courseEntities.find(
+              (course) => course.courseId === rawCourse.id,
+            ).id;
+
             await tx.assignment.upsert({
-              where: {
-                id: assignment.id,
-              },
+              where: { id: assignment.id },
               update: {
                 name: assignment.name,
                 week: assignment.week,
                 endsAt: assignment.endsAt,
+                courseId,
               },
               create: {
                 id: assignment.id,
                 name: assignment.name,
                 week: assignment.week,
                 endsAt: assignment.endsAt,
-                course: {
-                  connect: {
-                    id: courseEntities.find(
-                      (course) => course.courseId === rawCourse.id,
-                    ).id,
-                  },
-                },
+                courseId,
               },
             });
           }
+
+          // 커스텀 과제는 마감일이 지나면 완료표시
+          const now = new Date();
+
+          await tx.userAssignment.updateMany({
+            where: {
+              studentId: user.studentId,
+              assignmentId: { gte: 1000000 },
+              assignment: {
+                endsAt: { lt: now },
+              },
+            },
+            data: {
+              isDone: true,
+            },
+          });
+
           await tx.userAssignment.createMany({
             data: createdAssignments.map((assignment) => {
               return {
