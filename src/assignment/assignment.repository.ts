@@ -10,7 +10,6 @@ export class AssignmentRepository {
     const course = await this.prisma.course.findFirst({
       where: { id: payload.courseId },
     });
-    console.log(course);
     if (!course) {
       throw new NotFoundException(`해당 ID의 강의가 존재하지 않습니다.`);
     }
