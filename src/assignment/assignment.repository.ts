@@ -17,6 +17,7 @@ export class AssignmentRepository {
       data: {
         name: payload.name,
         endsAt: payload.endsAt,
+        startsAt: payload.startsAt,
         course: {
           connect: {
             id: payload.courseId
@@ -34,7 +35,7 @@ export class AssignmentRepository {
     })
   }
 
-  async updateAssignment(userId: string, id: number, payload: CreateUpdateAssignmentPayload): Promise<void> {
+  async updateAssignment(userId: string, id: string, payload: CreateUpdateAssignmentPayload): Promise<void> {
     const assignment = await this.prisma.assignment.findUnique({
       where: { id },
     });
@@ -62,7 +63,7 @@ export class AssignmentRepository {
     });
   }
 
-  async deleteAssignment(userId: string, id: number): Promise<void> {
+  async deleteAssignment(userId: string, id: string): Promise<void> {
     const assignment = await this.prisma.assignment.findUnique({
       where: { id },
     });

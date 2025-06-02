@@ -502,7 +502,7 @@ export class AttendanceRepository {
             (assignment) => assignment.id,
           );
           const newAssignmentIds = rawCourse.assignments.map((assignment) =>
-            parseInt(assignment.id),
+            assignment.id.toString()
           );
 
           const existingAssignmentIds = _.intersection(
@@ -519,11 +519,11 @@ export class AttendanceRepository {
           );
 
           const createdAssignments = rawCourse.assignments.filter(
-            (assignment) => createdAssignmentIds.includes(assignment.id),
+            (assignment) => createdAssignmentIds.includes(assignment.id.toString()),
           );
 
           const existingAssignments = rawCourse.assignments.filter(
-            (assignment) => existingAssignmentIds.includes(assignment.id),
+            (assignment) => existingAssignmentIds.includes(assignment.id.toString()),
           );
 
           // 사라진 과제들 삭제
@@ -540,7 +540,7 @@ export class AttendanceRepository {
           for (const assignment of existingAssignments) {
             await tx.assignment.update({
               where: {
-                id: assignment.id,
+                id: assignment.id.toString(),
               },
               data: {
                 name: assignment.name,
@@ -553,7 +553,7 @@ export class AttendanceRepository {
               where: {
                 studentId_assignmentId: {
                   studentId: user.studentId,
-                  assignmentId: assignment.id,
+                  assignmentId: assignment.id.toString(),
                 },
               },
               data: {
@@ -569,7 +569,7 @@ export class AttendanceRepository {
             ).id;
 
             await tx.assignment.upsert({
-              where: { id: assignment.id },
+              where: { id: assignment.id.toString() },
               update: {
                 name: assignment.name,
                 week: assignment.week,
@@ -577,7 +577,7 @@ export class AttendanceRepository {
                 courseId,
               },
               create: {
-                id: assignment.id,
+                id: assignment.id.toString(),
                 name: assignment.name,
                 week: assignment.week,
                 endsAt: assignment.endsAt,
@@ -592,7 +592,7 @@ export class AttendanceRepository {
           await tx.userAssignment.updateMany({
             where: {
               studentId: user.studentId,
-              assignmentId: { gte: 1000000 },
+              assignmentId: { contains: '-' },
               assignment: {
                 endsAt: { lt: now },
               },
@@ -606,7 +606,7 @@ export class AttendanceRepository {
             data: createdAssignments.map((assignment) => {
               return {
                 studentId: user.studentId,
-                assignmentId: assignment.id,
+                assignmentId: assignment.id.toString(),
                 isDone: assignment.isDone,
               };
             }),

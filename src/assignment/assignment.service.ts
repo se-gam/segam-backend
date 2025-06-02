@@ -13,11 +13,11 @@ export class AssignmentService {
     return await this.assignmentRepository.createAssignment(user.studentId, payload);
   }
 
-  async updateAssignment(user: UserInfo, id: number, payload: CreateUpdateAssignmentPayload) {
+  async updateAssignment(user: UserInfo, id: string, payload: CreateUpdateAssignmentPayload) {
     return await this.assignmentRepository.updateAssignment(user.studentId, id, payload);
   }
 
-  async deleteAssignment(user: UserInfo, id: number) {
+  async deleteAssignment(user: UserInfo, id: string) {
     return await this.assignmentRepository.deleteAssignment(user.studentId, id);
   }
 }

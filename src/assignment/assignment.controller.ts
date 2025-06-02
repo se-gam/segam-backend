@@ -36,7 +36,7 @@ export class AssignmentController {
   @Put(':id')
   async updateAssignment(
     @CurrentUser() user: UserInfo,
-    @Param('id') id: number,
+    @Param('id') id: string,
     @Body() payload: CreateUpdateAssignmentPayload,
   ): Promise<void> {
     return await this.assignmentService.updateAssignment(user, id, payload);
@@ -52,7 +52,7 @@ export class AssignmentController {
   @Delete(':id')
   async deleteAssignment(
     @CurrentUser() user: UserInfo,
-    @Param('id') id: number,
+    @Param('id') id: string,
   ): Promise<void> {
     return await this.assignmentService.deleteAssignment(user, id);
   }

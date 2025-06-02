@@ -20,6 +20,15 @@ export class CreateUpdateAssignmentPayload {
   name!: string;
 
   @ApiProperty({
+    description: '과제 시작일',
+    example: '2024-01-31T10:13:09.004Z',
+    type: Date,
+  })
+  @Type(() => Date) 
+  @IsDate()
+  startsAt!: Date;
+
+  @ApiProperty({
     description: '과제 마감일',
     example: '2024-02-28T10:13:09.004Z',
     type: Date,
