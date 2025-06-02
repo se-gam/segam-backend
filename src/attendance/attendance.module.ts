@@ -9,7 +9,6 @@ import { EcampusService } from './ecampus.service';
     EcampusService,
     AttendanceService,
     AttendanceRepository,
-    EcampusService,
   ],
   controllers: [AttendanceController],
 })

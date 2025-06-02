@@ -12,6 +12,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { configModule } from './modules/config.module';
 import { BatchModule } from 'src/batch/batch.module';
+import { AssignmentModule } from 'src/assignment/assignment.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { BatchModule } from 'src/batch/batch.module';
     GodokModule,
     NoticeModule,
     BatchModule,
+    AssignmentModule
   ],
   controllers: [AppController],
   providers: [AppService],

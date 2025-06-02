@@ -6,7 +6,7 @@ export class AssignmentAttendanceDto {
     description: '과제 id. Ecampus에서 사용하는 id와 같습니다.',
     type: Number,
   })
-  id!: number;
+  id!: string;
 
   @ApiProperty({
     description: '과제명',
