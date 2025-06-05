@@ -1,10 +1,11 @@
-import { Body, Controller, Delete, Param, Post, Put, UseGuards, Version } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards, Version } from "@nestjs/common";
 import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { JwtAuthGuard } from "src/auth/guard/jwt-auth.guard";
 import { CreateUpdateAssignmentPayload } from "./payload/create-update-assignment.payload";
 import { CurrentUser } from "src/auth/decorator/user.decorator";
 import { UserInfo } from "src/auth/types/user-info.type";
 import { AssignmentService } from "./assignment.service";
+import { Assignment } from "@prisma/client";
 
 @ApiTags("과제 API")
 @Controller('assignment')
@@ -24,6 +25,21 @@ export class AssignmentController {
   async createAssignment(@CurrentUser() user: UserInfo, @Body() payload: CreateUpdateAssignmentPayload): Promise<void> {
     console.log(payload)
     return await this.assignmentService.createAssignment(user, payload);
+  }
+
+  @Version('1')
+  @ApiOperation({
+    summary: '과제 단일 조회 API',
+    description: '과제를 조회합니다.',
+  })
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Get(':id')
+  async findAssignmentById(
+    @CurrentUser() user: UserInfo,
+    @Param('id') id: string,
+  ): Promise<Assignment> {
+    return await this.assignmentService.findAssignmentById(user, id);
   }
 
   @Version('1')

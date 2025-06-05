@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { PrismaService } from "src/common/services/prisma.service";
 import { CreateUpdateAssignmentPayload } from "./payload/create-update-assignment.payload";
+import { Assignment } from "@prisma/client";
 
 @Injectable()
 export class AssignmentRepository {
@@ -32,7 +33,29 @@ export class AssignmentRepository {
         studentId: userId,
         assignmentId: newAssignment.id,
       }
-    })
+    });
+  }
+
+  async findAssignmentById(userId: string, id: string): Promise<Assignment> {
+    const assignment = await this.prisma.assignment.findUnique({
+      where: { id },
+    });
+
+    if (!assignment) {
+      throw new NotFoundException(`해당 ID의 과제가 존재하지 않습니다.`);
+    }
+    const userAssignment = await this.prisma.userAssignment.findFirst({
+      where: {
+        studentId: userId,
+        assignmentId: id,
+      },
+    });
+
+    if (!userAssignment || userAssignment.studentId !== userId) {
+      throw new BadRequestException(`해당 과제를 조회할 권한이 없습니다.`);
+    }
+
+    return assignment;
   }
 
   async updateAssignment(userId: string, id: string, payload: CreateUpdateAssignmentPayload): Promise<void> {
