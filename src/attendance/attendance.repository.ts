@@ -533,6 +533,9 @@ export class AttendanceRepository {
             where: {
               assignmentId: {
                 in: deletedAssignmentIds,
+                not: {
+                  contains: '-', // 커스텀 과제는 유지
+                }
               },
               studentId: user.studentId,
             },
