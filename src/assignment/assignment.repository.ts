@@ -73,13 +73,15 @@ export class AssignmentRepository {
       },
     });
     if (userAssignment.studentId !== userId) {
-      throw new BadRequestException(`해당 과제를 삭제할 권한이 없습니다.`);
+      throw new BadRequestException(`해당 과제를 수정할 권한이 없습니다.`);
     }
 
 
     await this.prisma.assignment.update({
       where: { id },
       data: {
+        courseId: payload.courseId,
+        startsAt: payload.startsAt,
         name: payload.name,
         endsAt: payload.endsAt,
       },
