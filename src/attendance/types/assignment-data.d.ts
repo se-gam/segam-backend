@@ -1,5 +1,5 @@
 export type AssignmentData = {
-  id: number;
+  id: string;
   name: string;
   week: number;
   endsAt?: Date;
