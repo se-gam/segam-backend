@@ -1,0 +1,3 @@
+api.segam.org {
+	reverse_proxy backend:3000
+}
