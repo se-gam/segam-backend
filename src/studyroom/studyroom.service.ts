@@ -1,8 +1,9 @@
 import {
   BadRequestException,
   Injectable,
+  Logger,
   NotFoundException,
-} from '@nestjs/common';
+}  from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Cron } from '@nestjs/schedule';
 import { PasswordPayload } from 'src/auth/payload/password.payload';
@@ -27,6 +28,7 @@ import { RawStudyroom } from './types/rawStudyroom';
 
 @Injectable()
 export class StudyroomService {
+  private readonly logger = new Logger(StudyroomService.name);
   private studyroomIds: number[] = [];
   private currentIndex = 0;
 
@@ -78,6 +80,11 @@ export class StudyroomService {
 
     // console.log('crawler end @', new Date());
     const rawStudyroom = JSON.parse(res.data) as RawStudyroom;
+
+    if (!rawStudyroom?.slots || !Array.isArray(rawStudyroom.slots)) {
+      this.logger.warn(`Invalid crawler response for room ${roomId}: ${res.data}`);
+      return;
+    }
 
     for (const slot of rawStudyroom.slots) {
       const slotId = `${rawStudyroom.room_id}_${slot.date}_${slot.time}`;
