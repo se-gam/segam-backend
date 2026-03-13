@@ -3,7 +3,7 @@ import {
   Injectable,
   Logger,
   NotFoundException,
-}  from '@nestjs/common';
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Cron } from '@nestjs/schedule';
 import { PasswordPayload } from 'src/auth/payload/password.payload';
@@ -29,7 +29,7 @@ import { RawStudyroom } from './types/rawStudyroom';
 @Injectable()
 export class StudyroomService {
   private readonly logger = new Logger(StudyroomService.name);
-  private studyroomIds: number[] = [];
+  private studyroomNames: string[] = [];
   private currentIndex = 0;
 
   constructor(
@@ -60,21 +60,22 @@ export class StudyroomService {
 
     const now = new Date();
 
-    if (this.studyroomIds.length === 0 || now.getMinutes() === 0) {
+    if (this.studyroomNames.length === 0 || now.getMinutes() === 0) {
       console.log('fetching studyroom ids');
-      this.studyroomIds = await this.studyroomRepository.getAllStudyroomIds();
+      this.studyroomNames =
+        await this.studyroomRepository.getAllStudyroomNames();
       this.currentIndex = 0;
     }
 
-    const roomId = this.studyroomIds[this.currentIndex];
-    this.currentIndex = (this.currentIndex + 1) % this.studyroomIds.length;
+    const roomName = this.studyroomNames[this.currentIndex];
+    this.currentIndex = (this.currentIndex + 1) % this.studyroomNames.length;
 
-    // console.log(roomId, this.currentIndex);
+    // console.log(roomName, this.currentIndex);
 
     // console.log('crawler start @', new Date());
     const res = await this.axiosService.post(
       this.configService.get<string>('CRAWLER_API_ROOT'),
-      JSON.stringify({ room_id: roomId }),
+      JSON.stringify({ room_name: roomName }),
       { headers: { 'Content-Type': 'application/json' } },
     );
 
@@ -82,12 +83,16 @@ export class StudyroomService {
     const rawStudyroom = JSON.parse(res.data) as RawStudyroom;
 
     if (!rawStudyroom?.slots || !Array.isArray(rawStudyroom.slots)) {
-      this.logger.warn(`Invalid crawler response for room ${roomId}: ${res.data}`);
+      this.logger.warn(
+        `Invalid crawler response for room ${roomName}: ${res.data}`,
+      );
       return;
     }
 
     for (const slot of rawStudyroom.slots) {
-      const slotId = `${rawStudyroom.room_id}_${slot.date}_${slot.time}`;
+      const room_id =
+        await this.studyroomRepository.getStudyroomIdByName(roomName);
+      const slotId = `${room_id}_${slot.date}_${slot.time}`;
       await this.prismaService.studyroomSlot.upsert({
         where: {
           id: slotId,
@@ -98,7 +103,7 @@ export class StudyroomService {
         },
         create: {
           id: slotId,
-          studyroomId: parseInt(rawStudyroom.room_id),
+          studyroomId: room_id,
           date: new Date(slot.date),
           startsAt: this.getSlotTime(slot.time),
           isReserved: slot.is_reserved,
@@ -160,7 +165,7 @@ export class StudyroomService {
       payload.password,
     );
     const reservations = await this.studyroomRepository.getReservations(userId);
-    return StudyroomReservationListDto.from(userId, reservations);
+    return StudyroomReservationListDto.from(reservations);
   }
 
   async checkUserAvailablity(
@@ -214,10 +219,7 @@ export class StudyroomService {
     payload: StudyroomCancelPayload,
   ): Promise<void> {
     await this.reservationService.cancelReservation(bookingId, userId, payload);
-    await this.studyroomRepository.deleteReservation(
-      bookingId,
-      payload.cancelReason,
-    );
+    await this.studyroomRepository.deleteReservation(bookingId);
   }
 
   async updateStudyroom(

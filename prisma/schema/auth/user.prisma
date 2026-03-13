@@ -13,7 +13,7 @@ model User {
     assignments      UserAssignment[]
     courses          UserCourse[]
     lectures         UserLecture[]
-    reservations     UserReservation[]
+    studyroomReservations StudyroomReservation[]
     friend1          Friend[]           @relation("user1")
     friend2          Friend[]           @relation("user2")
     GodokReservation GodokReservation[]

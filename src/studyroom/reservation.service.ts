@@ -6,7 +6,6 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import * as _ from 'lodash';
 import { AxiosService } from 'src/common/services/axios.service';
 import { UserRepository } from 'src/user/user.repository';
 import { UserPidDto } from './dto/userPid.dto';
@@ -46,10 +45,6 @@ export class ReservationService {
     } else if (res.status >= 400) {
       throw new InternalServerErrorException('Internal Server Error');
     }
-
-    await this.userRepository.createNewUsers(
-      _.flatMap(response.result, 'users'),
-    );
 
     return await this.studyroomRepository.updateReservations(
       userId,
@@ -104,32 +99,18 @@ export class ReservationService {
     userId: string,
     payload: StudyroomReservePayload,
   ): Promise<ResultResponse> {
-    const rawUsers = await this.userRepository.getUsersByStudentIds(
-      payload.users,
-    );
-    if (rawUsers.length !== payload.users.length)
-      throw new InternalServerErrorException('모든 유저를 찾지 못했습니다.');
-    const users = rawUsers.map((user) => {
-      return {
-        name: user.name,
-        student_id: user.studentId,
-        ipid: user.sejongPid,
-      };
-    });
-
     const res = await this.axiosService.post(
       this.configService.get<string>('CREATE_RESERVATION_URL'),
       JSON.stringify({
         id: userId,
         password: payload.password,
         room_id: payload.studyroomId,
-        users: users,
+        users: payload.users,
         year: payload.date.getFullYear(),
         month: String(payload.date.getMonth() + 1).padStart(2, '0'),
         day: String(payload.date.getDate()).padStart(2, '0'),
         start_time: payload.startsAt,
         hours: payload.duration,
-        purpose: payload.reason,
       }),
       {
         headers: {
@@ -151,31 +132,30 @@ export class ReservationService {
   }
 
   async cancelReservation(
-    bookingId: number,
+    reservationId: number,
     userId: string,
     payload: StudyroomCancelPayload,
   ): Promise<ResultResponse> {
     const reservation =
-      await this.studyroomRepository.getReservationById(bookingId);
+      await this.studyroomRepository.getReservationById(reservationId);
 
     if (!reservation)
       throw new NotFoundException('해당 id의 예약이 존재하지 않습니다');
 
-    const isLeader = await this.studyroomRepository.isReservationLeader(
-      reservation.id,
-      userId,
-    );
-
-    if (!isLeader)
+    if (reservation.visitorId !== userId)
       throw new BadRequestException('예약 취소는 예약자만 가능합니다');
+
+    if (!reservation.bookingId)
+      throw new BadRequestException(
+        '취소할 수 없는 예약입니다 (bookingId 없음)',
+      );
 
     const res = await this.axiosService.post(
       this.configService.get<string>('CANCEL_RESERVATION_URL'),
       JSON.stringify({
         id: userId,
         password: payload.password,
-        booking_id: reservation.id.toString(),
-        room_id: reservation.studyroomId.toString(),
+        booking_id: reservation.bookingId,
         cancel_msg: payload.cancelReason,
       }),
       {

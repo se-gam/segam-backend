@@ -3,8 +3,12 @@ import { Friend, User } from '@prisma/client';
 import * as _ from 'lodash';
 import { UserInfo } from 'src/auth/types/user-info.type';
 import { PrismaService } from 'src/common/services/prisma.service';
-import { RawUser } from 'src/studyroom/types/reservationResponse.type';
 import { PushTokenPayload } from './payload/pushToken.payload';
+
+type RawUser = {
+  name: string;
+  student_id: string;
+};
 
 @Injectable()
 export class UserRepository {

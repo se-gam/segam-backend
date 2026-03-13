@@ -11,8 +11,7 @@ model Studyroom {
     updatedAt      DateTime               @updatedAt @map("updated_at")
     deletedAt      DateTime?              @map("deleted_at")
     tags           String[]               @map("tags")
-    slots          StudyroomSlot[]
-    reservations   StudyroomReservation[]
+    slots StudyroomSlot[]
 
     @@map("studyroom")
 }
