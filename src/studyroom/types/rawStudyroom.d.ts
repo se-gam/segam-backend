@@ -6,6 +6,6 @@ export type RawStudyroomSlot = {
 };
 
 export type RawStudyroom = {
-  room_id: string;
+  room_name: string;
   slots: RawStudyroomSlot[];
 };

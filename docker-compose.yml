@@ -1,15 +1,35 @@
-version: '3'
-
 services:
   db:
-    image: therealjamesjung/segam-local-db
+    image: postgres:16-alpine
     restart: always
+    environment:
+      POSTGRES_USER: segam
+      POSTGRES_PASSWORD: segam
+      POSTGRES_DB: segam
     ports:
       - '5432:5432'
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - segam_db_data:/var/lib/postgresql/data
+
   backend:
-    image: therealjamesjung/segam-local-backend
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
     restart: always
     ports:
       - '3000:3000'
+    env_file:
+      - .local.env
     depends_on:
       - db
+    volumes:
+      - ./src:/usr/src/app/src
+      - ./prisma:/usr/src/app/prisma
+      - ./parser:/usr/src/app/parser
+      - ./nest-cli.json:/usr/src/app/nest-cli.json
+      - ./tsconfig.json:/usr/src/app/tsconfig.json
+      - ./tsconfig.build.json:/usr/src/app/tsconfig.build.json
+
+volumes:
+  segam_db_data:

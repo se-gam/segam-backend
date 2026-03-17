@@ -8,8 +8,7 @@ model StudyroomSlot {
     createdAt   DateTime @default(now()) @map("created_at")
     updatedAt   DateTime @updatedAt @map("updated_at")
 
-    studyroom    Studyroom         @relation(fields: [studyroomId], references: [id])
-    reservations ReservationSlot[]
+    studyroom Studyroom @relation(fields: [studyroomId], references: [id])
 
     @@unique([studyroomId, date, startsAt])
     @@map("studyroom_slot")
