@@ -129,6 +129,11 @@ export class StudyroomService {
         },
       });
 
+    // 활성화된 슬롯이 없다는 전제
+    if (!recentStudyroomSlot) {
+      return;
+    }
+
     // 3분 이상 슬롯이 업데이트가 되지 않으면 에러 로그 발생
     if (recentStudyroomSlot.updatedAt.getTime() + 1000 * 60 * 3 < Date.now()) {
       await this.discordService.sendInternalErrorLog(

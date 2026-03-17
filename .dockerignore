@@ -18,3 +18,5 @@ test
 .github
 Prod-Dockerrun.aws.json
 Prod2025-Dockerrun.aws.json
+sisyphus
+docs
