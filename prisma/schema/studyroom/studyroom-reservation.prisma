@@ -1,16 +1,17 @@
 model StudyroomReservation {
-    id            Int       @id
-    pid           Int
-    studyroomId   Int       @map("studyroom_id")
-    reserveReason String
-    cancelReason  String?
-    createdAt     DateTime  @default(now()) @map("created_at")
-    updatedAt     DateTime  @updatedAt @map("updated_at")
-    deletedAt     DateTime?
+    id        Int       @id @default(autoincrement())
+    visitorId String    @map("visitor_id")
+    bookingId String?   @map("booking_id")
+    ipid      String?
+    roomName  String    @map("room_name")
+    date      DateTime  @db.Date
+    startsAt  String    @map("starts_at")
+    duration  Int
+    createdAt DateTime  @default(now()) @map("created_at")
+    updatedAt DateTime  @updatedAt @map("updated_at")
+    deletedAt DateTime? @map("deleted_at")
 
-    studyroom Studyroom         @relation(fields: [studyroomId], references: [id])
-    slots     ReservationSlot[]
-    users     UserReservation[]
+    user User @relation(fields: [visitorId], references: [studentId])
 
     @@map("studyroom_reservation")
 }

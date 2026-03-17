@@ -1,7 +1,31 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsDate, IsNumber, IsString, Max, Min } from 'class-validator';
+import {
+  IsArray,
+  IsDate,
+  IsNumber,
+  IsString,
+  Max,
+  Min,
+  ValidateNested,
+} from 'class-validator';
 import { PasswordPayload } from 'src/auth/payload/password.payload';
+
+class UserData {
+  @ApiProperty({
+    description: '학번',
+    type: String,
+  })
+  @IsString()
+  student_id: string;
+
+  @ApiProperty({
+    description: '이름',
+    type: String,
+  })
+  @IsString()
+  name: string;
+}
 
 export class StudyroomReservePayload extends PasswordPayload {
   @ApiProperty({
@@ -39,16 +63,11 @@ export class StudyroomReservePayload extends PasswordPayload {
   duration: number;
 
   @ApiProperty({
-    description: '예약 이유',
-    type: String,
+    description: '동반인 id, 이름',
+    type: [UserData],
   })
-  @IsString()
-  reason: string;
-
-  @ApiProperty({
-    description: '동반인 id',
-    type: [String],
-  })
-  @IsString({ each: true })
-  users: string[];
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => UserData)
+  users: UserData[];
 }

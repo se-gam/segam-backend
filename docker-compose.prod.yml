@@ -1,0 +1,67 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: segam-db
+    restart: unless-stopped
+    env_file:
+      - .prod.env
+    environment:
+      TZ: Asia/Seoul
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - segam-network
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  backend:
+    image: ghcr.io/${GITHUB_REPOSITORY:-segam}/segam-backend:latest
+    container_name: segam-backend
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - .prod.env
+    environment:
+      DATABASE_URL: postgresql://segam:segamjonmattangguri@db:5432/segam
+      NODE_ENV: prod
+      TZ: Asia/Seoul
+    networks:
+      - segam-network
+
+  caddy:
+    image: caddy:2-alpine
+    container_name: segam-caddy
+    restart: unless-stopped
+    ports:
+      - '80:80'
+      - '443:443'
+      - '443:443/udp'
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - backend
+    networks:
+      - segam-network
+
+volumes:
+  postgres_data:
+    driver: local
+  caddy_data:
+    driver: local
+  caddy_config:
+    driver: local
+
+networks:
+  segam-network:
+    driver: bridge
