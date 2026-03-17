@@ -1,0 +1,24 @@
+FROM node:20-alpine
+
+ENV TZ=Asia/Seoul
+
+RUN apk add --no-cache tzdata curl openssl && \
+    ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && \
+    echo $TZ > /etc/timezone && \
+    apk del tzdata
+
+WORKDIR /usr/src/app
+
+# Install dependencies first (cached layer)
+COPY package.json yarn.lock ./
+RUN yarn install --frozen-lockfile
+
+# Generate Prisma client
+COPY prisma ./prisma
+RUN yarn prisma generate
+
+# Source code will be mounted as volume for hot-reload
+
+EXPOSE 3000
+
+CMD ["npx", "nest", "start", "--watch"]
