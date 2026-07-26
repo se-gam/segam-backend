@@ -4,10 +4,9 @@ import {
   InternalServerErrorException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { PasswordPayload } from 'src/auth/payload/password.payload';
 import { UserInfo } from 'src/auth/types/user-info.type';
-import { AxiosService } from 'src/common/services/axios.service';
+import { ExternalApiService } from 'src/common/services/external-api.service';
 import { AttendanceRepository } from './attendance.repository';
 import { RawCourse } from './types/raw-course';
 
@@ -15,27 +14,18 @@ import { RawCourse } from './types/raw-course';
 export class EcampusService {
   constructor(
     private readonly attendanceRepository: AttendanceRepository,
-    private readonly axiosService: AxiosService,
-    private readonly configService: ConfigService,
+    private readonly externalApiService: ExternalApiService,
   ) {}
 
   async updateUserAttendance(
     user: UserInfo,
     payload: PasswordPayload,
   ): Promise<void> {
-    const response = await this.axiosService.post(
-      this.configService.get<string>('GET_COURSE_ATTENDANCE_URL'),
-      JSON.stringify({
-        studentId: user.studentId,
-        name: user.name,
-        password: payload.password,
-      }),
-      {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      },
-    );
+    const response = await this.externalApiService.fetchCourseAttendance({
+      studentId: user.studentId,
+      name: user.name,
+      password: payload.password,
+    });
 
     if (response.status === 500) {
       throw new InternalServerErrorException('출석 업데이트 람다 함수 오류');

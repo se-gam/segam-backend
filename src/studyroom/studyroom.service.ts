@@ -7,8 +7,8 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { Cron } from '@nestjs/schedule';
 import { PasswordPayload } from 'src/auth/payload/password.payload';
-import { AxiosService } from 'src/common/services/axios.service';
 import { DiscordService } from 'src/common/services/discord.service';
+import { ExternalApiService } from 'src/common/services/external-api.service';
 import { PrismaService } from 'src/common/services/prisma.service';
 import { UserRepository } from 'src/user/user.repository';
 import { UserService } from 'src/user/user.service';
@@ -36,7 +36,7 @@ export class StudyroomService {
     private readonly prismaService: PrismaService,
     private readonly studyroomRepository: StudyroomRepository,
     private readonly reservationService: ReservationService,
-    private readonly axiosService: AxiosService,
+    private readonly externalApiService: ExternalApiService,
     private readonly configService: ConfigService,
     private readonly userService: UserService,
     private readonly userRepository: UserRepository,
@@ -73,11 +73,7 @@ export class StudyroomService {
     // console.log(roomName, this.currentIndex);
 
     // console.log('crawler start @', new Date());
-    const res = await this.axiosService.post(
-      this.configService.get<string>('CRAWLER_API_ROOT'),
-      JSON.stringify({ room_name: roomName }),
-      { headers: { 'Content-Type': 'application/json' } },
-    );
+    const res = await this.externalApiService.fetchStudyroom({ roomName });
 
     // console.log('crawler end @', new Date());
     const rawStudyroom = JSON.parse(res.data) as RawStudyroom;
