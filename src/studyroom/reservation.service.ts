@@ -5,8 +5,7 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { AxiosService } from 'src/common/services/axios.service';
+import { ExternalApiService } from 'src/common/services/external-api.service';
 import { UserRepository } from 'src/user/user.repository';
 import { UserPidDto } from './dto/userPid.dto';
 import { StudyroomCancelPayload } from './payload/studyroomCancel.payload';
@@ -20,8 +19,7 @@ export class ReservationService {
   constructor(
     private readonly studyroomRepository: StudyroomRepository,
     private readonly userRepository: UserRepository,
-    private readonly axiosService: AxiosService,
-    private readonly configService: ConfigService,
+    private readonly externalApiService: ExternalApiService,
   ) {}
 
   async updateUserReservations(userId: string, password: string) {
@@ -30,11 +28,10 @@ export class ReservationService {
     if (!user)
       throw new NotFoundException('해당 학번의 학생이 존재하지 않습니다');
 
-    const res = await this.axiosService.post(
-      this.configService.get<string>('GET_USER_RESERVATIONS_URL'),
-      JSON.stringify({ student_id: userId, password: password }),
-      { headers: { 'Content-Type': 'application/json' } },
-    );
+    const res = await this.externalApiService.fetchStudyroomReservations({
+      userId,
+      password,
+    });
 
     const response = JSON.parse(res.data);
 
@@ -56,23 +53,13 @@ export class ReservationService {
     userId: string,
     payload: StudyroomUserPayload,
   ): Promise<UserPidDto> {
-    const res = await this.axiosService.post(
-      this.configService.get<string>('GET_USER_AVAILABILITY_URL'),
-      JSON.stringify({
-        id: userId,
-        password: payload.password,
-        user_name: payload.friendName,
-        student_id: payload.friendId,
-        year: payload.date.getFullYear(),
-        month: String(payload.date.getMonth() + 1).padStart(2, '0'),
-        day: String(payload.date.getDate()).padStart(2, '0'),
-      }),
-      {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      },
-    );
+    const res = await this.externalApiService.fetchStudyroomAvailability({
+      userId,
+      password: payload.password,
+      friendName: payload.friendName,
+      friendId: payload.friendId,
+      date: payload.date,
+    });
 
     const response = JSON.parse(res.data);
     if (res.status === 400) {
@@ -99,26 +86,15 @@ export class ReservationService {
     userId: string,
     payload: StudyroomReservePayload,
   ): Promise<ResultResponse> {
-    const res = await this.axiosService.post(
-      this.configService.get<string>('CREATE_RESERVATION_URL'),
-      JSON.stringify({
-        id: userId,
-        password: payload.password,
-        room_id: payload.studyroomId,
-        users: payload.users,
-        year: payload.date.getFullYear(),
-        month: String(payload.date.getMonth() + 1).padStart(2, '0'),
-        day: String(payload.date.getDate()).padStart(2, '0'),
-        start_time: payload.startsAt,
-        hours: payload.duration,
-      }),
-      {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      },
-    );
-
+    const res = await this.externalApiService.createStudyroomReservation({
+      userId,
+      password: payload.password,
+      studyroomId: payload.studyroomId,
+      users: payload.users,
+      date: payload.date,
+      startsAt: payload.startsAt,
+      duration: payload.duration,
+    });
     const response = JSON.parse(res.data);
     if (res.status === 400) {
       throw new BadRequestException(response.error);
@@ -150,20 +126,12 @@ export class ReservationService {
         '취소할 수 없는 예약입니다 (bookingId 없음)',
       );
 
-    const res = await this.axiosService.post(
-      this.configService.get<string>('CANCEL_RESERVATION_URL'),
-      JSON.stringify({
-        id: userId,
-        password: payload.password,
-        booking_id: reservation.bookingId,
-        cancel_msg: payload.cancelReason,
-      }),
-      {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      },
-    );
+    const res = await this.externalApiService.cancelStudyroomReservation({
+      userId,
+      password: payload.password,
+      bookingId: reservation.bookingId,
+      cancelReason: payload.cancelReason,
+    });
 
     const response = JSON.parse(res.data);
     if (res.status === 400) {

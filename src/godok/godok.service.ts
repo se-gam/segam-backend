@@ -5,12 +5,11 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { Cron } from '@nestjs/schedule';
 import * as _ from 'lodash';
 import { PasswordPayload } from 'src/auth/payload/password.payload';
-import { AxiosService } from 'src/common/services/axios.service';
 import { DiscordService } from 'src/common/services/discord.service';
+import { ExternalApiService } from 'src/common/services/external-api.service';
 import { PrismaService } from 'src/common/services/prisma.service';
 import { ResultResponse } from 'src/studyroom/types/resultResponse.type';
 import { UserRepository } from 'src/user/user.repository';
@@ -25,8 +24,6 @@ import { RawGodokSlot } from './types/rawGodokSlot.type';
 
 @Injectable()
 export class GodokService {
-  private bookListUrl = 'http://classic.sejong.ac.kr/seletTermBookList.json';
-  private latestTermId = 'TERM-00571'; // 2024-2학기
   private bookAreas = [
     {
       id: 1000,
@@ -53,8 +50,7 @@ export class GodokService {
   constructor(
     private readonly godokRepository: GodokRepository,
     private readonly userRepository: UserRepository,
-    private readonly axiosService: AxiosService,
-    private readonly configService: ConfigService,
+    private readonly externalApiService: ExternalApiService,
     private readonly prismaService: PrismaService,
     private readonly discordService: DiscordService,
   ) {}
@@ -63,9 +59,7 @@ export class GodokService {
   async handleCron() {
     return;
     // console.log('[godok] crawler start @', new Date());
-    const res = await this.axiosService.get(
-      this.configService.get<string>('GET_GODOK_CALENDAR_URL'),
-    );
+    const res = await this.externalApiService.fetchGodokCalendar();
 
     // console.log('[godok] crawler end @', new Date());
     const rawGodokSlots = JSON.parse(res.data) as RawGodokSlot;
@@ -116,21 +110,13 @@ export class GodokService {
     userId: string,
     payload: GodokReservePayload,
   ): Promise<ResultResponse> {
-    const res = await this.axiosService.post(
-      this.configService.get<string>('CREATE_GODOK_RESERVATION_URL'),
-      JSON.stringify({
-        student_id: userId,
-        password: payload.password,
-        shInfoId: payload.godokSlotId,
-        bkCode: payload.bookCode,
-        bkAreaCode: payload.bookAreaCode,
-      }),
-      {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      },
-    );
+    const res = await this.externalApiService.createGodokReservation({
+      userId,
+      password: payload.password,
+      godokSlotId: payload.godokSlotId,
+      bookCode: payload.bookCode,
+      bookAreaCode: payload.bookAreaCode,
+    });
 
     const response = JSON.parse(res.data);
     if (res.status === 400) {
@@ -150,11 +136,10 @@ export class GodokService {
     if (!user)
       throw new NotFoundException('해당 학번의 학생이 존재하지 않습니다');
 
-    const res = await this.axiosService.post(
-      this.configService.get<string>('GET_USER_GODOK_RESERVATIONS_URL'),
-      JSON.stringify({ student_id: userId, password: password }),
-      { headers: { 'Content-Type': 'application/json' } },
-    );
+    const res = await this.externalApiService.fetchGodokReservations({
+      userId,
+      password,
+    });
 
     const response = JSON.parse(res.data);
 
@@ -172,11 +157,7 @@ export class GodokService {
     );
   }
   private async fetchGodokBooks(bkAreaCode: number) {
-    const formData = new FormData();
-    formData.append('opTermId', this.latestTermId);
-    formData.append('bkAreaCode', bkAreaCode.toString());
-
-    const response = await this.axiosService.post(this.bookListUrl, formData);
+    const response = await this.externalApiService.fetchGodokBooks(bkAreaCode);
 
     return JSON.parse(response.data).results as {
       bkAreaCode: number;
@@ -239,15 +220,11 @@ export class GodokService {
     payload: PasswordPayload,
     reservationId: string,
   ): Promise<void> {
-    const res = await this.axiosService.post(
-      this.configService.get<string>('CANCEL_GODOK_RESERVATION_URL'),
-      JSON.stringify({
-        student_id: userId,
-        password: payload.password,
-        opAppInfoId: reservationId,
-      }),
-      { headers: { 'Content-Type': 'application/json' } },
-    );
+    const res = await this.externalApiService.cancelGodokReservation({
+      userId,
+      password: payload.password,
+      reservationId,
+    });
 
     const response = JSON.parse(res.data);
     if (res.status === 400) {
@@ -276,14 +253,10 @@ export class GodokService {
     userId: string,
     payload: PasswordPayload,
   ): Promise<GodokStatusInfo> {
-    const res = await this.axiosService.post(
-      this.configService.get<string>('GET_USER_GODOK_STATUS_URL'),
-      JSON.stringify({
-        student_id: userId,
-        password: payload.password,
-      }),
-      { headers: { 'Content-Type': 'application/json' } },
-    );
+    const res = await this.externalApiService.fetchGodokStatus({
+      userId,
+      password: payload.password,
+    });
 
     const response = JSON.parse(res.data);
     if (res.status === 400) {

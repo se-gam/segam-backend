@@ -1,6 +1,5 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { AxiosService } from 'src/common/services/axios.service';
+import { ExternalApiService } from 'src/common/services/external-api.service';
 import { AuthRepository } from './auth.repository';
 import { TokenDto } from './dto/token.dto';
 import { SignUpPayload } from './payload/signup.payload';
@@ -11,25 +10,16 @@ import { PortalUserInfo } from './types/portal-user.type';
 export class AuthService {
   constructor(
     private readonly tokenService: TokenService,
-    private readonly configService: ConfigService,
-    private readonly axiosService: AxiosService,
+    private readonly externalApiService: ExternalApiService,
     private readonly authRepository: AuthRepository,
     // private readonly ecampusService: EcampusService,
   ) {}
 
   async signup(payload: SignUpPayload): Promise<TokenDto> {
-    const res = await this.axiosService.post(
-      this.configService.get('PORTAL_AUTH_URL'),
-      JSON.stringify({
-        id: payload.studentId,
-        password: payload.password,
-      }),
-      {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      },
-    );
+    const res = await this.externalApiService.authenticatePortal({
+      studentId: payload.studentId,
+      password: payload.password,
+    });
 
     if (res.status !== 200) {
       throw new UnauthorizedException(
