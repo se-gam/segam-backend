@@ -39,6 +39,20 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
+      - name: Create .env
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_SSH_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          command_timeout: 30m
+          script: |
+            set -e
+            cat << 'EOF' > ~/capstone-backend/.env
+            ${{ secrets.ENV_FILE }}
+            EOF
+            cd ~/capstone-backend
+
       - name: Deploy to server
         uses: appleboy/ssh-action@v1
         with:
