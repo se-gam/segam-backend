@@ -1,25 +1,16 @@
-import {
-  BadRequestException,
-  Injectable,
-  Logger,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Cron } from '@nestjs/schedule';
 import { PasswordPayload } from 'src/auth/payload/password.payload';
 import { DiscordService } from 'src/common/services/discord.service';
 import { ExternalApiService } from 'src/common/services/external-api.service';
 import { PrismaService } from 'src/common/services/prisma.service';
-import { UserRepository } from 'src/user/user.repository';
-import { UserService } from 'src/user/user.service';
 import { StudyroomInfoListDto } from './dto/studyroom-infp.dto';
 import { StudyroomReservationListDto } from './dto/studyroom-reservation.dto';
 import { StudyroomDto, StudyroomListDto } from './dto/studyroom.dto';
-import { UserPidDto } from './dto/userPid.dto';
 import { StudyroomCancelPayload } from './payload/studyroomCancel.payload';
 import { StudyroomReservePayload } from './payload/studyroomReserve.payload';
 import { StudyroomUpdatePayload } from './payload/studyroomUpdate.payload';
-import { StudyroomUserPayload } from './payload/studyroomUserPayload.payload';
 import { StudyroomQuery } from './query/studyroom.query';
 import { StudyroomDateQuery } from './query/studyroomDateQuery.query';
 import { ReservationService } from './reservation.service';
@@ -38,8 +29,6 @@ export class StudyroomService {
     private readonly reservationService: ReservationService,
     private readonly externalApiService: ExternalApiService,
     private readonly configService: ConfigService,
-    private readonly userService: UserService,
-    private readonly userRepository: UserRepository,
     private readonly discordService: DiscordService,
   ) {}
 
@@ -54,9 +43,9 @@ export class StudyroomService {
     name: 'studyroomSlotCrawler',
   })
   async handleCron() {
-    if (this.configService.get<string>('NODE_ENV') !== 'prod') {
-      return;
-    }
+    // if (this.configService.get<string>('NODE_ENV') !== 'prod') {
+    //   return;
+    // }
 
     const now = new Date();
 
@@ -167,40 +156,6 @@ export class StudyroomService {
     );
     const reservations = await this.studyroomRepository.getReservations(userId);
     return StudyroomReservationListDto.from(reservations);
-  }
-
-  async checkUserAvailablity(
-    userId: string,
-    payload: StudyroomUserPayload,
-  ): Promise<UserPidDto> {
-    if (userId === payload.friendId) {
-      throw new BadRequestException('자기 자신을 친구로 등록할 수 없습니다.');
-    }
-
-    const friendPid = await this.userService.getUserPid(
-      {
-        friendId: payload.friendId,
-        friendName: payload.friendName,
-        password: payload.password,
-        date: payload.date,
-      },
-      userId,
-    );
-
-    const relation = await this.userRepository.getFriendRelation(
-      payload.friendId,
-      userId,
-    );
-
-    if (!relation || relation.deletedAt) {
-      await this.userRepository.addUserAsFriend(
-        relation,
-        payload.friendId,
-        userId,
-      );
-    }
-
-    return friendPid;
   }
 
   async reserveStudyroom(

@@ -20,7 +20,6 @@ export const configModule = ConfigModule.forRoot({
     GET_USER_RESERVATIONS_URL: Joi.string().required(),
     CREATE_RESERVATION_URL: Joi.string().required(),
     CANCEL_RESERVATION_URL: Joi.string().required(),
-    GET_USER_AVAILABILITY_URL: Joi.string().required(),
     DISCORD_NEW_USER_WEBHOOK_URL: Joi.string().required(),
     DISCORD_INTERNAL_ERROR_WEBHOOK_URL: Joi.string().required(),
     DISCORD_ERROR_WEBHOOK_URL: Joi.string().required(),

@@ -7,10 +7,8 @@ import {
 } from '@nestjs/common';
 import { ExternalApiService } from 'src/common/services/external-api.service';
 import { UserRepository } from 'src/user/user.repository';
-import { UserPidDto } from './dto/userPid.dto';
 import { StudyroomCancelPayload } from './payload/studyroomCancel.payload';
 import { StudyroomReservePayload } from './payload/studyroomReserve.payload';
-import { StudyroomUserPayload } from './payload/studyroomUserPayload.payload';
 import { StudyroomRepository } from './studyroom.repository';
 import { ResultResponse } from './types/resultResponse.type';
 
@@ -28,65 +26,45 @@ export class ReservationService {
     if (!user)
       throw new NotFoundException('해당 학번의 학생이 존재하지 않습니다');
 
-    const res = await this.externalApiService.fetchStudyroomReservations({
+    const response = await this.externalApiService.fetchStudyroomReservations({
       userId,
       password,
     });
 
-    const response = JSON.parse(res.data);
-
-    if (res.status === 404) {
+    if (response.status === 404) {
       return await this.studyroomRepository.updateReservations(userId, []);
-    } else if (res.status === 401) {
-      throw new UnauthorizedException(response.result);
-    } else if (res.status >= 400) {
+    } else if (response.status === 401) {
+      throw new UnauthorizedException(response.errorMessage);
+    } else if (response.status >= 400) {
       throw new InternalServerErrorException('Internal Server Error');
     }
 
     return await this.studyroomRepository.updateReservations(
       userId,
-      response.result,
+      response.reservations.flatMap((reservation) => {
+        if (reservation.duration === null || reservation.startsAt === null) {
+          return [];
+        }
+
+        return [
+          {
+            booking_id: reservation.bookingId,
+            ipid: reservation.ipid,
+            room_name: reservation.roomName,
+            duration: reservation.duration,
+            date: reservation.date,
+            starts_at: reservation.startsAt,
+          },
+        ];
+      }),
     );
-  }
-
-  async checkUserAvailablity(
-    userId: string,
-    payload: StudyroomUserPayload,
-  ): Promise<UserPidDto> {
-    const res = await this.externalApiService.fetchStudyroomAvailability({
-      userId,
-      password: payload.password,
-      friendName: payload.friendName,
-      friendId: payload.friendId,
-      date: payload.date,
-    });
-
-    const response = JSON.parse(res.data);
-    if (res.status === 400) {
-      throw new BadRequestException(response.error);
-    } else if (res.status === 401) {
-      throw new UnauthorizedException(response.error);
-    } else if (res.status >= 400) {
-      throw new InternalServerErrorException('Internal Server Error');
-    }
-    const friendPid: string = response.ipid.toString();
-    if (!friendPid)
-      throw new InternalServerErrorException('추가할 수 없는 사용자입니다.');
-
-    await this.userRepository.updateOrCreateUser(
-      payload.friendId,
-      payload.friendName,
-      friendPid,
-    );
-
-    return UserPidDto.from(friendPid);
   }
 
   async createReservation(
     userId: string,
     payload: StudyroomReservePayload,
   ): Promise<ResultResponse> {
-    const res = await this.externalApiService.createStudyroomReservation({
+    const response = await this.externalApiService.createStudyroomReservation({
       userId,
       password: payload.password,
       studyroomId: payload.studyroomId,
@@ -95,16 +73,18 @@ export class ReservationService {
       startsAt: payload.startsAt,
       duration: payload.duration,
     });
-    const response = JSON.parse(res.data);
-    if (res.status === 400) {
-      throw new BadRequestException(response.error);
-    } else if (res.status === 401) {
-      throw new UnauthorizedException(response);
-    } else if (res.status >= 400) {
+    if (response.status === 400 || response.status === 422) {
+      throw new BadRequestException({
+        message: response.error,
+        content: response.content,
+      });
+    } else if (response.status === 401) {
+      throw new UnauthorizedException(response.error);
+    } else if (response.status >= 400) {
       throw new InternalServerErrorException('Internal Server Error');
     }
 
-    return response;
+    return { result: response.result };
   }
 
   async cancelReservation(
@@ -126,25 +106,29 @@ export class ReservationService {
         '취소할 수 없는 예약입니다 (bookingId 없음)',
       );
 
-    const res = await this.externalApiService.cancelStudyroomReservation({
+    const response = await this.externalApiService.cancelStudyroomReservation({
       userId,
       password: payload.password,
-      bookingId: reservation.bookingId,
+      reserveNo: reservation.bookingId,
       cancelReason: payload.cancelReason,
     });
 
-    const response = JSON.parse(res.data);
-    if (res.status === 400) {
-      throw new BadRequestException(response.result);
-    } else if (res.status === 401) {
-      throw new UnauthorizedException(response.result);
-    } else if (res.status === 404) {
-      throw new NotFoundException(response.result);
-    } else if (res.status >= 400) {
-      console.error(response);
+    if (response.status === 401) {
+      throw new UnauthorizedException(response.errorMessage);
+    } else if (response.status >= 400) {
       throw new InternalServerErrorException('Internal Server Error');
     }
 
-    return response;
+    if (!response.result) {
+      throw new InternalServerErrorException(
+        '예약 취소 응답이 올바르지 않습니다.',
+      );
+    }
+
+    if (!response.result.ok) {
+      throw new NotFoundException(response.result.resultMessage);
+    }
+
+    return { result: response.result.resultMessage };
   }
 }

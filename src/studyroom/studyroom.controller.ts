@@ -30,11 +30,9 @@ import { UserInfo } from 'src/auth/types/user-info.type';
 import { StudyroomInfoListDto } from './dto/studyroom-infp.dto';
 import { StudyroomReservationListDto } from './dto/studyroom-reservation.dto';
 import { StudyroomDto, StudyroomListDto } from './dto/studyroom.dto';
-import { UserPidDto } from './dto/userPid.dto';
 import { StudyroomCancelPayload } from './payload/studyroomCancel.payload';
 import { StudyroomReservePayload } from './payload/studyroomReserve.payload';
 import { StudyroomUpdatePayload } from './payload/studyroomUpdate.payload';
-import { StudyroomUserPayload } from './payload/studyroomUserPayload.payload';
 import { StudyroomQuery } from './query/studyroom.query';
 import { StudyroomDateQuery } from './query/studyroomDateQuery.query';
 import { StudyroomService } from './studyroom.service';
@@ -151,30 +149,6 @@ export class StudyroomController {
       user.studentId,
       payload,
     );
-  }
-
-  @Version('1')
-  @ApiOperation({
-    summary: '스터디룸 인원 추가 확인 API',
-    description:
-      '추가 가능한 친구인지 확인합니다. 스터디룸 사용자로 추가할 수 없는 경우, 내 친구에도 추가되지 않습니다.',
-  })
-  @ApiCreatedResponse({ type: UserPidDto })
-  @ApiBadRequestResponse({
-    description:
-      '예약이 불가능합니다. (스터디원으로 추가 불가능) | 자기 자신을 친구로 등록할 수 없습니다.',
-  })
-  @ApiUnauthorizedResponse({
-    description: '포털 로그인 실패',
-  })
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
-  @Post('user')
-  async checkUserAvailablity(
-    @CurrentUser() user: UserInfo,
-    @Body(PasswordValidationPipe) payload: StudyroomUserPayload,
-  ): Promise<UserPidDto> {
-    return this.studyroomService.checkUserAvailablity(user.studentId, payload);
   }
 
   @Version('1')
