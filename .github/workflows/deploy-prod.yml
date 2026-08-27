@@ -35,6 +35,7 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
+          no-cache: true
           tags: ghcr.io/se-gam/segam-backend:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
