@@ -9,9 +9,11 @@ import type {
   CreateStudyroomReservationRequest,
   PortalAuthenticationRequest,
   StudentCredentials,
-  StudyroomAvailabilityRequest,
   StudyroomCrawlerRequest,
 } from '../types/external-api.type';
+import { CancelStudyroomReservationResponseDto } from '../dto/cancel-studyroom-reservation-response.dto';
+import { CreateStudyroomReservationResponseDto } from '../dto/create-studyroom-reservation-response.dto';
+import { FetchStudyroomReservationsResponseDto } from '../dto/fetch-studyroom-reservations-response.dto';
 import { AxiosService } from './axios.service';
 
 const EXTERNAL_API_ENDPOINTS = {
@@ -19,7 +21,6 @@ const EXTERNAL_API_ENDPOINTS = {
   courseAttendance: 'GET_COURSE_ATTENDANCE_URL',
   studyroomCrawler: 'CRAWLER_API_ROOT',
   studyroomReservations: 'GET_USER_RESERVATIONS_URL',
-  studyroomAvailability: 'GET_USER_AVAILABILITY_URL',
   createStudyroomReservation: 'CREATE_RESERVATION_URL',
   cancelStudyroomReservation: 'CANCEL_RESERVATION_URL',
   godokCalendar: 'GET_GODOK_CALENDAR_URL',
@@ -38,13 +39,17 @@ const GODOK_TERM_ID = 'TERM-00571';
 const JSON_REQUEST_CONFIG = {
   headers: { 'Content-Type': 'application/json' },
 } as const;
+const STUDYROOM_JSON_REQUEST_CONFIG = {
+  ...JSON_REQUEST_CONFIG,
+  validateStatus: () => true,
+} as const;
 
 @Injectable()
 export class ExternalApiService {
   constructor(
     private readonly axiosService: AxiosService,
     private readonly configService: ConfigService,
-  ) {}
+  ) { }
 
   authenticatePortal(
     request: PortalAuthenticationRequest,
@@ -68,36 +73,32 @@ export class ExternalApiService {
   fetchStudyroom(
     request: StudyroomCrawlerRequest,
   ): Promise<AxiosResponse<string>> {
-    return this.postJson(EXTERNAL_API_ENDPOINTS.studyroomCrawler, {
-      room_name: request.roomName,
-    });
+    return this.postJson(
+      EXTERNAL_API_ENDPOINTS.studyroomCrawler,
+      {
+        room_name: request.roomName,
+      },
+      STUDYROOM_JSON_REQUEST_CONFIG,
+    );
   }
 
   fetchStudyroomReservations(
     request: StudentCredentials,
-  ): Promise<AxiosResponse<string>> {
-    return this.postJson(EXTERNAL_API_ENDPOINTS.studyroomReservations, {
-      student_id: request.userId,
-      password: request.password,
-    });
-  }
-
-  fetchStudyroomAvailability(
-    request: StudyroomAvailabilityRequest,
-  ): Promise<AxiosResponse<string>> {
-    return this.postJson(EXTERNAL_API_ENDPOINTS.studyroomAvailability, {
-      id: request.userId,
-      password: request.password,
-      user_name: request.friendName,
-      student_id: request.friendId,
-      ...this.toDateParts(request.date),
-    });
+  ): Promise<FetchStudyroomReservationsResponseDto> {
+    return this.postJson(
+      EXTERNAL_API_ENDPOINTS.studyroomReservations,
+      {
+        student_id: request.userId,
+        password: request.password,
+      },
+      STUDYROOM_JSON_REQUEST_CONFIG,
+    ).then((response) => FetchStudyroomReservationsResponseDto.from(response));
   }
 
   createStudyroomReservation(
     request: CreateStudyroomReservationRequest,
-  ): Promise<AxiosResponse<string>> {
-    return this.postJson(EXTERNAL_API_ENDPOINTS.createStudyroomReservation, {
+  ): Promise<CreateStudyroomReservationResponseDto> {
+    console.log({
       id: request.userId,
       password: request.password,
       room_id: request.studyroomId,
@@ -105,18 +106,35 @@ export class ExternalApiService {
       ...this.toDateParts(request.date),
       start_time: request.startsAt,
       hours: request.duration,
-    });
+    },)
+    return this.postJson(
+      EXTERNAL_API_ENDPOINTS.createStudyroomReservation,
+      {
+        id: request.userId,
+        password: request.password,
+        room_id: request.studyroomId,
+        users: request.users,
+        ...this.toDateParts(request.date),
+        start_time: request.startsAt,
+        hours: request.duration,
+      },
+      STUDYROOM_JSON_REQUEST_CONFIG,
+    ).then((response) => CreateStudyroomReservationResponseDto.from(response));
   }
 
   cancelStudyroomReservation(
     request: CancelStudyroomReservationRequest,
-  ): Promise<AxiosResponse<string>> {
-    return this.postJson(EXTERNAL_API_ENDPOINTS.cancelStudyroomReservation, {
-      id: request.userId,
-      password: request.password,
-      booking_id: request.bookingId,
-      cancel_msg: request.cancelReason,
-    });
+  ): Promise<CancelStudyroomReservationResponseDto> {
+    return this.postJson(
+      EXTERNAL_API_ENDPOINTS.cancelStudyroomReservation,
+      {
+        id: request.userId,
+        password: request.password,
+        reserve_no: request.reserveNo,
+        cancel_msg: request.cancelReason,
+      },
+      STUDYROOM_JSON_REQUEST_CONFIG,
+    ).then((response) => CancelStudyroomReservationResponseDto.from(response));
   }
 
   fetchGodokCalendar(): Promise<AxiosResponse<string>> {
@@ -176,11 +194,12 @@ export class ExternalApiService {
   private postJson(
     endpoint: ExternalApiEndpoint,
     body: object,
+    requestConfig = JSON_REQUEST_CONFIG,
   ): Promise<AxiosResponse<string>> {
     return this.axiosService.post<string>(
       this.getEndpoint(endpoint),
       JSON.stringify(body),
-      JSON_REQUEST_CONFIG,
+      requestConfig,
     );
   }
 
@@ -190,7 +209,7 @@ export class ExternalApiService {
 
   private toDateParts(date: Date) {
     return {
-      year: date.getFullYear(),
+      year: String(date.getFullYear()),
       month: String(date.getMonth() + 1).padStart(2, '0'),
       day: String(date.getDate()).padStart(2, '0'),
     };

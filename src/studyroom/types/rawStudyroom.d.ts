@@ -1,5 +1,5 @@
 export type RawStudyroomSlot = {
-  date: Date;
+  date: string;
   time: string;
   is_reserved: boolean;
   is_closed: boolean;

@@ -16,12 +16,6 @@ export type StudentCredentials = {
   readonly password: string;
 };
 
-export type StudyroomAvailabilityRequest = StudentCredentials & {
-  readonly friendId: string;
-  readonly friendName: string;
-  readonly date: Date;
-};
-
 export type StudyroomReservationUser = {
   readonly student_id: string;
   readonly name: string;
@@ -36,7 +30,7 @@ export type CreateStudyroomReservationRequest = StudentCredentials & {
 };
 
 export type CancelStudyroomReservationRequest = StudentCredentials & {
-  readonly bookingId: string;
+  readonly reserveNo: string;
   readonly cancelReason?: string;
 };
 

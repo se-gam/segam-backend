@@ -18,9 +18,10 @@ export class PasswordValidationPipe implements PipeTransform {
     value: PasswordPayload,
     metadata: ArgumentMetadata,
   ): PasswordPayload {
-    // if (this.configService.get('NODE_ENV') === 'local') {
-    //   return value;
-    // }
+    console.log(this.configService.get('NODE_ENV'));
+    if (this.configService.get('NODE_ENV') === 'local') {
+      return value;
+    }
 
     const pattern =
       /^[0-9a-fA-F]{32}:(?:[0-9a-fA-F]{32}|[0-9a-fA-F]{64}|[0-9a-fA-F]{96})$/;

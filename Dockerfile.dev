@@ -21,4 +21,4 @@ RUN yarn prisma generate
 
 EXPOSE 3000
 
-CMD ["npx", "nest", "start", "--watch"]
+CMD ["sh", "-c", "yarn prisma generate --schema prisma/schema && npx nest start --watch"]
