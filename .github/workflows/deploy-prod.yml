@@ -39,7 +39,7 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      - name: Create .env
+      - name: Create production environment file
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.DEPLOY_HOST }}
@@ -48,18 +48,23 @@ jobs:
           command_timeout: 30m
           script: |
             set -e
-            cat << 'EOF' > ~/segam-backend/.env
+            cat << 'EOF' > ~/segam-backend/.prod.env
             ${{ secrets.ENV_FILE }}
             EOF
             cd ~/segam-backend
 
       - name: Deploy to server
         uses: appleboy/ssh-action@v1
+        env:
+          GHCR_TOKEN: ${{ github.token }}
         with:
           host: ${{ secrets.DEPLOY_HOST }}
           username: ${{ secrets.DEPLOY_SSH_USER }}
           key: ${{ secrets.DEPLOY_SSH_KEY }}
+          envs: GHCR_TOKEN
           script: |
+            set -e
+            echo "$GHCR_TOKEN" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
             docker pull ghcr.io/se-gam/segam-backend:latest
             cd ~/segam-backend
             docker compose -f docker-compose.prod.yml up -d --force-recreate backend
