@@ -48,10 +48,10 @@ jobs:
           command_timeout: 30m
           script: |
             set -e
-            cat << 'EOF' > ~/capstone-backend/.env
+            cat << 'EOF' > ~/segam-backend/.env
             ${{ secrets.ENV_FILE }}
             EOF
-            cd ~/capstone-backend
+            cd ~/segam-backend
 
       - name: Deploy to server
         uses: appleboy/ssh-action@v1
