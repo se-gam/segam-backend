@@ -4,28 +4,12 @@ import {
   IsArray,
   IsDate,
   IsNumber,
+  IsOptional,
   IsString,
   Max,
   Min,
-  ValidateNested,
 } from 'class-validator';
 import { PasswordPayload } from 'src/auth/payload/password.payload';
-
-class UserData {
-  @ApiProperty({
-    description: '학번',
-    type: String,
-  })
-  @IsString()
-  student_id: string;
-
-  @ApiProperty({
-    description: '이름',
-    type: String,
-  })
-  @IsString()
-  name: string;
-}
 
 export class StudyroomReservePayload extends PasswordPayload {
   @ApiProperty({
@@ -63,11 +47,18 @@ export class StudyroomReservePayload extends PasswordPayload {
   duration: number;
 
   @ApiProperty({
-    description: '동반인 id, 이름',
-    type: [UserData],
+    description: '동반인 학번 목록',
+    type: [String],
   })
   @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => UserData)
-  users: UserData[];
+  @IsString({ each: true })
+  users: string[];
+
+  @ApiProperty({
+    description: '예약 사유입니다. 외부 예약 API에는 전달하지 않습니다.',
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  reason?: string;
 }

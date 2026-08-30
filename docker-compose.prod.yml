@@ -19,7 +19,7 @@ services:
       start_period: 10s
 
   backend:
-    image: ghcr.io/${GITHUB_REPOSITORY:-segam}/segam-backend:latest
+    image: ghcr.io/se-gam/segam-backend:latest
     container_name: segam-backend
     build:
       context: .

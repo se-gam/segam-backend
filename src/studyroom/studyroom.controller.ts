@@ -33,6 +33,7 @@ import { StudyroomDto, StudyroomListDto } from './dto/studyroom.dto';
 import { StudyroomCancelPayload } from './payload/studyroomCancel.payload';
 import { StudyroomReservePayload } from './payload/studyroomReserve.payload';
 import { StudyroomUpdatePayload } from './payload/studyroomUpdate.payload';
+import { StudyroomUserPayload } from './payload/studyroomUserPayload.payload';
 import { StudyroomQuery } from './query/studyroom.query';
 import { StudyroomDateQuery } from './query/studyroomDateQuery.query';
 import { StudyroomService } from './studyroom.service';
@@ -149,6 +150,25 @@ export class StudyroomController {
       user.studentId,
       payload,
     );
+  }
+
+  @Version('1')
+  @ApiOperation({
+    summary: '스터디룸 친구 추가 API',
+    description: '외부 포털 확인 없이 친구를 등록합니다.',
+  })
+  @ApiCreatedResponse({ description: '친구 추가 성공' })
+  @ApiBadRequestResponse({
+    description: '이미 친구로 등록된 사용자이거나 자기 자신입니다.',
+  })
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Post('user')
+  async addUserAsFriend(
+    @CurrentUser() user: UserInfo,
+    @Body() payload: StudyroomUserPayload,
+  ): Promise<void> {
+    await this.studyroomService.addUserAsFriend(user, payload);
   }
 
   @Version('1')

@@ -24,7 +24,10 @@ export class UserService {
     await this.userRepository.updatePushToken(payload, user);
   }
 
-  async addUserAsFriend(payload: UserPayload, user: UserInfo): Promise<void> {
+  async addUserAsFriend(
+    payload: Pick<UserPayload, 'studentId' | 'name'>,
+    user: UserInfo,
+  ): Promise<void> {
     const friend = await this.userRepository.getUserByStudentId(
       payload.studentId,
     );
@@ -53,6 +56,38 @@ export class UserService {
       payload.studentId,
       user.studentId,
     );
+  }
+
+  async ensureUserAsFriend(
+    payload: Pick<UserPayload, 'studentId' | 'name'>,
+    user: UserInfo,
+  ): Promise<void> {
+    const friend = await this.userRepository.getUserByStudentId(
+      payload.studentId,
+    );
+
+    if (!friend) {
+      await this.userRepository.updateOrCreateUser(
+        payload.studentId,
+        payload.name,
+        payload.studentId,
+      );
+    } else if (user.studentId === friend.studentId) {
+      throw new BadRequestException('자기 자신을 친구로 등록할 수 없습니다.');
+    }
+
+    const relation = await this.userRepository.getFriendRelation(
+      payload.studentId,
+      user.studentId,
+    );
+
+    if (!relation || relation.deletedAt) {
+      await this.userRepository.addUserAsFriend(
+        relation,
+        payload.studentId,
+        user.studentId,
+      );
+    }
   }
 
   async deleteFriend(friendId: string, user: UserInfo): Promise<void> {

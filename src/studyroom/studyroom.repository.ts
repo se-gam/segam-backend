@@ -219,6 +219,12 @@ export class StudyroomRepository {
           date: true,
           startsAt: true,
           duration: true,
+          user: {
+            select: {
+              studentId: true,
+              name: true,
+            },
+          },
         },
         orderBy: {
           date: 'asc',

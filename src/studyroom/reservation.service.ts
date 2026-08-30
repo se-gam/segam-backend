@@ -42,7 +42,11 @@ export class ReservationService {
     return await this.studyroomRepository.updateReservations(
       userId,
       response.reservations.flatMap((reservation) => {
-        if (reservation.duration === null || reservation.startsAt === null) {
+        if (
+          reservation.bookingId === null ||
+          reservation.duration === null ||
+          reservation.startsAt === null
+        ) {
           return [];
         }
 
@@ -64,11 +68,24 @@ export class ReservationService {
     userId: string,
     payload: StudyroomReservePayload,
   ): Promise<ResultResponse> {
+    const user = await this.userRepository.getUserByStudentId(userId);
+    if (!user)
+      throw new NotFoundException('해당 학번의 학생이 존재하지 않습니다');
+
+    const companionUsers = await this.userRepository.getUsersByStudentIds(
+      payload.users,
+    );
     const response = await this.externalApiService.createStudyroomReservation({
       userId,
       password: payload.password,
       studyroomId: payload.studyroomId,
-      users: payload.users,
+      users: [
+        { student_id: user.studentId, name: user.name },
+        ...companionUsers.map((companion) => ({
+          student_id: companion.studentId,
+          name: companion.name,
+        })),
+      ],
       date: payload.date,
       startsAt: payload.startsAt,
       duration: payload.duration,

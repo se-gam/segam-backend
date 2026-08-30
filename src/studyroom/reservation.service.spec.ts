@@ -12,9 +12,11 @@ describe('ReservationService', () => {
   };
   const userRepository = {
     getUserByStudentId: jest.fn(),
+    getUsersByStudentIds: jest.fn(),
   };
   const externalApiService = {
     cancelStudyroomReservation: jest.fn(),
+    createStudyroomReservation: jest.fn(),
     fetchStudyroomReservations: jest.fn(),
   };
 
@@ -90,6 +92,14 @@ describe('ReservationService', () => {
           date: '2026.08.20',
           startsAt: '10:00',
         },
+        {
+          bookingId: null,
+          ipid: null,
+          roomName: 'S1층 08스터디룸',
+          duration: '1',
+          date: '2026.08.21',
+          startsAt: '10:00',
+        },
       ],
     });
 
@@ -109,6 +119,42 @@ describe('ReservationService', () => {
           starts_at: '10:00',
         },
       ],
+    );
+  });
+
+  it('프론트의 동반인 학번 배열을 외부 예약 API용 객체 배열로 변환한다', async () => {
+    // Given
+    userRepository.getUserByStudentId.mockResolvedValue({
+      studentId: '20260001',
+      name: '예약자',
+    });
+    userRepository.getUsersByStudentIds.mockResolvedValue([
+      { studentId: '20260002', name: '친구' },
+    ]);
+    externalApiService.createStudyroomReservation.mockResolvedValue({
+      status: 201,
+      result: '예약 성공',
+    });
+
+    // When
+    await service.createReservation('20260001', {
+      studyroomId: 8,
+      password: 'secret',
+      startsAt: 10,
+      duration: 1,
+      reason: '스터디',
+      users: ['20260002'],
+      date: new Date('2026-08-31'),
+    });
+
+    // Then
+    expect(externalApiService.createStudyroomReservation).toHaveBeenCalledWith(
+      expect.objectContaining({
+        users: [
+          { student_id: '20260001', name: '예약자' },
+          { student_id: '20260002', name: '친구' },
+        ],
+      }),
     );
   });
 
