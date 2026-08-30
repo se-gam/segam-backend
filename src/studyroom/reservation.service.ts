@@ -42,7 +42,11 @@ export class ReservationService {
     return await this.studyroomRepository.updateReservations(
       userId,
       response.reservations.flatMap((reservation) => {
-        if (reservation.duration === null || reservation.startsAt === null) {
+        if (
+          reservation.bookingId === null ||
+          reservation.duration === null ||
+          reservation.startsAt === null
+        ) {
           return [];
         }
 

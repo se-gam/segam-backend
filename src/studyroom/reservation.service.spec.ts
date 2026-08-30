@@ -92,6 +92,14 @@ describe('ReservationService', () => {
           date: '2026.08.20',
           startsAt: '10:00',
         },
+        {
+          bookingId: null,
+          ipid: null,
+          roomName: 'S1층 08스터디룸',
+          duration: '1',
+          date: '2026.08.21',
+          startsAt: '10:00',
+        },
       ],
     });
 
