@@ -6,4 +6,8 @@ export type StudyroomReservationInfo = {
   date: Date;
   startsAt: string;
   duration: number;
+  user: {
+    studentId: string;
+    name: string;
+  };
 };

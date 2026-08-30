@@ -22,9 +22,9 @@ export class StudyroomReservationDto {
 
   @ApiProperty({
     description: '이용 시작 시간',
-    type: String,
+    type: Number,
   })
-  startsAt!: string;
+  startsAt!: number;
 
   @ApiProperty({
     description: '이용 시간',
@@ -32,13 +32,41 @@ export class StudyroomReservationDto {
   })
   duration!: number;
 
+  @ApiProperty({
+    description: '방장 여부',
+    type: Boolean,
+  })
+  isLeader!: boolean;
+
+  @ApiProperty({
+    description: '스터디룸 유형',
+    type: Boolean,
+  })
+  isCinema!: boolean;
+
+  @ApiProperty({
+    description: '예약 이유',
+    type: String,
+  })
+  reason!: string;
+
+  @ApiProperty({
+    description: '사용자들 정보',
+    type: [Object],
+  })
+  users!: { studentId: string; name: string }[];
+
   static from(reservation: StudyroomReservationInfo): StudyroomReservationDto {
     return {
       id: reservation.id,
       name: reservation.roomName,
       date: reservation.date,
-      startsAt: reservation.startsAt,
+      startsAt: Number(reservation.startsAt.split(':')[0]),
       duration: reservation.duration,
+      isLeader: true,
+      isCinema: reservation.roomName.includes('시네마'),
+      reason: '',
+      users: [reservation.user],
     };
   }
 }
