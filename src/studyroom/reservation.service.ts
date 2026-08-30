@@ -64,17 +64,24 @@ export class ReservationService {
     userId: string,
     payload: StudyroomReservePayload,
   ): Promise<ResultResponse> {
-    const users = await this.userRepository.getUsersByStudentIds(
+    const user = await this.userRepository.getUserByStudentId(userId);
+    if (!user)
+      throw new NotFoundException('해당 학번의 학생이 존재하지 않습니다');
+
+    const companionUsers = await this.userRepository.getUsersByStudentIds(
       payload.users,
     );
     const response = await this.externalApiService.createStudyroomReservation({
       userId,
       password: payload.password,
       studyroomId: payload.studyroomId,
-      users: users.map((user) => ({
-        student_id: user.studentId,
-        name: user.name,
-      })),
+      users: [
+        { student_id: user.studentId, name: user.name },
+        ...companionUsers.map((companion) => ({
+          student_id: companion.studentId,
+          name: companion.name,
+        })),
+      ],
       date: payload.date,
       startsAt: payload.startsAt,
       duration: payload.duration,

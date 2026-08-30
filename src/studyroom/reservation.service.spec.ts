@@ -116,6 +116,10 @@ describe('ReservationService', () => {
 
   it('프론트의 동반인 학번 배열을 외부 예약 API용 객체 배열로 변환한다', async () => {
     // Given
+    userRepository.getUserByStudentId.mockResolvedValue({
+      studentId: '20260001',
+      name: '예약자',
+    });
     userRepository.getUsersByStudentIds.mockResolvedValue([
       { studentId: '20260002', name: '친구' },
     ]);
@@ -138,7 +142,10 @@ describe('ReservationService', () => {
     // Then
     expect(externalApiService.createStudyroomReservation).toHaveBeenCalledWith(
       expect.objectContaining({
-        users: [{ student_id: '20260002', name: '친구' }],
+        users: [
+          { student_id: '20260001', name: '예약자' },
+          { student_id: '20260002', name: '친구' },
+        ],
       }),
     );
   });
