@@ -64,11 +64,17 @@ export class ReservationService {
     userId: string,
     payload: StudyroomReservePayload,
   ): Promise<ResultResponse> {
+    const users = await this.userRepository.getUsersByStudentIds(
+      payload.users,
+    );
     const response = await this.externalApiService.createStudyroomReservation({
       userId,
       password: payload.password,
       studyroomId: payload.studyroomId,
-      users: payload.users,
+      users: users.map((user) => ({
+        student_id: user.studentId,
+        name: user.name,
+      })),
       date: payload.date,
       startsAt: payload.startsAt,
       duration: payload.duration,
