@@ -11,7 +11,7 @@ import { StudyroomService } from './studyroom.service';
 describe('StudyroomService', () => {
   it('스터디룸 친구 추가는 외부 API 호출 없이 친구 등록 서비스에 위임한다', async () => {
     // Given
-    const addUserAsFriend = jest.fn();
+    const ensureUserAsFriend = jest.fn();
     const fetchStudyroom = jest.fn();
     const moduleRef = await Test.createTestingModule({
       providers: [
@@ -22,7 +22,7 @@ describe('StudyroomService', () => {
         { provide: ExternalApiService, useValue: { fetchStudyroom } },
         { provide: ConfigService, useValue: {} },
         { provide: DiscordService, useValue: {} },
-        { provide: UserService, useValue: { addUserAsFriend } },
+        { provide: UserService, useValue: { ensureUserAsFriend } },
       ],
     }).compile();
     const service = moduleRef.get(StudyroomService);
@@ -34,7 +34,7 @@ describe('StudyroomService', () => {
     );
 
     // Then
-    expect(addUserAsFriend).toHaveBeenCalledWith(
+    expect(ensureUserAsFriend).toHaveBeenCalledWith(
       { studentId: '20260002', name: '친구' },
       { studentId: '20260001', name: '요청자', sejongPid: 'pid-1' },
     );

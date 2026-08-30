@@ -186,7 +186,7 @@ export class StudyroomService {
     user: UserInfo,
     payload: StudyroomUserPayload,
   ): Promise<void> {
-    await this.userService.addUserAsFriend(
+    await this.userService.ensureUserAsFriend(
       { studentId: payload.friendId, name: payload.friendName },
       user,
     );
