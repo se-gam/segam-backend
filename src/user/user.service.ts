@@ -24,7 +24,10 @@ export class UserService {
     await this.userRepository.updatePushToken(payload, user);
   }
 
-  async addUserAsFriend(payload: UserPayload, user: UserInfo): Promise<void> {
+  async addUserAsFriend(
+    payload: Pick<UserPayload, 'studentId' | 'name'>,
+    user: UserInfo,
+  ): Promise<void> {
     const friend = await this.userRepository.getUserByStudentId(
       payload.studentId,
     );

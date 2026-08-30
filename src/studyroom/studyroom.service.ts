@@ -2,15 +2,18 @@ import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Cron } from '@nestjs/schedule';
 import { PasswordPayload } from 'src/auth/payload/password.payload';
+import { UserInfo } from 'src/auth/types/user-info.type';
 import { DiscordService } from 'src/common/services/discord.service';
 import { ExternalApiService } from 'src/common/services/external-api.service';
 import { PrismaService } from 'src/common/services/prisma.service';
+import { UserService } from 'src/user/user.service';
 import { StudyroomInfoListDto } from './dto/studyroom-infp.dto';
 import { StudyroomReservationListDto } from './dto/studyroom-reservation.dto';
 import { StudyroomDto, StudyroomListDto } from './dto/studyroom.dto';
 import { StudyroomCancelPayload } from './payload/studyroomCancel.payload';
 import { StudyroomReservePayload } from './payload/studyroomReserve.payload';
 import { StudyroomUpdatePayload } from './payload/studyroomUpdate.payload';
+import { StudyroomUserPayload } from './payload/studyroomUserPayload.payload';
 import { StudyroomQuery } from './query/studyroom.query';
 import { StudyroomDateQuery } from './query/studyroomDateQuery.query';
 import { ReservationService } from './reservation.service';
@@ -30,6 +33,7 @@ export class StudyroomService {
     private readonly externalApiService: ExternalApiService,
     private readonly configService: ConfigService,
     private readonly discordService: DiscordService,
+    private readonly userService: UserService,
   ) {}
 
   private getSlotTime(time: string) {
@@ -176,6 +180,16 @@ export class StudyroomService {
   ): Promise<void> {
     await this.reservationService.cancelReservation(bookingId, userId, payload);
     await this.studyroomRepository.deleteReservation(bookingId);
+  }
+
+  async addUserAsFriend(
+    user: UserInfo,
+    payload: StudyroomUserPayload,
+  ): Promise<void> {
+    await this.userService.addUserAsFriend(
+      { studentId: payload.friendId, name: payload.friendName },
+      user,
+    );
   }
 
   async updateStudyroom(
